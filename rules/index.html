@@ -51,5 +51,33 @@
             </div>
         </div>
     </main>
+
+    <button id="edit-rules-btn" class="fab-edit" aria-label="Edit rules" title="Edit rules">✎ Edit rules</button>
+
+    <script>
+        (function() {
+            const btn = document.getElementById('edit-rules-btn');
+            const editUrl = 'https://github.com/Astie7/Pantheverse/edit/main/rules/index.html';
+
+            function applyState() {
+                const on = localStorage.getItem('pvEdit') === '1';
+                btn.style.display = on ? 'inline-flex' : 'none';
+            }
+
+            btn.addEventListener('click', () => {
+                window.open(editUrl, '_blank', 'noopener');
+            });
+
+            window.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'e') {
+                    const next = localStorage.getItem('pvEdit') === '1' ? '0' : '1';
+                    localStorage.setItem('pvEdit', next);
+                    applyState();
+                }
+            });
+
+            applyState();
+        })();
+    </script>
 </body>
 </html>
