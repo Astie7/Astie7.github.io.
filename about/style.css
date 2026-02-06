@@ -1,0 +1,37 @@
+body.about {
+    background-color: rgb(247, 81, 81);
+    font-size: 18px;
+    margin-left: 8px;
+    padding: 0px;
+}
+header * {
+    display: inline;
+}
+header div {
+    overflow: auto;
+    float: right;
+}
+.space {
+    margin: 8px;
+    margin-bottom: 15px;
+}
+nav a {
+    color: rgb(4, 0, 255);
+    margin: 3px;
+}
+.cyan {
+    color: rgb(14, 108, 145);
+}
+h1 {
+    font-size: 50px;
+}
+.bigtext {
+    font-size: 30px;
+    font-weight: bold;
+}
+.red {
+    color: red;
+}
+footer pre {
+    text-align: right;
+}
