@@ -6,6 +6,8 @@
     <title>Rules · Pantheverse</title>
     <link rel="icon" type="image/webp" href="../Pantheverse.webp">
     <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabase-config.js"></script>
 </head>
 <body class="page page-rules">
     <header class="shell topbar">
@@ -28,19 +30,23 @@
             <p>These keep the energy high and the space safe. Know them before you dive in.</p>
         </div>
 
-        <ul class="rules-list">
-            <li><span class="rule-text">NSFW is eternally forbidden and is never allowed in any form.</span></li>
-            <li><span class="rule-text">Racism, hate speech, or discrimination is forbidden across all realms.</span></li>
-            <li><span class="rule-text">Spamming is allowed only if it doesn’t intentionally harm or break the server.</span></li>
-            <li><span class="rule-text">Advertising or promoting unrelated servers is forbidden.</span></li>
-            <li><span class="rule-text">Impersonation of members, bots, or entities is forbidden.</span></li>
-            <li><span class="rule-text">Malicious links, scams, or harmful content are forbidden.</span></li>
-            <li><span class="rule-text">Respect channel order — post content where it belongs.</span></li>
-            <li><span class="rule-text">Evading punishments or bypassing restrictions is forbidden.</span></li>
-            <li><span class="rule-text">Excessive disruption intended to ruin others’ experience is forbidden.</span></li>
-            <li><span class="rule-text">Alternate accounts used for abuse or evasion are forbidden.</span></li>
-            <li><span class="rule-text">Use reason and restraint — loopholes do not grant immunity.</span></li>
-        </ul>
+        <div class="rules-auth">
+            <div id="auth-state" class="auth-state">Public mode</div>
+            <div class="auth-actions">
+                <button id="auth-open-btn" class="btn btn-ghost" type="button">Editor sign in</button>
+                <button id="auth-signout-btn" class="btn btn-ghost" type="button">Sign out</button>
+            </div>
+        </div>
+
+        <ul id="rules-list" class="rules-list"></ul>
+
+        <div id="edit-panel" class="rules-edit-panel">
+            <div class="edit-row">
+                <input id="new-rule" class="edit-input" type="text" placeholder="Add a new rule..." />
+                <button id="add-rule-btn" class="edit-btn">+ Add rule</button>
+            </div>
+            <p class="edit-note">Editor mode: add and delete rules here. Changes are stored in Supabase and update live for everyone.</p>
+        </div>
 
         <div class="section-card stack">
             <h3>Future decrees</h3>
@@ -54,29 +60,325 @@
 
     <button id="edit-rules-btn" class="fab-edit" aria-label="Edit rules" title="Edit rules">✎ Edit rules</button>
 
+    <div id="auth-modal" class="auth-modal" aria-hidden="true">
+        <div class="auth-card">
+            <h3>Editor Sign In</h3>
+            <p>Only approved editor accounts can modify rules.</p>
+            <label for="auth-email">Email</label>
+            <input id="auth-email" class="edit-input" type="email" placeholder="you@example.com" autocomplete="email">
+            <label for="auth-password">Password</label>
+            <input id="auth-password" class="edit-input" type="password" placeholder="Password" autocomplete="current-password">
+            <div class="auth-card-actions">
+                <button id="auth-login-btn" class="edit-btn" type="button">Sign in</button>
+                <button id="auth-cancel-btn" class="btn btn-ghost" type="button">Cancel</button>
+            </div>
+            <p id="auth-message" class="auth-message"></p>
+        </div>
+    </div>
+
     <script>
         (function() {
+            const config = window.PV_SUPABASE || {};
+            const hasSupabaseConfig = !!(config.url && config.anonKey && window.supabase && window.supabase.createClient);
             const btn = document.getElementById('edit-rules-btn');
-            const editUrl = 'https://github.com/Astie7/Pantheverse/edit/main/rules/index.html';
+            const panel = document.getElementById('edit-panel');
+            const listEl = document.getElementById('rules-list');
+            const addBtn = document.getElementById('add-rule-btn');
+            const newInput = document.getElementById('new-rule');
+            const authStateEl = document.getElementById('auth-state');
+            const authOpenBtn = document.getElementById('auth-open-btn');
+            const authSignoutBtn = document.getElementById('auth-signout-btn');
+            const authModal = document.getElementById('auth-modal');
+            const authEmail = document.getElementById('auth-email');
+            const authPassword = document.getElementById('auth-password');
+            const authLoginBtn = document.getElementById('auth-login-btn');
+            const authCancelBtn = document.getElementById('auth-cancel-btn');
+            const authMessage = document.getElementById('auth-message');
 
-            function applyState() {
-                const on = localStorage.getItem('pvEdit') === '1';
-                btn.style.display = on ? 'inline-flex' : 'none';
+            const defaultRules = [
+                'NSFW is eternally forbidden and is never allowed in any form.',
+                'Racism, hate speech, or discrimination is forbidden across all realms.',
+                'Spamming is allowed only if it doesn’t intentionally harm or break the server.',
+                'Advertising or promoting unrelated servers is forbidden.',
+                'Impersonation of members, bots, or entities is forbidden.',
+                'Malicious links, scams, or harmful content are forbidden.',
+                'Respect channel order — post content where it belongs.',
+                'Evading punishments or bypassing restrictions is forbidden.',
+                'Excessive disruption intended to ruin others’ experience is forbidden.',
+                'Alternate accounts used for abuse or evasion are forbidden.',
+                'Use reason and restraint — loopholes do not grant immunity.'
+            ];
+
+            const state = {
+                client: null,
+                session: null,
+                isEditor: false,
+                editMode: false,
+                rules: [],
+                channel: null
+            };
+
+            function setAuthMessage(message, isError) {
+                authMessage.textContent = message;
+                authMessage.className = isError ? 'auth-message error' : 'auth-message';
             }
 
-            btn.addEventListener('click', () => {
-                window.open(editUrl, '_blank', 'noopener');
-            });
+            function setAuthState(text) {
+                authStateEl.textContent = text;
+            }
 
-            window.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'e') {
-                    const next = localStorage.getItem('pvEdit') === '1' ? '0' : '1';
-                    localStorage.setItem('pvEdit', next);
-                    applyState();
+            function openAuthModal() {
+                authModal.classList.add('open');
+                authModal.setAttribute('aria-hidden', 'false');
+                setAuthMessage('', false);
+                authEmail.focus();
+            }
+
+            function closeAuthModal() {
+                authModal.classList.remove('open');
+                authModal.setAttribute('aria-hidden', 'true');
+                authPassword.value = '';
+                setAuthMessage('', false);
+            }
+
+            function getSortedRules() {
+                return state.rules.slice().sort((a, b) => (a.position || 0) - (b.position || 0));
+            }
+
+            function render() {
+                listEl.innerHTML = '';
+                const rules = getSortedRules();
+
+                if (!rules.length) {
+                    const li = document.createElement('li');
+                    const span = document.createElement('span');
+                    span.className = 'rule-text';
+                    span.textContent = 'No rules found yet.';
+                    li.appendChild(span);
+                    listEl.appendChild(li);
+                    return;
                 }
-            });
 
-            applyState();
+                rules.forEach((rule, idx) => {
+                    const li = document.createElement('li');
+                    const span = document.createElement('span');
+                    span.className = 'rule-text';
+                    span.textContent = rule.text;
+                    li.appendChild(span);
+
+                    if (state.isEditor && state.editMode && rule.id) {
+                        const actions = document.createElement('div');
+                        actions.className = 'rule-actions';
+
+                        const del = document.createElement('button');
+                        del.textContent = 'Delete';
+                        del.type = 'button';
+                        del.addEventListener('click', () => deleteRule(rule.id));
+
+                        actions.appendChild(del);
+                        li.appendChild(actions);
+                        actions.style.display = 'flex';
+                    }
+                    listEl.appendChild(li);
+                });
+            }
+
+            function applyUiState() {
+                authSignoutBtn.style.display = state.session ? 'inline-flex' : 'none';
+                authOpenBtn.style.display = state.session ? 'none' : 'inline-flex';
+                btn.style.display = state.isEditor ? 'inline-flex' : 'none';
+                panel.style.display = state.isEditor && state.editMode ? 'flex' : 'none';
+                btn.textContent = state.editMode ? '✎ Edit mode on' : '✎ Edit rules';
+                render();
+            }
+
+            async function checkEditorAccess() {
+                if (!state.client || !state.session) return false;
+                const userId = state.session.user.id;
+                const { data, error } = await state.client
+                    .from('editors')
+                    .select('user_id')
+                    .eq('user_id', userId)
+                    .maybeSingle();
+
+                if (error && error.code !== 'PGRST116') {
+                    console.error(error);
+                    return false;
+                }
+                return !!data;
+            }
+
+            async function loadRules() {
+                if (!state.client) {
+                    state.rules = defaultRules.map((text, i) => ({ id: null, position: i + 1, text: text }));
+                    render();
+                    return;
+                }
+                const { data, error } = await state.client
+                    .from('rules')
+                    .select('id, position, text')
+                    .order('position', { ascending: true });
+
+                if (error) {
+                    console.error(error);
+                    setAuthState('Rules failed to load.');
+                    state.rules = defaultRules.map((text, i) => ({ id: null, position: i + 1, text: text }));
+                } else {
+                    state.rules = data || [];
+                }
+                render();
+            }
+
+            async function normalizeRulePositions() {
+                const sorted = getSortedRules();
+                for (let i = 0; i < sorted.length; i++) {
+                    const row = sorted[i];
+                    const nextPos = i + 1;
+                    if (row.id && row.position !== nextPos) {
+                        const { error } = await state.client.from('rules').update({ position: nextPos }).eq('id', row.id);
+                        if (error) {
+                            console.error(error);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            async function addRule() {
+                if (!state.isEditor) return;
+                const text = newInput.value.trim();
+                if (!text) return;
+
+                const maxPos = state.rules.reduce((m, r) => Math.max(m, r.position || 0), 0);
+                const { error } = await state.client.from('rules').insert({ text: text, position: maxPos + 1 });
+                if (error) {
+                    setAuthState('Add failed.');
+                    console.error(error);
+                    return;
+                }
+                newInput.value = '';
+                await loadRules();
+            }
+
+            async function deleteRule(ruleId) {
+                if (!state.isEditor) return;
+                if (!confirm('Delete this rule?')) return;
+                const { error } = await state.client.from('rules').delete().eq('id', ruleId);
+                if (error) {
+                    setAuthState('Delete failed.');
+                    console.error(error);
+                    return;
+                }
+                await loadRules();
+                await normalizeRulePositions();
+                await loadRules();
+            }
+
+            function bindEvents() {
+                btn.addEventListener('click', () => {
+                    if (!state.isEditor) return;
+                    if (!state.editMode && !confirm('Enter edit mode?')) return;
+                    state.editMode = !state.editMode;
+                    applyUiState();
+                });
+
+                addBtn.addEventListener('click', addRule);
+                newInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') addRule();
+                });
+
+                authOpenBtn.addEventListener('click', openAuthModal);
+                authCancelBtn.addEventListener('click', closeAuthModal);
+                authModal.addEventListener('click', (e) => {
+                    if (e.target === authModal) closeAuthModal();
+                });
+
+                authLoginBtn.addEventListener('click', async () => {
+                    if (!state.client) return;
+                    const email = authEmail.value.trim();
+                    const password = authPassword.value;
+                    if (!email || !password) {
+                        setAuthMessage('Email and password are required.', true);
+                        return;
+                    }
+                    const { error } = await state.client.auth.signInWithPassword({ email: email, password: password });
+                    if (error) {
+                        setAuthMessage(error.message || 'Sign in failed.', true);
+                        return;
+                    }
+                    closeAuthModal();
+                });
+
+                authSignoutBtn.addEventListener('click', async () => {
+                    if (!state.client) return;
+                    await state.client.auth.signOut();
+                });
+
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') closeAuthModal();
+                    if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'e' && state.isEditor) {
+                        state.editMode = !state.editMode;
+                        applyUiState();
+                    }
+                });
+            }
+
+            async function refreshAuth() {
+                if (!state.client) return;
+                const sessionData = await state.client.auth.getSession();
+                state.session = sessionData.data.session;
+                state.isEditor = await checkEditorAccess();
+
+                if (!state.session) {
+                    state.editMode = false;
+                    setAuthState('Public mode');
+                } else if (state.isEditor) {
+                    setAuthState('Editor mode: ' + state.session.user.email);
+                } else {
+                    setAuthState('Signed in (no editor access)');
+                    state.editMode = false;
+                }
+                applyUiState();
+            }
+
+            async function initSupabase() {
+                bindEvents();
+                if (!hasSupabaseConfig) {
+                    setAuthState('Public mode (Supabase not configured)');
+                    authOpenBtn.style.display = 'none';
+                    state.rules = defaultRules.map((text, i) => ({ id: null, position: i + 1, text: text }));
+                    render();
+                    return;
+                }
+
+                state.client = window.supabase.createClient(config.url, config.anonKey);
+                await refreshAuth();
+                await loadRules();
+
+                state.client.auth.onAuthStateChange(async function(_event, session) {
+                    state.session = session;
+                    state.isEditor = await checkEditorAccess();
+                    if (!state.session) {
+                        state.editMode = false;
+                        setAuthState('Public mode');
+                    } else if (state.isEditor) {
+                        setAuthState('Editor mode: ' + state.session.user.email);
+                    } else {
+                        setAuthState('Signed in (no editor access)');
+                        state.editMode = false;
+                    }
+                    applyUiState();
+                });
+
+                state.channel = state.client
+                    .channel('rules-live')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'rules' }, async function() {
+                        await loadRules();
+                    })
+                    .subscribe();
+            }
+
+            initSupabase();
         })();
     </script>
 </body>
