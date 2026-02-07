@@ -37,6 +37,23 @@ body {
     letter-spacing: 0.01em;
 }
 
+body.page-anim-ready {
+    transition: opacity 220ms ease, transform 220ms ease, filter 220ms ease;
+    will-change: opacity, transform, filter;
+}
+
+body.page-enter {
+    opacity: 0;
+    transform: translateY(8px) scale(0.998);
+    filter: saturate(0.96);
+}
+
+body.page-leave {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.998);
+    filter: saturate(0.95);
+}
+
 ::selection {
     background: rgba(16, 231, 255, 0.18);
     color: var(--text);
@@ -1166,5 +1183,16 @@ p {
         left: 12px;
         bottom: 12px;
         max-width: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.page-anim-ready,
+    body.page-enter,
+    body.page-leave {
+        transition: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+        filter: none !important;
     }
 }
