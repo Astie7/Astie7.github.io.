@@ -34,6 +34,20 @@
                     <span>Editor-gated</span>
                     <span>Public readable</span>
                 </div>
+                <div class="rules-kpis">
+                    <div class="rules-kpi">
+                        <p id="rules-count" class="rules-kpi-value">0</p>
+                        <p class="rules-kpi-label">Active rules</p>
+                    </div>
+                    <div class="rules-kpi">
+                        <p class="rules-kpi-value">Live</p>
+                        <p class="rules-kpi-label">Realtime sync</p>
+                    </div>
+                    <div class="rules-kpi">
+                        <p class="rules-kpi-value">Guarded</p>
+                        <p class="rules-kpi-label">Editor access</p>
+                    </div>
+                </div>
             </div>
 
             <aside class="rules-admin-card">
@@ -42,9 +56,14 @@
                     <h3>Live control panel</h3>
                     <p class="admin-sub">Changes sync instantly for everyone.</p>
                 </div>
+                <div class="admin-status-row">
+                    <div id="admin-access-pill" class="admin-status-pill is-public">Viewer mode</div>
+                    <div class="admin-status-pill is-live">Live sync</div>
+                </div>
                 <div class="rules-auth">
                     <div class="auth-state-wrap">
                         <div id="auth-state" class="auth-state">Public mode</div>
+                        <p id="auth-user" class="auth-user">Sign in to edit rules.</p>
                         <p class="auth-hint">Everyone can view. Approved editors can change rules.</p>
                     </div>
                     <div class="auth-actions">
@@ -117,10 +136,13 @@
             const controls = document.getElementById('rules-controls');
             const panel = document.getElementById('edit-panel');
             const listEl = document.getElementById('rules-list');
+            const rulesCountEl = document.getElementById('rules-count');
             const editState = document.getElementById('edit-state');
             const addBtn = document.getElementById('add-rule-btn');
             const newInput = document.getElementById('new-rule');
             const authStateEl = document.getElementById('auth-state');
+            const authUserEl = document.getElementById('auth-user');
+            const adminAccessPill = document.getElementById('admin-access-pill');
             const authOpenBtn = document.getElementById('auth-open-btn');
             const authSignoutBtn = document.getElementById('auth-signout-btn');
             const authModal = document.getElementById('auth-modal');
@@ -166,6 +188,10 @@
 
             function setAuthState(text) {
                 authStateEl.textContent = text;
+            }
+
+            function setAuthUser(text) {
+                authUserEl.textContent = text;
             }
 
             function openAuthModal() {
@@ -219,6 +245,7 @@
             function render() {
                 listEl.innerHTML = '';
                 const rules = getSortedRules();
+                rulesCountEl.textContent = String(rules.length);
 
                 if (!rules.length) {
                     const li = document.createElement('li');
@@ -263,9 +290,24 @@
                 exitEditBtn.style.display = state.editMode ? 'inline-flex' : 'none';
                 panel.style.display = state.isEditor && state.editMode ? 'flex' : 'none';
                 document.body.classList.toggle('is-edit-mode', !!state.editMode);
-                editState.textContent = state.isEditor
-                    ? (state.editMode ? 'Edit mode on' : 'Edit mode off')
-                    : 'Read-only';
+                editState.className = 'edit-state';
+
+                if (!state.session) {
+                    adminAccessPill.textContent = 'Viewer mode';
+                    adminAccessPill.className = 'admin-status-pill is-public';
+                    editState.textContent = 'Read-only';
+                    editState.classList.add('is-readonly');
+                } else if (state.isEditor) {
+                    adminAccessPill.textContent = 'Editor access';
+                    adminAccessPill.className = 'admin-status-pill is-editor';
+                    editState.textContent = state.editMode ? 'Edit mode on' : 'Edit mode off';
+                    editState.classList.add(state.editMode ? 'is-on' : 'is-off');
+                } else {
+                    adminAccessPill.textContent = 'Signed in';
+                    adminAccessPill.className = 'admin-status-pill is-signed';
+                    editState.textContent = 'Read-only';
+                    editState.classList.add('is-readonly');
+                }
                 render();
             }
 
@@ -430,10 +472,13 @@
                 if (!state.session) {
                     state.editMode = false;
                     setAuthState('Public mode');
+                    setAuthUser('Sign in to edit rules.');
                 } else if (state.isEditor) {
-                    setAuthState('Editor mode: ' + state.session.user.email);
+                    setAuthState('Editor mode');
+                    setAuthUser(state.session.user.email || '');
                 } else {
-                    setAuthState('Signed in (no editor access)');
+                    setAuthState('Signed in');
+                    setAuthUser((state.session.user.email || '') + ' (no editor access)');
                     state.editMode = false;
                 }
                 applyUiState();
@@ -443,6 +488,7 @@
                 bindEvents();
                 if (!hasSupabaseConfig) {
                     setAuthState('Public mode (Supabase not configured)');
+                    setAuthUser('Configure Supabase to enable editor auth.');
                     authOpenBtn.style.display = 'none';
                     state.rules = defaultRules.map((text, i) => ({ id: null, position: i + 1, text: text }));
                     render();
@@ -459,10 +505,13 @@
                     if (!state.session) {
                         state.editMode = false;
                         setAuthState('Public mode');
+                        setAuthUser('Sign in to edit rules.');
                     } else if (state.isEditor) {
-                        setAuthState('Editor mode: ' + state.session.user.email);
+                        setAuthState('Editor mode');
+                        setAuthUser(state.session.user.email || '');
                     } else {
-                        setAuthState('Signed in (no editor access)');
+                        setAuthState('Signed in');
+                        setAuthUser((state.session.user.email || '') + ' (no editor access)');
                         state.editMode = false;
                     }
                     applyUiState();

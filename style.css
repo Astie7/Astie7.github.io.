@@ -485,23 +485,23 @@ p {
 
 .page-rules .rules-layout {
     display: grid;
-    gap: 18px;
+    gap: 20px;
 }
 
 .page-rules .rules-hero-card {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1.32fr) minmax(280px, 0.68fr);
-    gap: 16px;
+    grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+    gap: 18px;
     align-items: stretch;
-    padding: 16px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 18px;
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
     background:
-        radial-gradient(160% 140% at 0% 0%, rgba(90, 228, 255, 0.14), transparent 48%),
-        radial-gradient(120% 120% at 100% 0%, rgba(153, 124, 255, 0.16), transparent 44%),
-        linear-gradient(128deg, rgba(7, 14, 36, 0.9), rgba(9, 16, 40, 0.95));
-    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.38);
+        radial-gradient(170% 150% at 0% 0%, rgba(90, 228, 255, 0.16), transparent 48%),
+        radial-gradient(120% 120% at 100% 0%, rgba(153, 124, 255, 0.2), transparent 45%),
+        linear-gradient(128deg, rgba(6, 12, 34, 0.94), rgba(8, 14, 36, 0.96));
+    box-shadow: 0 24px 54px rgba(0, 0, 0, 0.42);
     overflow: hidden;
 }
 
@@ -514,18 +514,23 @@ p {
 }
 
 .page-rules .rules-head {
+    display: grid;
+    align-content: start;
+    gap: 12px;
     margin: 0;
-    padding: 24px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 24px 24px 22px;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     background:
-        radial-gradient(130% 120% at 0% 0%, rgba(124, 242, 255, 0.18), transparent 50%),
-        linear-gradient(140deg, rgba(10, 19, 47, 0.82), rgba(13, 19, 48, 0.8));
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+        radial-gradient(150% 120% at 0% 0%, rgba(124, 242, 255, 0.2), transparent 50%),
+        linear-gradient(140deg, rgba(10, 19, 47, 0.84), rgba(11, 18, 44, 0.86));
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+        0 10px 28px rgba(0, 0, 0, 0.22);
 }
 
 .rules-head h1 {
-    margin-bottom: 12px;
+    margin: 0;
     line-height: 1.02;
 }
 
@@ -535,37 +540,81 @@ p {
 
 .rules-lead {
     margin: 0;
-    max-width: 64ch;
+    max-width: 62ch;
+    color: #cfdbf6;
 }
 
 .page-rules .rules-admin-card {
     padding: 16px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
     background:
-        radial-gradient(130% 100% at 100% 0%, rgba(124, 242, 255, 0.1), transparent 52%),
-        linear-gradient(140deg, rgba(10, 16, 39, 0.9), rgba(20, 20, 49, 0.9));
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
+        radial-gradient(130% 100% at 100% 0%, rgba(124, 242, 255, 0.12), transparent 52%),
+        linear-gradient(140deg, rgba(8, 14, 38, 0.92), rgba(17, 16, 46, 0.94));
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.36);
     display: grid;
-    gap: 12px;
+    gap: 13px;
     align-content: start;
 }
 
 .rules-meta {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
-    margin-top: 6px;
+    margin-top: 2px;
 }
 
 .rules-meta span {
-    padding: 6px 11px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 12px;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     color: #e4ecff;
     font-size: 12px;
     letter-spacing: 0.01em;
+}
+
+.rules-meta span::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #9dedff, #b88fff);
+    box-shadow: 0 0 0 4px rgba(150, 143, 255, 0.12);
+}
+
+.rules-kpis {
+    margin-top: 2px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.rules-kpi {
+    padding: 10px 11px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+}
+
+.rules-kpi-value {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ebf3ff;
+    line-height: 1.1;
+}
+
+.rules-kpi-label {
+    margin: 4px 0 0;
+    font-size: 11px;
+    color: #a9b9db;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
 }
 
 .admin-top {
@@ -589,17 +638,57 @@ p {
     font-size: 13px;
 }
 
+.admin-status-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.admin-status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 12px;
+    font-weight: 600;
+    color: #e6eeff;
+}
+
+.admin-status-pill.is-public {
+    color: #dce9ff;
+}
+
+.admin-status-pill.is-signed {
+    color: #fff0d5;
+    border-color: rgba(255, 214, 136, 0.35);
+    background: rgba(255, 204, 112, 0.14);
+}
+
+.admin-status-pill.is-editor {
+    color: #d9fff3;
+    border-color: rgba(87, 255, 181, 0.4);
+    background: rgba(87, 255, 181, 0.14);
+}
+
+.admin-status-pill.is-live {
+    color: #d5f4ff;
+    border-color: rgba(124, 242, 255, 0.35);
+    background: rgba(124, 242, 255, 0.13);
+}
+
 .page-rules .rules-auth {
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin: 0;
-    padding: 12px;
+    padding: 13px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.13);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     background:
-        radial-gradient(120% 90% at 0% 0%, rgba(124, 242, 255, 0.13), transparent 48%),
-        rgba(255, 255, 255, 0.04);
+        radial-gradient(120% 90% at 0% 0%, rgba(124, 242, 255, 0.16), transparent 48%),
+        rgba(255, 255, 255, 0.05);
 }
 
 .auth-state-wrap {
@@ -611,12 +700,20 @@ p {
 .auth-state {
     padding: 7px 10px;
     border-radius: 10px;
-    background: linear-gradient(135deg, rgba(124, 242, 255, 0.2), rgba(196, 139, 255, 0.17));
-    border: 1px solid rgba(255, 255, 255, 0.20);
+    background: linear-gradient(135deg, rgba(124, 242, 255, 0.24), rgba(196, 139, 255, 0.2));
+    border: 1px solid rgba(255, 255, 255, 0.24);
     font-size: 13px;
     color: #f3f7ff;
     width: fit-content;
     max-width: 100%;
+    overflow-wrap: anywhere;
+    font-weight: 700;
+}
+
+.auth-user {
+    margin: 0;
+    font-size: 12px;
+    color: #cdd9f2;
     overflow-wrap: anywhere;
 }
 
@@ -648,9 +745,13 @@ p {
 .rules-controls .btn {
     flex: 1 1 140px;
     justify-content: center;
+    min-height: 40px;
 }
 
 .edit-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     margin: 0;
     font-size: 12px;
     color: #c0d0ef;
@@ -659,6 +760,44 @@ p {
     border-radius: 999px;
     border: 1px solid rgba(255, 255, 255, 0.16);
     background: rgba(255, 255, 255, 0.05);
+    font-weight: 600;
+}
+
+.edit-state::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #8ea2c9;
+    box-shadow: 0 0 0 4px rgba(120, 144, 183, 0.14);
+}
+
+.edit-state.is-on {
+    border-color: rgba(87, 255, 181, 0.42);
+    background: rgba(87, 255, 181, 0.14);
+    color: #d8fff2;
+}
+
+.edit-state.is-on::before {
+    background: #4cffb4;
+    box-shadow: 0 0 0 4px rgba(87, 255, 181, 0.2);
+}
+
+.edit-state.is-off {
+    border-color: rgba(255, 214, 136, 0.36);
+    background: rgba(255, 204, 112, 0.13);
+    color: #fff0d5;
+}
+
+.edit-state.is-off::before {
+    background: #ffd47a;
+    box-shadow: 0 0 0 4px rgba(255, 204, 112, 0.2);
+}
+
+.edit-state.is-readonly {
+    border-color: rgba(187, 201, 234, 0.3);
+    background: rgba(182, 199, 231, 0.11);
+    color: #d9e5ff;
 }
 
 .rules-list {
@@ -953,6 +1092,15 @@ p {
     .rules-controls {
         width: 100%;
         flex-wrap: wrap;
+    }
+    .rules-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .rules-kpi:last-child {
+        grid-column: 1 / -1;
+    }
+    .admin-status-row {
+        width: 100%;
     }
     .edit-row {
         grid-template-columns: 1fr;
