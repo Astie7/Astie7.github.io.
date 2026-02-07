@@ -2,6 +2,8 @@ window.addEventListener('DOMContentLoaded', function() {
     (function() {
         const topAuthBtn = document.getElementById('top-auth-btn');
         const topSignoutBtn = document.getElementById('top-signout-btn');
+        const brandEl = document.querySelector('.topbar .brand');
+        const brandNameEl = brandEl ? brandEl.querySelector('span[data-setting-key="brand_name"], span:last-child') : null;
         if (!topAuthBtn || !topSignoutBtn) return;
 
         const config = window.PV_SUPABASE || {};
@@ -56,6 +58,27 @@ window.addEventListener('DOMContentLoaded', function() {
         ].join('');
         document.body.insertAdjacentHTML('beforeend', authMarkup);
 
+        const accountMarkup = [
+            '<div id="brand-account-menu" class="brand-account-menu" hidden>',
+            '  <div id="brand-account-label" class="brand-account-label"></div>',
+            '  <button id="brand-account-settings" class="brand-account-item" type="button">Settings</button>',
+            '  <button id="brand-account-signout" class="brand-account-item danger" type="button">Sign out</button>',
+            '</div>',
+            '<div id="account-settings-modal" class="account-settings-modal" aria-hidden="true">',
+            '  <div class="account-settings-card">',
+            '    <h3>Account settings</h3>',
+            '    <label for="account-display-name">Username</label>',
+            '    <input id="account-display-name" class="edit-input" type="text" placeholder="Choose a username" autocomplete="nickname">',
+            '    <p id="account-settings-msg" class="account-settings-msg"></p>',
+            '    <div class="account-settings-actions">',
+            '      <button id="account-settings-save" class="edit-btn" type="button">Save</button>',
+            '      <button id="account-settings-cancel" class="btn btn-ghost" type="button">Close</button>',
+            '    </div>',
+            '  </div>',
+            '</div>'
+        ].join('');
+        document.body.insertAdjacentHTML('beforeend', accountMarkup);
+
         const modal = document.getElementById('global-auth-modal');
         const modeSigninBtn = document.getElementById('global-auth-mode-signin');
         const modeRegisterBtn = document.getElementById('global-auth-mode-register');
@@ -72,15 +95,98 @@ window.addEventListener('DOMContentLoaded', function() {
         const resendCodeBtn = document.getElementById('global-auth-resend-code-btn');
         const cancelBtn = document.getElementById('global-auth-cancel-btn');
         const messageEl = document.getElementById('global-auth-message');
+        const brandAccountMenu = document.getElementById('brand-account-menu');
+        const brandAccountLabel = document.getElementById('brand-account-label');
+        const brandAccountSettingsBtn = document.getElementById('brand-account-settings');
+        const brandAccountSignoutBtn = document.getElementById('brand-account-signout');
+        const accountSettingsModal = document.getElementById('account-settings-modal');
+        const accountDisplayNameInput = document.getElementById('account-display-name');
+        const accountSettingsMsg = document.getElementById('account-settings-msg');
+        const accountSettingsSaveBtn = document.getElementById('account-settings-save');
+        const accountSettingsCancelBtn = document.getElementById('account-settings-cancel');
 
         const state = {
             client: window.supabase.createClient(config.url, config.anonKey),
-            mode: 'signin'
+            mode: 'signin',
+            session: null,
+            defaultBrandName: brandNameEl ? (brandNameEl.textContent || '').trim() : 'Pantheverse'
         };
 
         function setMessage(message, isError) {
             messageEl.textContent = message || '';
             messageEl.className = isError ? 'auth-message error' : 'auth-message';
+        }
+
+        function setAccountSettingsMessage(message, isError) {
+            if (!accountSettingsMsg) return;
+            accountSettingsMsg.textContent = message || '';
+            accountSettingsMsg.className = isError ? 'account-settings-msg error' : 'account-settings-msg';
+        }
+
+        function getDisplayName(user) {
+            if (!user) return state.defaultBrandName;
+            const meta = user.user_metadata || {};
+            const fromMeta = meta.username || meta.display_name || meta.full_name || meta.name;
+            if (fromMeta && String(fromMeta).trim()) return String(fromMeta).trim();
+            const email = user.email || '';
+            if (email.includes('@')) return email.split('@')[0];
+            return state.defaultBrandName;
+        }
+
+        function closeBrandMenu() {
+            if (!brandAccountMenu) return;
+            brandAccountMenu.hidden = true;
+            brandAccountMenu.classList.remove('open');
+        }
+
+        function openBrandMenu() {
+            if (!brandAccountMenu || !state.session) return;
+            brandAccountMenu.hidden = false;
+            brandAccountMenu.classList.add('open');
+        }
+
+        function toggleBrandMenu() {
+            if (!brandAccountMenu || !state.session) return;
+            if (brandAccountMenu.hidden) {
+                openBrandMenu();
+                return;
+            }
+            closeBrandMenu();
+        }
+
+        function openAccountSettingsModal() {
+            if (!accountSettingsModal || !state.session) return;
+            accountSettingsModal.classList.add('open');
+            accountSettingsModal.setAttribute('aria-hidden', 'false');
+            accountDisplayNameInput.value = getDisplayName(state.session.user);
+            setAccountSettingsMessage('', false);
+            accountDisplayNameInput.focus();
+        }
+
+        function closeAccountSettingsModal() {
+            if (!accountSettingsModal) return;
+            accountSettingsModal.classList.remove('open');
+            accountSettingsModal.setAttribute('aria-hidden', 'true');
+            setAccountSettingsMessage('', false);
+        }
+
+        function syncBrandAccount(session) {
+            if (!brandEl || !brandNameEl) return;
+            if (!session) {
+                brandNameEl.textContent = state.defaultBrandName;
+                brandEl.classList.remove('brand-account-enabled');
+                brandEl.removeAttribute('role');
+                brandEl.removeAttribute('tabindex');
+                closeBrandMenu();
+                closeAccountSettingsModal();
+                return;
+            }
+            const displayName = getDisplayName(session.user);
+            brandNameEl.textContent = displayName;
+            brandEl.classList.add('brand-account-enabled');
+            brandEl.setAttribute('role', 'button');
+            brandEl.setAttribute('tabindex', '0');
+            if (brandAccountLabel) brandAccountLabel.textContent = displayName;
         }
 
         function setMode(mode) {
@@ -117,6 +223,7 @@ window.addEventListener('DOMContentLoaded', function() {
         }
 
         function openModal() {
+            closeBrandMenu();
             modal.classList.add('open');
             modal.setAttribute('aria-hidden', 'false');
             setMode('signin');
@@ -140,9 +247,11 @@ window.addEventListener('DOMContentLoaded', function() {
         }
 
         function syncTopbar(session) {
-            if (session) {
+            state.session = session || null;
+            syncBrandAccount(state.session);
+            if (state.session) {
                 topAuthBtn.style.display = 'none';
-                topSignoutBtn.style.display = 'inline-flex';
+                topSignoutBtn.style.display = 'none';
                 return;
             }
             topAuthBtn.style.display = 'inline-flex';
@@ -198,6 +307,60 @@ window.addEventListener('DOMContentLoaded', function() {
         topSignoutBtn.addEventListener('click', async function() {
             await state.client.auth.signOut();
         });
+        if (brandEl) {
+            brandEl.addEventListener('click', function() {
+                if (!state.session) return;
+                toggleBrandMenu();
+            });
+            brandEl.addEventListener('keydown', function(event) {
+                if (!state.session) return;
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    toggleBrandMenu();
+                }
+            });
+        }
+        if (brandAccountSettingsBtn) {
+            brandAccountSettingsBtn.addEventListener('click', function() {
+                closeBrandMenu();
+                openAccountSettingsModal();
+            });
+        }
+        if (brandAccountSignoutBtn) {
+            brandAccountSignoutBtn.addEventListener('click', async function() {
+                closeBrandMenu();
+                await state.client.auth.signOut();
+            });
+        }
+        if (accountSettingsSaveBtn) {
+            accountSettingsSaveBtn.addEventListener('click', async function() {
+                const username = (accountDisplayNameInput.value || '').trim();
+                if (!username) {
+                    setAccountSettingsMessage('Username is required.', true);
+                    return;
+                }
+                accountSettingsSaveBtn.disabled = true;
+                const { error } = await state.client.auth.updateUser({
+                    data: { username: username }
+                });
+                accountSettingsSaveBtn.disabled = false;
+                if (error) {
+                    setAccountSettingsMessage(error.message || 'Failed to save username.', true);
+                    return;
+                }
+                setAccountSettingsMessage('Saved.', false);
+                const sessionResult = await state.client.auth.getSession();
+                syncTopbar(sessionResult && sessionResult.data ? sessionResult.data.session : null);
+            });
+        }
+        if (accountSettingsCancelBtn) {
+            accountSettingsCancelBtn.addEventListener('click', closeAccountSettingsModal);
+        }
+        if (accountSettingsModal) {
+            accountSettingsModal.addEventListener('click', function(event) {
+                if (event.target === accountSettingsModal) closeAccountSettingsModal();
+            });
+        }
 
         modeSigninBtn.addEventListener('click', function() {
             setMode('signin');
@@ -266,9 +429,19 @@ window.addEventListener('DOMContentLoaded', function() {
         modal.addEventListener('click', function(event) {
             if (event.target === modal) closeModal();
         });
+        document.addEventListener('click', function(event) {
+            if (!brandEl || !brandAccountMenu || brandAccountMenu.hidden) return;
+            if (!brandEl.contains(event.target) && !brandAccountMenu.contains(event.target)) {
+                closeBrandMenu();
+            }
+        });
 
         window.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') closeModal();
+            if (event.key === 'Escape') {
+                closeModal();
+                closeBrandMenu();
+                closeAccountSettingsModal();
+            }
         });
 
         state.client.auth.getSession().then(function(result) {
