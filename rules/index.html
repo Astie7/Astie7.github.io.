@@ -23,38 +23,42 @@
         </nav>
     </header>
 
-    <main class="shell">
-        <div class="section-head">
-            <p class="eyebrow">Rules</p>
-            <h1>Divine Laws of Pantheverse ∞</h1>
-            <p>These keep the energy high and the space safe. Know them before you dive in.</p>
-        </div>
-
-        <div class="rules-auth">
-            <div class="auth-state-wrap">
-                <div id="auth-state" class="auth-state">Public mode</div>
-                <p class="auth-hint">Everyone can view. Approved editors can change rules.</p>
+    <main class="shell rules-layout">
+        <section class="rules-hero-card">
+            <div class="section-head rules-head">
+                <p class="eyebrow">Rules</p>
+                <h1>Divine Laws of Pantheverse ∞</h1>
+                <p>These keep the energy high and the space safe. Know them before you dive in.</p>
             </div>
-            <div class="auth-actions">
-                <button id="auth-open-btn" class="btn btn-ghost" type="button">Editor sign in</button>
-                <button id="auth-signout-btn" class="btn btn-ghost" type="button">Sign out</button>
-            </div>
-        </div>
 
-        <div id="rules-controls" class="rules-controls">
-            <button id="enter-edit-btn" class="edit-btn" type="button">Enter edit mode</button>
-            <button id="exit-edit-btn" class="btn btn-ghost" type="button">Exit edit mode</button>
-        </div>
+            <aside class="rules-admin-card">
+                <div class="rules-auth">
+                    <div class="auth-state-wrap">
+                        <div id="auth-state" class="auth-state">Public mode</div>
+                        <p class="auth-hint">Everyone can view. Approved editors can change rules.</p>
+                    </div>
+                    <div class="auth-actions">
+                        <button id="auth-open-btn" class="btn btn-ghost" type="button">Editor sign in</button>
+                        <button id="auth-signout-btn" class="btn btn-ghost" type="button">Sign out</button>
+                    </div>
+                </div>
 
-        <ul id="rules-list" class="rules-list"></ul>
+                <div id="rules-controls" class="rules-controls">
+                    <button id="enter-edit-btn" class="edit-btn" type="button">Enter edit mode</button>
+                    <button id="exit-edit-btn" class="btn btn-ghost" type="button">Exit edit mode</button>
+                </div>
+            </aside>
+        </section>
 
         <div id="edit-panel" class="rules-edit-panel">
             <div class="edit-row">
                 <input id="new-rule" class="edit-input" type="text" placeholder="Add a new rule..." />
-                <button id="add-rule-btn" class="edit-btn">+ Add rule</button>
+                <button id="add-rule-btn" class="edit-btn" type="button">+ Add rule</button>
             </div>
-            <p class="edit-note">Editor mode: add and delete rules here. Changes are stored in Supabase and update live for everyone.</p>
+            <p class="edit-note">Editor mode is on. Changes are saved to Supabase and shown live to everyone.</p>
         </div>
+
+        <ul id="rules-list" class="rules-list"></ul>
 
         <div class="section-card stack">
             <h3>Future decrees</h3>
@@ -199,6 +203,7 @@
                 enterEditBtn.style.display = state.editMode ? 'none' : 'inline-flex';
                 exitEditBtn.style.display = state.editMode ? 'inline-flex' : 'none';
                 panel.style.display = state.isEditor && state.editMode ? 'flex' : 'none';
+                document.body.classList.toggle('is-edit-mode', !!state.editMode);
                 render();
             }
 

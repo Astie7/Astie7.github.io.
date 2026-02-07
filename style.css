@@ -483,69 +483,48 @@ p {
     margin: 6px 0 0;
 }
 
-.rules-list {
-    list-style: none;
-    counter-reset: rule;
-    padding: 0;
-    margin: 18px auto 0;
+.page-rules .rules-layout {
     display: grid;
-    gap: 12px;
-    max-width: 1080px;
-}
-
-.rules-list li {
-    position: relative;
-    display: flex;
-    align-items: center;
     gap: 14px;
-    padding: 14px 18px 14px 60px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, rgba(124, 242, 255, 0.07), rgba(196, 139, 255, 0.06));
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    color: #dfe6ff;
-    overflow: hidden;
-    line-height: 1.45;
-    backdrop-filter: blur(5px);
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.32);
 }
 
-.rules-list li:hover {
-    border-color: rgba(124, 242, 255, 0.3);
-}
-
-.rules-list li::before {
-    counter-increment: rule;
-    content: "#" counter(rule);
-    position: absolute;
-    left: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-weight: 700;
-    color: #041422;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    width: 30px;
-    height: 30px;
-    border-radius: 10px;
+.page-rules .rules-hero-card {
     display: grid;
-    place-items: center;
-    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.32);
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 14px;
+    align-items: stretch;
 }
 
-.rule-text {
-    display: block;
-    color: #dfe6ff;
+.page-rules .rules-head {
+    margin: 0;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background:
+        radial-gradient(160% 120% at 10% 10%, rgba(124, 242, 255, 0.10), transparent 45%),
+        linear-gradient(140deg, rgba(10, 18, 43, 0.9), rgba(17, 24, 54, 0.86));
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.32);
 }
 
-.rules-auth {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.page-rules .rules-admin-card {
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(140deg, rgba(10, 16, 39, 0.88), rgba(20, 20, 49, 0.86));
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.30);
+    display: grid;
     gap: 12px;
-    margin-bottom: 12px;
+}
+
+.page-rules .rules-auth {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
     padding: 12px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.12);
-    background: linear-gradient(140deg, rgba(124, 242, 255, 0.08), rgba(196, 139, 255, 0.08));
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .auth-state-wrap {
@@ -557,10 +536,10 @@ p {
 .auth-state {
     padding: 7px 10px;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    font-size: 14px;
-    color: #e2ecff;
+    background: linear-gradient(135deg, rgba(124, 242, 255, 0.13), rgba(196, 139, 255, 0.10));
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    font-size: 13px;
+    color: #ecf4ff;
     width: fit-content;
 }
 
@@ -573,6 +552,7 @@ p {
 .auth-actions {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 #auth-signout-btn {
@@ -583,46 +563,107 @@ p {
     display: none;
     align-items: center;
     gap: 10px;
-    margin-bottom: 12px;
+    margin: 0;
+}
+
+.rules-list {
+    list-style: none;
+    counter-reset: rule;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+    max-width: 1080px;
+}
+
+.rules-list li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 14px 14px 56px;
+    border-radius: 14px;
+    background:
+        radial-gradient(140% 120% at 20% 10%, rgba(124, 242, 255, 0.07), transparent 55%),
+        linear-gradient(130deg, rgba(11, 19, 45, 0.9), rgba(17, 22, 48, 0.88));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #dfe6ff;
+    line-height: 1.45;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24);
+    transition: transform 140ms ease, border-color 160ms ease, box-shadow 180ms ease;
+}
+
+.rules-list li:hover {
+    transform: translateY(-1px);
+    border-color: rgba(124, 242, 255, 0.35);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.30);
+}
+
+.rules-list li::before {
+    counter-increment: rule;
+    content: "#" counter(rule);
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 700;
+    font-size: 13px;
+    color: #061325;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.26);
+}
+
+.rule-text {
+    display: block;
+    color: #dfe6ff;
+    flex: 1;
 }
 
 .rules-edit-panel {
-    margin-top: 0;
+    margin: 0;
     display: none;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     padding: 14px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.04);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background:
+        radial-gradient(130% 110% at 10% 0%, rgba(124, 242, 255, 0.09), transparent 55%),
+        linear-gradient(140deg, rgba(10, 17, 40, 0.88), rgba(18, 19, 47, 0.84));
 }
 
 .edit-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto;
     gap: 8px;
-    flex-wrap: wrap;
+    align-items: center;
 }
 
 .edit-input {
     flex: 1 1 320px;
-    padding: 10px 12px;
+    padding: 11px 12px;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.07);
     color: var(--text);
     outline: none;
 }
 
 .edit-input:focus {
-    border-color: rgba(124, 242, 255, 0.6);
-    box-shadow: 0 0 0 3px rgba(124, 242, 255, 0.15);
+    border-color: rgba(124, 242, 255, 0.7);
+    box-shadow: 0 0 0 3px rgba(124, 242, 255, 0.16);
 }
 
 .edit-btn {
     padding: 10px 14px;
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.14);
-    background: linear-gradient(135deg, rgba(124, 242, 255, 0.16), rgba(196, 139, 255, 0.14));
+    background: linear-gradient(135deg, rgba(124, 242, 255, 0.22), rgba(196, 139, 255, 0.18));
     color: #0a122c;
     font-weight: 700;
     cursor: pointer;
@@ -631,34 +672,34 @@ p {
 
 .edit-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.32);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
 }
 
 .edit-note {
     color: #9fb0d2;
-    font-size: 13px;
+    font-size: 12px;
     margin: 0;
 }
 
 .rule-actions {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    position: static;
     display: none;
-    gap: 6px;
+    margin-left: auto;
 }
 
 .rule-actions button {
-    border: 1px solid rgba(255,255,255,0.14);
-    background: rgba(255,255,255,0.08);
-    color: #f7fbff;
+    border: 1px solid rgba(255, 122, 158, 0.5);
+    background: rgba(255, 122, 158, 0.12);
+    color: #ffd9e3;
     border-radius: 8px;
-    padding: 4px 8px;
+    padding: 6px 10px;
     cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
 }
 
 .rule-actions button:hover {
-    background: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 122, 158, 0.22);
 }
 
 .delete-rule-btn {
@@ -742,6 +783,15 @@ p {
     .topbar {
         position: static;
     }
+    .page-rules .rules-hero-card {
+        grid-template-columns: 1fr;
+    }
+    .page-rules .rules-head {
+        padding: 16px;
+    }
+    .page-rules .rules-admin-card {
+        padding: 12px;
+    }
     .rules-auth {
         flex-direction: column;
         align-items: flex-start;
@@ -749,6 +799,16 @@ p {
     .rules-controls {
         width: 100%;
         flex-wrap: wrap;
+    }
+    .edit-row {
+        grid-template-columns: 1fr;
+    }
+    .rules-list li {
+        align-items: flex-start;
+        padding-right: 10px;
+    }
+    .rule-actions {
+        margin-left: 8px;
     }
     .auth-card-actions {
         flex-wrap: wrap;
