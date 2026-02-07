@@ -541,7 +541,17 @@ p {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(140deg, rgba(124, 242, 255, 0.08), rgba(196, 139, 255, 0.08));
+}
+
+.auth-state-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .auth-state {
@@ -551,6 +561,13 @@ p {
     border: 1px solid rgba(255, 255, 255, 0.14);
     font-size: 14px;
     color: #e2ecff;
+    width: fit-content;
+}
+
+.auth-hint {
+    margin: 0;
+    font-size: 12px;
+    color: #afbddf;
 }
 
 .auth-actions {
@@ -562,8 +579,15 @@ p {
     display: none;
 }
 
+.rules-controls {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
 .rules-edit-panel {
-    margin-top: 16px;
+    margin-top: 0;
     display: none;
     flex-direction: column;
     gap: 12px;
@@ -637,28 +661,14 @@ p {
     background: rgba(255, 255, 255, 0.14);
 }
 
-.fab-edit {
-    position: fixed;
-    bottom: 22px;
-    right: 22px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    background: linear-gradient(135deg, rgba(124, 242, 255, 0.2), rgba(196, 139, 255, 0.18));
-    color: #041422;
-    font-weight: 700;
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.32);
-    cursor: pointer;
-    display: none;
-    align-items: center;
-    gap: 6px;
-    z-index: 12;
-    transition: transform 140ms ease, box-shadow 160ms ease;
+.delete-rule-btn {
+    border: 1px solid rgba(255, 122, 158, 0.6) !important;
+    background: rgba(255, 122, 158, 0.16) !important;
+    color: #ffd9e3 !important;
 }
 
-.fab-edit:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.36);
+.delete-rule-btn:hover {
+    background: rgba(255, 122, 158, 0.26) !important;
 }
 
 .auth-modal {
@@ -735,6 +745,10 @@ p {
     .rules-auth {
         flex-direction: column;
         align-items: flex-start;
+    }
+    .rules-controls {
+        width: 100%;
+        flex-wrap: wrap;
     }
     .auth-card-actions {
         flex-wrap: wrap;

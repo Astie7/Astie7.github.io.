@@ -31,11 +31,19 @@
         </div>
 
         <div class="rules-auth">
-            <div id="auth-state" class="auth-state">Public mode</div>
+            <div class="auth-state-wrap">
+                <div id="auth-state" class="auth-state">Public mode</div>
+                <p class="auth-hint">Everyone can view. Approved editors can change rules.</p>
+            </div>
             <div class="auth-actions">
                 <button id="auth-open-btn" class="btn btn-ghost" type="button">Editor sign in</button>
                 <button id="auth-signout-btn" class="btn btn-ghost" type="button">Sign out</button>
             </div>
+        </div>
+
+        <div id="rules-controls" class="rules-controls">
+            <button id="enter-edit-btn" class="edit-btn" type="button">Enter edit mode</button>
+            <button id="exit-edit-btn" class="btn btn-ghost" type="button">Exit edit mode</button>
         </div>
 
         <ul id="rules-list" class="rules-list"></ul>
@@ -58,8 +66,6 @@
         </div>
     </main>
 
-    <button id="edit-rules-btn" class="fab-edit" aria-label="Edit rules" title="Edit rules">✎ Edit rules</button>
-
     <div id="auth-modal" class="auth-modal" aria-hidden="true">
         <div class="auth-card">
             <h3>Editor Sign In</h3>
@@ -80,7 +86,9 @@
         (function() {
             const config = window.PV_SUPABASE || {};
             const hasSupabaseConfig = !!(config.url && config.anonKey && window.supabase && window.supabase.createClient);
-            const btn = document.getElementById('edit-rules-btn');
+            const enterEditBtn = document.getElementById('enter-edit-btn');
+            const exitEditBtn = document.getElementById('exit-edit-btn');
+            const controls = document.getElementById('rules-controls');
             const panel = document.getElementById('edit-panel');
             const listEl = document.getElementById('rules-list');
             const addBtn = document.getElementById('add-rule-btn');
@@ -171,6 +179,7 @@
                         actions.className = 'rule-actions';
 
                         const del = document.createElement('button');
+                        del.className = 'delete-rule-btn';
                         del.textContent = 'Delete';
                         del.type = 'button';
                         del.addEventListener('click', () => deleteRule(rule.id));
@@ -186,9 +195,10 @@
             function applyUiState() {
                 authSignoutBtn.style.display = state.session ? 'inline-flex' : 'none';
                 authOpenBtn.style.display = state.session ? 'none' : 'inline-flex';
-                btn.style.display = state.isEditor ? 'inline-flex' : 'none';
+                controls.style.display = state.isEditor ? 'flex' : 'none';
+                enterEditBtn.style.display = state.editMode ? 'none' : 'inline-flex';
+                exitEditBtn.style.display = state.editMode ? 'inline-flex' : 'none';
                 panel.style.display = state.isEditor && state.editMode ? 'flex' : 'none';
-                btn.textContent = state.editMode ? '✎ Edit mode on' : '✎ Edit rules';
                 render();
             }
 
@@ -275,10 +285,19 @@
             }
 
             function bindEvents() {
-                btn.addEventListener('click', () => {
-                    if (!state.isEditor) return;
-                    if (!state.editMode && !confirm('Enter edit mode?')) return;
-                    state.editMode = !state.editMode;
+                enterEditBtn.addEventListener('click', () => {
+                    if (!state.isEditor) {
+                        return;
+                    }
+                    if (!confirm('Enter edit mode?')) {
+                        return;
+                    }
+                    state.editMode = true;
+                    applyUiState();
+                });
+
+                exitEditBtn.addEventListener('click', () => {
+                    state.editMode = false;
                     applyUiState();
                 });
 
