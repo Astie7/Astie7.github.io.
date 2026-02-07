@@ -8,21 +8,23 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap">
     <link rel="icon" type="image/webp" href="../Pantheverse.webp">
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../critical.css">
+    <link rel="preload" href="../style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../style.css"></noscript>
+    <script src="../supabase-config.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script defer src="./supabase-config.js"></script>
 </head>
 <body class="page page-rules">
     <header class="shell topbar">
         <div class="brand">
             <span class="dot"></span>
-            <span>Pantheverse</span>
+            <span data-setting-key="brand_name">Pantheverse</span>
         </div>
         <nav class="nav">
             <a href="../">Home</a>
             <a class="active" href="./">Rules</a>
             <a href="../about/">About</a>
-            <a class="btn btn-primary" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join Discord</a>
+            <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join Discord</a>
         </nav>
     </header>
 
@@ -50,6 +52,7 @@
                 <div id="rules-controls" class="rules-controls">
                     <button id="enter-edit-btn" class="edit-btn" type="button">Enter edit mode</button>
                     <button id="exit-edit-btn" class="btn btn-ghost" type="button">Exit edit mode</button>
+                    <button id="save-order-btn" class="btn btn-ghost" type="button">Save order</button>
                 </div>
             </aside>
         </section>
@@ -68,7 +71,7 @@
             <h3>Future decrees</h3>
             <p>That is all for now. More Pantheverse rules may be written as the universe expands. Stay tuned for updates and cosmic tweaks.</p>
             <div class="hero-actions">
-                <a class="btn btn-primary" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Acknowledge & join</a>
+                <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Acknowledge & join</a>
                 <a class="btn btn-ghost" href="../">Back home</a>
             </div>
         </div>
@@ -110,6 +113,7 @@
             const hasSupabaseConfig = !!(config.url && config.anonKey && window.supabase && window.supabase.createClient);
             const enterEditBtn = document.getElementById('enter-edit-btn');
             const exitEditBtn = document.getElementById('exit-edit-btn');
+            const saveOrderBtn = document.getElementById('save-order-btn');
             const controls = document.getElementById('rules-controls');
             const panel = document.getElementById('edit-panel');
             const listEl = document.getElementById('rules-list');
@@ -154,7 +158,9 @@
                 rules: [],
                 channel: null,
                 confirmResolver: null,
-                toastTimer: null
+                toastTimer: null,
+                sortDirty: false,
+                dragRuleId: null
             };
 
             function setAuthMessage(message, isError) {
@@ -234,9 +240,32 @@
                 return state.rules.slice().sort((a, b) => (a.position || 0) - (b.position || 0));
             }
 
+            function resequenceLocalRules() {
+                const sorted = getSortedRules();
+                state.rules = sorted.map(function(rule, index) {
+                    return Object.assign({}, rule, { position: index + 1 });
+                });
+            }
+
+            function moveRuleBefore(dragRuleId, targetRuleId) {
+                const sorted = getSortedRules();
+                const fromIndex = sorted.findIndex(function(rule) { return rule.id === dragRuleId; });
+                const toIndex = sorted.findIndex(function(rule) { return rule.id === targetRuleId; });
+                if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) return false;
+
+                const moved = sorted.splice(fromIndex, 1)[0];
+                sorted.splice(toIndex, 0, moved);
+                state.rules = sorted.map(function(rule, index) {
+                    return Object.assign({}, rule, { position: index + 1 });
+                });
+                state.sortDirty = true;
+                return true;
+            }
+
             function render() {
                 listEl.innerHTML = '';
                 const rules = getSortedRules();
+                saveOrderBtn.disabled = !state.sortDirty;
 
                 if (!rules.length) {
                     const li = document.createElement('li');
@@ -250,12 +279,49 @@
 
                 rules.forEach((rule, idx) => {
                     const li = document.createElement('li');
+                    li.dataset.ruleId = rule.id || '';
                     const span = document.createElement('span');
                     span.className = 'rule-text';
                     span.textContent = rule.text;
                     li.appendChild(span);
 
                     if (state.isEditor && state.editMode && rule.id) {
+                        li.classList.add('is-draggable');
+                        li.draggable = true;
+
+                        const handle = document.createElement('button');
+                        handle.type = 'button';
+                        handle.className = 'drag-handle';
+                        handle.textContent = '::';
+                        handle.title = 'Drag to reorder';
+                        li.appendChild(handle);
+
+                        li.addEventListener('dragstart', function() {
+                            state.dragRuleId = rule.id;
+                            li.classList.add('is-dragging');
+                        });
+                        li.addEventListener('dragend', function() {
+                            state.dragRuleId = null;
+                            li.classList.remove('is-dragging');
+                            li.classList.remove('drag-over');
+                        });
+                        li.addEventListener('dragover', function(event) {
+                            if (!state.dragRuleId || state.dragRuleId === rule.id) return;
+                            event.preventDefault();
+                            li.classList.add('drag-over');
+                        });
+                        li.addEventListener('dragleave', function() {
+                            li.classList.remove('drag-over');
+                        });
+                        li.addEventListener('drop', function(event) {
+                            event.preventDefault();
+                            li.classList.remove('drag-over');
+                            if (moveRuleBefore(state.dragRuleId, rule.id)) {
+                                render();
+                                showToast('Order changed. Click Save order.');
+                            }
+                        });
+
                         const actions = document.createElement('div');
                         actions.className = 'rule-actions';
 
@@ -279,6 +345,8 @@
                 controls.style.display = state.isEditor ? 'flex' : 'none';
                 enterEditBtn.style.display = state.editMode ? 'none' : 'inline-flex';
                 exitEditBtn.style.display = state.editMode ? 'inline-flex' : 'none';
+                saveOrderBtn.style.display = state.editMode ? 'inline-flex' : 'none';
+                saveOrderBtn.disabled = !state.sortDirty;
                 panel.style.display = state.isEditor && state.editMode ? 'flex' : 'none';
                 document.body.classList.toggle('is-edit-mode', !!state.editMode);
                 render();
@@ -318,22 +386,40 @@
                 } else {
                     state.rules = data || [];
                 }
+                state.sortDirty = false;
                 render();
             }
 
-            async function normalizeRulePositions() {
-                const sorted = getSortedRules();
-                for (let i = 0; i < sorted.length; i++) {
-                    const row = sorted[i];
-                    const nextPos = i + 1;
-                    if (row.id && row.position !== nextPos) {
-                        const { error } = await state.client.from('rules').update({ position: nextPos }).eq('id', row.id);
-                        if (error) {
-                            console.error(error);
-                            break;
-                        }
-                    }
+            async function persistRuleOrder() {
+                if (!state.client) return { error: null };
+                const ids = getSortedRules()
+                    .filter(function(rule) { return !!rule.id && !String(rule.id).startsWith('tmp:'); })
+                    .map(function(rule) { return rule.id; });
+                if (!ids.length) return { error: null };
+                return state.client.rpc('reorder_rules', { rule_ids: ids });
+            }
+
+            async function saveRuleOrder() {
+                if (!state.client || !state.isEditor || !state.editMode) return;
+                if (!state.sortDirty) {
+                    showToast('Order already saved.');
+                    return;
                 }
+                saveOrderBtn.disabled = true;
+                const { error } = await persistRuleOrder();
+                if (error) {
+                    setAuthState('Save order failed.');
+                    showToast('Save order failed.', 'error');
+                    console.error(error);
+                    await loadRules();
+                    state.sortDirty = false;
+                    applyUiState();
+                    return;
+                }
+                state.sortDirty = false;
+                await loadRules();
+                applyUiState();
+                showToast('Order saved.');
             }
 
             async function addRule() {
@@ -342,33 +428,66 @@
                 if (!text) return;
 
                 const maxPos = state.rules.reduce((m, r) => Math.max(m, r.position || 0), 0);
-                const { error } = await state.client.from('rules').insert({ text: text, position: maxPos + 1 });
+                const tempId = 'tmp:' + Date.now();
+                state.rules.push({ id: tempId, position: maxPos + 1, text: text });
+                render();
+                newInput.value = '';
+
+                const { data, error } = await state.client
+                    .from('rules')
+                    .insert({ text: text, position: maxPos + 1 })
+                    .select('id, position, text')
+                    .single();
                 if (error) {
+                    state.rules = state.rules.filter(function(rule) { return rule.id !== tempId; });
+                    render();
                     setAuthState('Add failed.');
                     showToast('Add failed.', 'error');
                     console.error(error);
                     return;
                 }
-                newInput.value = '';
-                await loadRules();
+
+                state.rules = state.rules.map(function(rule) {
+                    return rule.id === tempId ? data : rule;
+                });
+                render();
                 showToast('Rule added.');
+                loadRules();
             }
 
             async function deleteRule(ruleId) {
                 if (!state.isEditor) return;
                 const allowed = await askConfirm('Delete rule', 'Delete this rule?');
                 if (!allowed) return;
+                const snapshot = state.rules.slice();
+                state.rules = state.rules.filter(function(rule) {
+                    return rule.id !== ruleId;
+                });
+                resequenceLocalRules();
+                state.sortDirty = true;
+                render();
+
                 const { error } = await state.client.from('rules').delete().eq('id', ruleId);
                 if (error) {
+                    state.rules = snapshot;
+                    state.sortDirty = false;
+                    render();
                     setAuthState('Delete failed.');
                     showToast('Delete failed.', 'error');
                     console.error(error);
                     return;
                 }
-                state.rules = state.rules.filter(function(rule) {
-                    return rule.id !== ruleId;
-                });
-                await normalizeRulePositions();
+                const saveError = await persistRuleOrder();
+                if (saveError.error) {
+                    state.rules = snapshot;
+                    state.sortDirty = false;
+                    await loadRules();
+                    setAuthState('Delete failed.');
+                    showToast('Delete failed.', 'error');
+                    console.error(saveError.error);
+                    return;
+                }
+                state.sortDirty = false;
                 await loadRules();
                 showToast('Rule deleted.');
             }
@@ -394,6 +513,7 @@
                 });
 
                 addBtn.addEventListener('click', addRule);
+                saveOrderBtn.addEventListener('click', saveRuleOrder);
                 newInput.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') addRule();
                 });
@@ -508,6 +628,8 @@
             })();
         });
     </script>
+    <script src="../site-settings.js"></script>
+    <script src="../analytics.js"></script>
     <script src="../transitions.js"></script>
 </body>
 </html>

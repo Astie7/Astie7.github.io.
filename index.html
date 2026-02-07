@@ -8,29 +8,31 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap">
     <link rel="icon" type="image/webp" href="Pantheverse.webp">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="critical.css">
+    <link rel="preload" href="style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="style.css"></noscript>
 </head>
 <body class="page page-home">
     <header class="shell topbar">
         <div class="brand">
             <span class="dot"></span>
-            <span>Pantheverse</span>
+            <span data-setting-key="brand_name">Pantheverse</span>
         </div>
         <nav class="nav">
             <a class="active" href="./">Home</a>
             <a href="rules/">Rules</a>
             <a href="about/">About</a>
-            <a class="btn btn-primary" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join Discord</a>
+            <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join Discord</a>
         </nav>
     </header>
 
     <main class="shell hero">
         <div class="hero-copy">
             <p class="eyebrow">Pantheverse Community</p>
-            <h1>Find your orbit. Stay for the chaos.</h1>
-            <p>A vibrant corner of the internet where chill thinkers, late‑night gamers, meme fiends, and lovable weirdos collide. Bring your whole self — the universe is big enough for every mood.</p>
+            <h1 data-setting-key="home_hero_title">Find your orbit. Stay for the chaos.</h1>
+            <p data-setting-key="home_hero_subtitle">A vibrant corner of the internet where chill thinkers, late-night gamers, meme fiends, and lovable weirdos collide. Bring your whole self - the universe is big enough for every mood.</p>
             <div class="hero-actions">
-                <a class="btn btn-primary" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Launch Discord</a>
+                <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Launch Discord</a>
                 <a class="btn btn-ghost" href="rules/">Read the rules</a>
             </div>
             <div class="pills">
@@ -60,7 +62,7 @@
                 <p>How a small crew became a living universe of personalities and stories.</p>
                 <span class="tile-link">Meet the crew →</span>
             </a>
-            <a class="tile" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">
+            <a class="tile" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">
                 <div class="tile-icon">💬</div>
                 <div class="tile-title">Chat now</div>
                 <p>Drop into the server, say hi, and see what’s unfolding in real time.</p>
@@ -99,15 +101,18 @@
             <h2>Ready to hop in?</h2>
             <p>Bring your best self (and your weirdest jokes). The universe is better with you in it.</p>
             <div class="hero-actions centered">
-                <a class="btn btn-primary" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join the server</a>
+                <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join the server</a>
                 <a class="btn btn-ghost" href="about/">Learn more</a>
             </div>
         </div>
     </section>
 
     <footer class="shell footer">
-        Pantheverse · Est. 2020 · Crafted by Astie & Andualem
+        <span data-setting-key="footer_text">Pantheverse · Est. 2020 · Crafted by Astie & Andualem</span>
     </footer>
+    <script src="supabase-config.js"></script>
+    <script src="site-settings.js"></script>
+    <script src="analytics.js"></script>
     <script src="transitions.js"></script>
 </body>
 </html>

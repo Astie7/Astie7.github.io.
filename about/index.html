@@ -8,19 +8,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap">
     <link rel="icon" type="image/webp" href="../Pantheverse.webp">
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../critical.css">
+    <link rel="preload" href="../style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../style.css"></noscript>
 </head>
 <body class="page page-about">
     <header class="shell topbar">
         <div class="brand">
             <span class="dot"></span>
-            <span>Pantheverse</span>
+            <span data-setting-key="brand_name">Pantheverse</span>
         </div>
         <nav class="nav">
             <a href="../">Home</a>
             <a href="../rules/">Rules</a>
             <a class="active" href="./">About</a>
-            <a class="btn btn-primary" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join Discord</a>
+            <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join Discord</a>
         </nav>
     </header>
 
@@ -57,15 +59,18 @@
             <h3>Why you’ll fit</h3>
             <p>If you want a place to relax, laugh, explore, or occasionally get into trouble with like-minded people, Universe is ready for you.</p>
             <div class="hero-actions">
-                <a class="btn btn-primary" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join the madness</a>
+                <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join the madness</a>
                 <a class="btn btn-ghost" href="../rules/">See how we keep it safe</a>
             </div>
         </div>
     </main>
 
     <footer class="shell footer">
-        Ⓒ 2026 Universe · Crafted by Astie & Andualem
+        <span data-setting-key="footer_text">© 2026 Universe · Crafted by Astie & Andualem</span>
     </footer>
+    <script src="../supabase-config.js"></script>
+    <script src="../site-settings.js"></script>
+    <script src="../analytics.js"></script>
     <script src="../transitions.js"></script>
 </body>
 </html>

@@ -763,6 +763,11 @@ p {
     min-height: 40px;
 }
 
+#save-order-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
 .edit-state {
     display: inline-flex;
     align-items: center;
@@ -847,6 +852,36 @@ p {
     line-height: 1.45;
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24);
     transition: transform 140ms ease, border-color 160ms ease, box-shadow 180ms ease;
+}
+
+.rules-list li.is-draggable {
+    cursor: grab;
+    padding-left: 90px;
+}
+
+.rules-list li.is-dragging {
+    opacity: 0.65;
+}
+
+.rules-list li.drag-over {
+    border-color: rgba(124, 242, 255, 0.78);
+    box-shadow: 0 0 0 2px rgba(124, 242, 255, 0.24), 0 16px 30px rgba(0, 0, 0, 0.30);
+}
+
+.drag-handle {
+    position: absolute;
+    left: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    color: #e8f3ff;
+    cursor: grab;
+    font-weight: 700;
+    line-height: 1;
 }
 
 .rules-list li:hover {
@@ -1166,6 +1201,12 @@ p {
     .rules-list li {
         align-items: flex-start;
         padding-right: 10px;
+    }
+    .rules-list li.is-draggable {
+        padding-left: 78px;
+    }
+    .drag-handle {
+        left: 42px;
     }
     .rule-actions {
         margin-left: 8px;
