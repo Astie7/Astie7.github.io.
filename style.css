@@ -767,6 +767,46 @@ p {
     color: #ff9aa9;
 }
 
+.confirm-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    place-items: center;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 24;
+}
+
+.confirm-modal.open {
+    display: grid;
+}
+
+.confirm-card {
+    width: min(400px, 92vw);
+    padding: 18px;
+    border-radius: 14px;
+    background:
+        radial-gradient(140% 120% at 15% 0%, rgba(124, 242, 255, 0.16), transparent 50%),
+        linear-gradient(140deg, rgba(9, 13, 34, 0.96), rgba(18, 20, 52, 0.94));
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 20px 46px rgba(0, 0, 0, 0.46);
+}
+
+.confirm-card h3 {
+    margin: 0 0 8px;
+}
+
+.confirm-card p {
+    margin: 0;
+    color: #d5e4ff;
+}
+
+.confirm-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
 .footer {
     padding: 24px 0 40px;
     color: var(--muted);

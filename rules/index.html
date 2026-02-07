@@ -86,6 +86,17 @@
         </div>
     </div>
 
+    <div id="confirm-modal" class="confirm-modal" aria-hidden="true">
+        <div class="confirm-card">
+            <h3 id="confirm-title">Confirm action</h3>
+            <p id="confirm-text">Are you sure?</p>
+            <div class="confirm-actions">
+                <button id="confirm-ok" class="edit-btn" type="button">Confirm</button>
+                <button id="confirm-cancel" class="btn btn-ghost" type="button">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         (function() {
             const config = window.PV_SUPABASE || {};
@@ -106,6 +117,10 @@
             const authLoginBtn = document.getElementById('auth-login-btn');
             const authCancelBtn = document.getElementById('auth-cancel-btn');
             const authMessage = document.getElementById('auth-message');
+            const confirmModal = document.getElementById('confirm-modal');
+            const confirmText = document.getElementById('confirm-text');
+            const confirmOk = document.getElementById('confirm-ok');
+            const confirmCancel = document.getElementById('confirm-cancel');
 
             const defaultRules = [
                 'NSFW is eternally forbidden and is never allowed in any form.',
@@ -127,7 +142,8 @@
                 isEditor: false,
                 editMode: false,
                 rules: [],
-                channel: null
+                channel: null,
+                confirmResolver: null
             };
 
             function setAuthMessage(message, isError) {
@@ -151,6 +167,24 @@
                 authModal.setAttribute('aria-hidden', 'true');
                 authPassword.value = '';
                 setAuthMessage('', false);
+            }
+
+            function askConfirm(message) {
+                confirmText.textContent = message;
+                confirmModal.classList.add('open');
+                confirmModal.setAttribute('aria-hidden', 'false');
+                return new Promise((resolve) => {
+                    state.confirmResolver = resolve;
+                });
+            }
+
+            function resolveConfirm(value) {
+                if (typeof state.confirmResolver === 'function') {
+                    state.confirmResolver(value);
+                }
+                state.confirmResolver = null;
+                confirmModal.classList.remove('open');
+                confirmModal.setAttribute('aria-hidden', 'true');
             }
 
             function getSortedRules() {
@@ -277,7 +311,8 @@
 
             async function deleteRule(ruleId) {
                 if (!state.isEditor) return;
-                if (!confirm('Delete this rule?')) return;
+                const allowed = await askConfirm('Delete this rule?');
+                if (!allowed) return;
                 const { error } = await state.client.from('rules').delete().eq('id', ruleId);
                 if (error) {
                     setAuthState('Delete failed.');
@@ -294,11 +329,11 @@
                     if (!state.isEditor) {
                         return;
                     }
-                    if (!confirm('Enter edit mode?')) {
-                        return;
-                    }
-                    state.editMode = true;
-                    applyUiState();
+                    askConfirm('Enter edit mode?').then((allowed) => {
+                        if (!allowed) return;
+                        state.editMode = true;
+                        applyUiState();
+                    });
                 });
 
                 exitEditBtn.addEventListener('click', () => {
@@ -316,6 +351,11 @@
                 authModal.addEventListener('click', (e) => {
                     if (e.target === authModal) closeAuthModal();
                 });
+                confirmModal.addEventListener('click', (e) => {
+                    if (e.target === confirmModal) resolveConfirm(false);
+                });
+                confirmOk.addEventListener('click', () => resolveConfirm(true));
+                confirmCancel.addEventListener('click', () => resolveConfirm(false));
 
                 authLoginBtn.addEventListener('click', async () => {
                     if (!state.client) return;
@@ -339,7 +379,10 @@
                 });
 
                 window.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') closeAuthModal();
+                    if (e.key === 'Escape') {
+                        closeAuthModal();
+                        resolveConfirm(false);
+                    }
                     if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'e' && state.isEditor) {
                         state.editMode = !state.editMode;
                         applyUiState();
