@@ -29,86 +29,75 @@
         </nav>
     </header>
 
-    <main class="shell hero">
-        <div class="hero-copy">
-            <p class="eyebrow">Pantheverse Community</p>
-            <h1 data-setting-key="home_hero_title">Find your orbit. Stay for the chaos.</h1>
-            <p data-setting-key="home_hero_subtitle">A vibrant corner of the internet where chill thinkers, late-night gamers, meme fiends, and lovable weirdos collide. Bring your whole self - the universe is big enough for every mood.</p>
-            <div class="hero-actions">
-                <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Launch Discord</a>
-                <a class="btn btn-ghost" href="rules/">Read the rules</a>
+    <main class="shell forum-home">
+        <section class="forum-banner forum-panel">
+            <div>
+                <p class="eyebrow">Forum Index</p>
+                <h1 data-setting-key="home_hero_title">Pantheverse Discussion Hub</h1>
+                <p data-setting-key="home_hero_subtitle">Post threads, share updates, and jump into category channels across the community.</p>
             </div>
-            <div class="pills">
-                <span class="pill">Founded 2020</span>
-                <span class="pill">Chaos with care</span>
-                <span class="pill">24/7 vibe-check</span>
+            <div class="forum-banner-actions">
+                <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Create a topic</a>
+                <a class="btn btn-ghost" href="rules/">Read community rules</a>
             </div>
-        </div>
+        </section>
+
+        <section class="forum-grid">
+            <aside class="forum-panel forum-sidebar">
+                <h3>Boards</h3>
+                <ul class="forum-list">
+                    <li><a href="./" class="active">General Feed</a></li>
+                    <li><a href="rules/">Rules & Moderation</a></li>
+                    <li><a href="about/">Community Meta</a></li>
+                    <li><a data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Live Chat</a></li>
+                </ul>
+                <div class="forum-small-stats">
+                    <span>Topics: 384</span>
+                    <span>Replies: 4,203</span>
+                    <span>Online now: 62</span>
+                </div>
+            </aside>
+
+            <section class="forum-panel forum-feed">
+                <div class="forum-feed-head">
+                    <h3>Latest Threads</h3>
+                    <button class="btn btn-ghost" type="button">Filter: Newest</button>
+                </div>
+                <article class="forum-thread-card">
+                    <div class="forum-thread-tag">Announcements</div>
+                    <h4>Welcome to the new Pantheverse forum layout</h4>
+                    <p>Everything now runs in board mode: categories, threads, and clearer moderation flow.</p>
+                    <div class="forum-thread-meta"><span>Astie</span><span>23 replies</span><span>2m ago</span></div>
+                </article>
+                <article class="forum-thread-card">
+                    <div class="forum-thread-tag">Games</div>
+                    <h4>Weekend co-op lineup thread</h4>
+                    <p>Drop your game picks and preferred schedule so we can lock parties faster.</p>
+                    <div class="forum-thread-meta"><span>NovaCrew</span><span>41 replies</span><span>18m ago</span></div>
+                </article>
+                <article class="forum-thread-card">
+                    <div class="forum-thread-tag">Creative</div>
+                    <h4>Share your latest edits, art, and memes</h4>
+                    <p>One post per piece, include tools used, and react to at least two others.</p>
+                    <div class="forum-thread-meta"><span>Andualem</span><span>17 replies</span><span>1h ago</span></div>
+                </article>
+            </section>
+
+            <aside class="forum-panel forum-sidecards">
+                <h3>Hot Topics</h3>
+                <ul class="forum-mini-list">
+                    <li># rule change proposals</li>
+                    <li># custom profile badges</li>
+                    <li># community events</li>
+                    <li># meme arena</li>
+                </ul>
+                <div class="forum-callout">
+                    <strong>Post guideline</strong>
+                    <p>Use clear titles, keep one topic per thread, and tag your category.</p>
+                </div>
+            </aside>
+        </section>
     </main>
-
-    <section class="shell">
-        <div class="section-head">
-            <p class="eyebrow">Explore</p>
-            <h2>Choose your next stop</h2>
-            <p>Navigate the cosmos of Pantheverse — start with the rules, learn our story, or jump straight into chat.</p>
-        </div>
-        <div class="tile-grid">
-            <a class="tile" href="rules/">
-                <div class="tile-icon">∞</div>
-                <div class="tile-title">Rules</div>
-                <p>The divine laws that keep the chaos fun, fair, and safe for everyone.</p>
-                <span class="tile-link">Review the code →</span>
-            </a>
-            <a class="tile" href="about/">
-                <div class="tile-icon">★</div>
-                <div class="tile-title">About</div>
-                <p>How a small crew became a living universe of personalities and stories.</p>
-                <span class="tile-link">Meet the crew →</span>
-            </a>
-            <a class="tile" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">
-                <div class="tile-icon">💬</div>
-                <div class="tile-title">Chat now</div>
-                <p>Drop into the server, say hi, and see what’s unfolding in real time.</p>
-                <span class="tile-link">Launch Discord →</span>
-            </a>
-        </div>
-    </section>
-
-    <section class="shell">
-        <div class="section-head">
-            <p class="eyebrow">Energy</p>
-            <h2>What keeps Pantheverse fun</h2>
-        </div>
-        <div class="feature-grid">
-            <div class="feature-card">
-                <strong>Safe but loose</strong>
-                <p>Hard lines against hate and harm; freedom for jokes, riffs, and late-night tangents.</p>
-            </div>
-            <div class="feature-card">
-                <strong>People-first</strong>
-                <p>Chill friends, loyal homies, lovable weirdos — everyone shows up as themselves.</p>
-            </div>
-            <div class="feature-card">
-                <strong>Always evolving</strong>
-                <p>Born in 2020, reborn online in 2022, constantly reimagined by the community.</p>
-            </div>
-            <div class="feature-card">
-                <strong>Zero boredom</strong>
-                <p>Games, memes, deep talks, wild debates — the vibe shifts as fast as the chat.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="shell cta">
-        <div class="cta-card">
-            <h2>Ready to hop in?</h2>
-            <p>Bring your best self (and your weirdest jokes). The universe is better with you in it.</p>
-            <div class="hero-actions centered">
-                <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join the server</a>
-                <a class="btn btn-ghost" href="about/">Learn more</a>
-            </div>
-        </div>
-    </section>
 
     <footer class="shell footer">
         <span data-setting-key="footer_text">Pantheverse · Est. 2020 · Crafted by Astie & Andualem</span>
