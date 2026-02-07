@@ -98,6 +98,8 @@
         </div>
     </div>
 
+    <div id="rules-toast" class="rules-toast" aria-live="polite" aria-atomic="true"></div>
+
     <script>
         (function() {
             const config = window.PV_SUPABASE || {};
@@ -124,6 +126,7 @@
             const confirmText = document.getElementById('confirm-text');
             const confirmOk = document.getElementById('confirm-ok');
             const confirmCancel = document.getElementById('confirm-cancel');
+            const toastEl = document.getElementById('rules-toast');
 
             const defaultRules = [
                 'NSFW is eternally forbidden and is never allowed in any form.',
@@ -146,7 +149,8 @@
                 editMode: false,
                 rules: [],
                 channel: null,
-                confirmResolver: null
+                confirmResolver: null,
+                toastTimer: null
             };
 
             function setAuthMessage(message, isError) {
@@ -204,6 +208,22 @@
                 if (typeof resolver === 'function') {
                     resolver(value);
                 }
+            }
+
+            function showToast(message, kind) {
+                if (!toastEl) return;
+                if (state.toastTimer) {
+                    clearTimeout(state.toastTimer);
+                    state.toastTimer = null;
+                }
+                toastEl.textContent = message;
+                toastEl.className = 'rules-toast';
+                if (kind === 'error') toastEl.classList.add('is-error');
+                toastEl.classList.add('open');
+                state.toastTimer = setTimeout(function() {
+                    toastEl.classList.remove('open');
+                    state.toastTimer = null;
+                }, 1900);
             }
 
             function getSortedRules() {
@@ -321,11 +341,13 @@
                 const { error } = await state.client.from('rules').insert({ text: text, position: maxPos + 1 });
                 if (error) {
                     setAuthState('Add failed.');
+                    showToast('Add failed.', 'error');
                     console.error(error);
                     return;
                 }
                 newInput.value = '';
                 await loadRules();
+                showToast('Rule added.');
             }
 
             async function deleteRule(ruleId) {
@@ -335,12 +357,14 @@
                 const { error } = await state.client.from('rules').delete().eq('id', ruleId);
                 if (error) {
                     setAuthState('Delete failed.');
+                    showToast('Delete failed.', 'error');
                     console.error(error);
                     return;
                 }
                 await loadRules();
                 await normalizeRulePositions();
                 await loadRules();
+                showToast('Rule deleted.');
             }
 
             function bindEvents() {

@@ -1063,6 +1063,42 @@ p {
     margin-top: 16px;
 }
 
+.rules-toast {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 30;
+    max-width: min(360px, calc(100vw - 28px));
+    padding: 11px 14px;
+    border-radius: 11px;
+    border: 1px solid rgba(124, 242, 255, 0.45);
+    background:
+        radial-gradient(140% 120% at 10% 0%, rgba(124, 242, 255, 0.22), transparent 55%),
+        linear-gradient(140deg, rgba(8, 20, 48, 0.97), rgba(10, 25, 52, 0.96));
+    color: #dff8ff;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(8px);
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.rules-toast.open {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.rules-toast.is-error {
+    border-color: rgba(255, 122, 158, 0.5);
+    background:
+        radial-gradient(140% 120% at 10% 0%, rgba(255, 122, 158, 0.2), transparent 55%),
+        linear-gradient(140deg, rgba(36, 12, 32, 0.97), rgba(46, 15, 35, 0.95));
+    color: #ffe2eb;
+}
+
 .footer {
     padding: 24px 0 40px;
     color: var(--muted);
@@ -1124,5 +1160,11 @@ p {
     }
     .auth-card-actions {
         flex-wrap: wrap;
+    }
+    .rules-toast {
+        right: 12px;
+        left: 12px;
+        bottom: 12px;
+        max-width: none;
     }
 }
