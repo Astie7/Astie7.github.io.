@@ -851,7 +851,7 @@ p {
 
 .rules-list li.is-draggable {
     cursor: grab;
-    padding-left: 90px;
+    padding-left: 124px;
 }
 
 .rules-list li.is-dragging {
@@ -865,7 +865,7 @@ p {
 
 .drag-handle {
     position: absolute;
-    left: 50px;
+    left: 52px;
     top: 50%;
     transform: translateY(-50%);
     width: 28px;
@@ -877,6 +877,16 @@ p {
     cursor: grab;
     font-weight: 700;
     line-height: 1;
+}
+
+.rule-select {
+    position: absolute;
+    left: 88px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
 }
 
 .rules-list li:hover {
@@ -929,6 +939,25 @@ p {
     grid-template-columns: 1fr auto;
     gap: 8px;
     align-items: center;
+}
+
+.bulk-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.bulk-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: #a9badf;
+}
+
+.bulk-row .danger {
+    border-color: rgba(255, 122, 158, 0.5);
+    color: #ffd9e3;
+    background: rgba(255, 122, 158, 0.12);
 }
 
 .edit-input {
@@ -1193,15 +1222,22 @@ p {
     .edit-row {
         grid-template-columns: 1fr;
     }
+    .bulk-count {
+        margin-left: 0;
+        width: 100%;
+    }
     .rules-list li {
         align-items: flex-start;
         padding-right: 10px;
     }
     .rules-list li.is-draggable {
-        padding-left: 78px;
+        padding-left: 104px;
     }
     .drag-handle {
-        left: 42px;
+        left: 40px;
+    }
+    .rule-select {
+        left: 72px;
     }
     .rule-actions {
         margin-left: 8px;

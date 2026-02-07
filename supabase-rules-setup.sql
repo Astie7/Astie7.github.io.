@@ -132,7 +132,7 @@ begin
     end if;
 
     update public.rules r
-    set position = -r.position
+    set position = array_length(rule_ids, 1) + 1000 + r.position
     where r.id = any(rule_ids);
 
     with ord as (

@@ -61,6 +61,12 @@
                 <input id="new-rule" class="edit-input" type="text" placeholder="Add a new rule..." />
                 <button id="add-rule-btn" class="edit-btn" type="button">+ Add rule</button>
             </div>
+            <div class="bulk-row">
+                <button id="select-all-btn" class="btn btn-ghost" type="button">Select all</button>
+                <button id="clear-selection-btn" class="btn btn-ghost" type="button">Clear</button>
+                <button id="delete-selected-btn" class="btn btn-ghost danger" type="button">Delete selected</button>
+                <span id="selected-count" class="bulk-count">0 selected</span>
+            </div>
             <p class="edit-note">Editor mode is on. Changes are saved to Supabase and shown live to everyone.</p>
         </div>
 
@@ -117,6 +123,10 @@
             const listEl = document.getElementById('rules-list');
             const addBtn = document.getElementById('add-rule-btn');
             const newInput = document.getElementById('new-rule');
+            const selectAllBtn = document.getElementById('select-all-btn');
+            const clearSelectionBtn = document.getElementById('clear-selection-btn');
+            const deleteSelectedBtn = document.getElementById('delete-selected-btn');
+            const selectedCountEl = document.getElementById('selected-count');
             const authStateEl = document.getElementById('auth-state');
             const authUserEl = document.getElementById('auth-user');
             const authOpenBtn = document.getElementById('auth-open-btn');
@@ -157,7 +167,9 @@
                 channel: null,
                 confirmResolver: null,
                 toastTimer: null,
-                dragRuleId: null
+                dragRuleId: null,
+                pending: false,
+                selectedRuleIds: new Set()
             };
 
             function setAuthMessage(message, isError) {
@@ -237,11 +249,17 @@
                 return state.rules.slice().sort((a, b) => (a.position || 0) - (b.position || 0));
             }
 
-            function resequenceLocalRules() {
-                const sorted = getSortedRules();
-                state.rules = sorted.map(function(rule, index) {
-                    return Object.assign({}, rule, { position: index + 1 });
-                });
+            function setBusy(flag) {
+                state.pending = !!flag;
+                addBtn.disabled = state.pending;
+                selectAllBtn.disabled = state.pending;
+                clearSelectionBtn.disabled = state.pending;
+                deleteSelectedBtn.disabled = state.pending || state.selectedRuleIds.size === 0;
+            }
+
+            function updateSelectionUi() {
+                selectedCountEl.textContent = state.selectedRuleIds.size + ' selected';
+                deleteSelectedBtn.disabled = state.pending || state.selectedRuleIds.size === 0;
             }
 
             function moveRuleBefore(dragRuleId, targetRuleId) {
@@ -262,6 +280,18 @@
                 listEl.innerHTML = '';
                 const rules = getSortedRules();
 
+                const validIds = new Set(
+                    rules.filter(function(rule) {
+                        return !!rule.id;
+                    }).map(function(rule) {
+                        return rule.id;
+                    })
+                );
+                state.selectedRuleIds.forEach(function(id) {
+                    if (!validIds.has(id)) state.selectedRuleIds.delete(id);
+                });
+                updateSelectionUi();
+
                 if (!rules.length) {
                     const li = document.createElement('li');
                     const span = document.createElement('span');
@@ -272,23 +302,38 @@
                     return;
                 }
 
-                rules.forEach((rule, idx) => {
+                rules.forEach((rule) => {
                     const li = document.createElement('li');
                     li.dataset.ruleId = rule.id || '';
                     const span = document.createElement('span');
                     span.className = 'rule-text';
                     span.textContent = rule.text;
-                    li.appendChild(span);
 
                     if (state.isEditor && state.editMode && rule.id) {
                         li.classList.add('is-draggable');
-                        li.draggable = true;
+                        li.draggable = !state.pending;
+
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.className = 'rule-select';
+                        checkbox.checked = state.selectedRuleIds.has(rule.id);
+                        checkbox.disabled = state.pending;
+                        checkbox.addEventListener('change', function() {
+                            if (checkbox.checked) {
+                                state.selectedRuleIds.add(rule.id);
+                            } else {
+                                state.selectedRuleIds.delete(rule.id);
+                            }
+                            updateSelectionUi();
+                        });
+                        li.appendChild(checkbox);
 
                         const handle = document.createElement('button');
                         handle.type = 'button';
                         handle.className = 'drag-handle';
                         handle.textContent = '::';
                         handle.title = 'Drag to reorder';
+                        handle.disabled = state.pending;
                         li.appendChild(handle);
 
                         li.addEventListener('dragstart', function() {
@@ -317,6 +362,8 @@
                             }
                         });
 
+                        li.appendChild(span);
+
                         const actions = document.createElement('div');
                         actions.className = 'rule-actions';
 
@@ -324,11 +371,14 @@
                         del.className = 'delete-rule-btn';
                         del.textContent = 'Delete';
                         del.type = 'button';
+                        del.disabled = state.pending;
                         del.addEventListener('click', () => deleteRule(rule.id));
 
                         actions.appendChild(del);
                         li.appendChild(actions);
                         actions.style.display = 'flex';
+                    } else {
+                        li.appendChild(span);
                     }
                     listEl.appendChild(li);
                 });
@@ -342,6 +392,10 @@
                 exitEditBtn.style.display = state.editMode ? 'inline-flex' : 'none';
                 panel.style.display = state.isEditor && state.editMode ? 'flex' : 'none';
                 document.body.classList.toggle('is-edit-mode', !!state.editMode);
+                if (!state.editMode) {
+                    state.selectedRuleIds.clear();
+                }
+                setBusy(state.pending);
                 render();
             }
 
@@ -386,12 +440,13 @@
                 const sorted = getSortedRules().filter(function(rule) {
                     return !!rule.id && !String(rule.id).startsWith('tmp:');
                 });
+                const offset = sorted.length + 1000;
 
                 for (let i = 0; i < sorted.length; i++) {
                     const row = sorted[i];
                     const { error } = await state.client
                         .from('rules')
-                        .update({ position: -(i + 1) })
+                        .update({ position: offset + i + 1 })
                         .eq('id', row.id);
                     if (error) return { error: error };
                 }
@@ -421,79 +476,103 @@
 
             async function saveRuleOrder() {
                 if (!state.client || !state.isEditor || !state.editMode) return;
+                if (state.pending) return;
+                setBusy(true);
                 const { error } = await persistRuleOrder();
                 if (error) {
                     showToast('Order save failed.', 'error');
                     console.error(error);
                     await loadRules();
+                    setBusy(false);
                     return;
                 }
                 await loadRules();
+                setBusy(false);
                 showToast('Order saved.');
             }
 
             async function addRule() {
-                if (!state.isEditor) return;
+                if (!state.isEditor || state.pending) return;
                 const text = newInput.value.trim();
                 if (!text) return;
 
-                const maxPos = state.rules.reduce((m, r) => Math.max(m, r.position || 0), 0);
-                const tempId = 'tmp:' + Date.now();
-                state.rules.push({ id: tempId, position: maxPos + 1, text: text });
-                render();
-                newInput.value = '';
+                setBusy(true);
 
-                const { data, error } = await state.client
+                const maxPos = state.rules.reduce((m, r) => Math.max(m, r.position || 0), 0);
+                const { error } = await state.client
                     .from('rules')
                     .insert({ text: text, position: maxPos + 1 })
-                    .select('id, position, text')
+                    .select('id')
                     .single();
                 if (error) {
-                    state.rules = state.rules.filter(function(rule) { return rule.id !== tempId; });
-                    render();
                     setAuthState('Add failed.');
                     showToast('Add failed.', 'error');
                     console.error(error);
+                    setBusy(false);
                     return;
                 }
-
-                state.rules = state.rules.map(function(rule) {
-                    return rule.id === tempId ? data : rule;
-                });
-                render();
+                newInput.value = '';
+                await loadRules();
+                setBusy(false);
                 showToast('Rule added.');
-                loadRules();
             }
 
             async function deleteRule(ruleId) {
-                if (!state.isEditor) return;
+                if (!state.isEditor || state.pending) return;
                 const allowed = await askConfirm('Delete rule', 'Delete this rule?');
                 if (!allowed) return;
-                const snapshot = state.rules.slice();
-                state.rules = state.rules.filter(function(rule) {
-                    return rule.id !== ruleId;
-                });
-                resequenceLocalRules();
-                render();
+                setBusy(true);
 
                 const { error } = await state.client.from('rules').delete().eq('id', ruleId);
                 if (error) {
-                    state.rules = snapshot;
-                    render();
                     setAuthState('Delete failed.');
                     showToast('Delete failed.', 'error');
                     console.error(error);
+                    setBusy(false);
                     return;
                 }
-                const saveError = await persistRuleOrder();
-                if (saveError.error) {
+                state.selectedRuleIds.delete(ruleId);
+                const orderResult = await persistRuleOrder();
+                if (orderResult.error) {
                     await loadRules();
                     showToast('Rule deleted, reorder sync failed.', 'error');
-                    console.error(saveError.error);
+                    console.error(orderResult.error);
+                    setBusy(false);
                     return;
                 }
                 await loadRules();
+                setBusy(false);
                 showToast('Rule deleted.');
+            }
+
+            async function deleteSelectedRules() {
+                if (!state.isEditor || state.pending) return;
+                const ids = Array.from(state.selectedRuleIds);
+                if (!ids.length) return;
+                const allowed = await askConfirm('Delete selected', 'Delete ' + ids.length + ' selected rules?');
+                if (!allowed) return;
+                setBusy(true);
+
+                const { error } = await state.client.from('rules').delete().in('id', ids);
+                if (error) {
+                    setAuthState('Delete failed.');
+                    showToast('Delete failed.', 'error');
+                    console.error(error);
+                    setBusy(false);
+                    return;
+                }
+                state.selectedRuleIds.clear();
+                const orderResult = await persistRuleOrder();
+                if (orderResult.error) {
+                    await loadRules();
+                    showToast('Rules deleted, reorder sync failed.', 'error');
+                    console.error(orderResult.error);
+                    setBusy(false);
+                    return;
+                }
+                await loadRules();
+                setBusy(false);
+                showToast(ids.length + ' rules deleted.');
             }
 
             function bindEvents() {
@@ -520,6 +599,19 @@
                 newInput.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') addRule();
                 });
+                selectAllBtn.addEventListener('click', function() {
+                    if (state.pending) return;
+                    getSortedRules().forEach(function(rule) {
+                        if (rule.id) state.selectedRuleIds.add(rule.id);
+                    });
+                    render();
+                });
+                clearSelectionBtn.addEventListener('click', function() {
+                    if (state.pending) return;
+                    state.selectedRuleIds.clear();
+                    render();
+                });
+                deleteSelectedBtn.addEventListener('click', deleteSelectedRules);
 
                 authOpenBtn.addEventListener('click', openAuthModal);
                 authCancelBtn.addEventListener('click', closeAuthModal);
