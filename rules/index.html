@@ -104,7 +104,8 @@
     <div id="rules-toast" class="rules-toast" aria-live="polite" aria-atomic="true"></div>
 
     <script>
-        (function() {
+        window.addEventListener('DOMContentLoaded', function() {
+            (function() {
             const config = window.PV_SUPABASE || {};
             const hasSupabaseConfig = !!(config.url && config.anonKey && window.supabase && window.supabase.createClient);
             const enterEditBtn = document.getElementById('enter-edit-btn');
@@ -503,8 +504,9 @@
                     .subscribe();
             }
 
-            initSupabase();
-        })();
+                initSupabase();
+            })();
+        });
     </script>
     <script src="../transitions.js"></script>
 </body>
