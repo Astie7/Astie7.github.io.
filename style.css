@@ -763,11 +763,6 @@ p {
     min-height: 40px;
 }
 
-#save-order-btn:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-}
-
 .edit-state {
     display: inline-flex;
     align-items: center;

@@ -52,7 +52,6 @@
                 <div id="rules-controls" class="rules-controls">
                     <button id="enter-edit-btn" class="edit-btn" type="button">Enter edit mode</button>
                     <button id="exit-edit-btn" class="btn btn-ghost" type="button">Exit edit mode</button>
-                    <button id="save-order-btn" class="btn btn-ghost" type="button">Save order</button>
                 </div>
             </aside>
         </section>
@@ -113,7 +112,6 @@
             const hasSupabaseConfig = !!(config.url && config.anonKey && window.supabase && window.supabase.createClient);
             const enterEditBtn = document.getElementById('enter-edit-btn');
             const exitEditBtn = document.getElementById('exit-edit-btn');
-            const saveOrderBtn = document.getElementById('save-order-btn');
             const controls = document.getElementById('rules-controls');
             const panel = document.getElementById('edit-panel');
             const listEl = document.getElementById('rules-list');
@@ -159,7 +157,6 @@
                 channel: null,
                 confirmResolver: null,
                 toastTimer: null,
-                sortDirty: false,
                 dragRuleId: null
             };
 
@@ -258,14 +255,12 @@
                 state.rules = sorted.map(function(rule, index) {
                     return Object.assign({}, rule, { position: index + 1 });
                 });
-                state.sortDirty = true;
                 return true;
             }
 
             function render() {
                 listEl.innerHTML = '';
                 const rules = getSortedRules();
-                saveOrderBtn.disabled = !state.sortDirty;
 
                 if (!rules.length) {
                     const li = document.createElement('li');
@@ -318,7 +313,7 @@
                             li.classList.remove('drag-over');
                             if (moveRuleBefore(state.dragRuleId, rule.id)) {
                                 render();
-                                showToast('Order changed. Click Save order.');
+                                saveRuleOrder();
                             }
                         });
 
@@ -345,8 +340,6 @@
                 controls.style.display = state.isEditor ? 'flex' : 'none';
                 enterEditBtn.style.display = state.editMode ? 'none' : 'inline-flex';
                 exitEditBtn.style.display = state.editMode ? 'inline-flex' : 'none';
-                saveOrderBtn.style.display = state.editMode ? 'inline-flex' : 'none';
-                saveOrderBtn.disabled = !state.sortDirty;
                 panel.style.display = state.isEditor && state.editMode ? 'flex' : 'none';
                 document.body.classList.toggle('is-edit-mode', !!state.editMode);
                 render();
@@ -386,8 +379,33 @@
                 } else {
                     state.rules = data || [];
                 }
-                state.sortDirty = false;
                 render();
+            }
+
+            async function persistRuleOrderViaUpdates() {
+                const sorted = getSortedRules().filter(function(rule) {
+                    return !!rule.id && !String(rule.id).startsWith('tmp:');
+                });
+
+                for (let i = 0; i < sorted.length; i++) {
+                    const row = sorted[i];
+                    const { error } = await state.client
+                        .from('rules')
+                        .update({ position: -(i + 1) })
+                        .eq('id', row.id);
+                    if (error) return { error: error };
+                }
+
+                for (let i = 0; i < sorted.length; i++) {
+                    const row = sorted[i];
+                    const { error } = await state.client
+                        .from('rules')
+                        .update({ position: i + 1 })
+                        .eq('id', row.id);
+                    if (error) return { error: error };
+                }
+
+                return { error: null };
             }
 
             async function persistRuleOrder() {
@@ -396,29 +414,21 @@
                     .filter(function(rule) { return !!rule.id && !String(rule.id).startsWith('tmp:'); })
                     .map(function(rule) { return rule.id; });
                 if (!ids.length) return { error: null };
-                return state.client.rpc('reorder_rules', { rule_ids: ids });
+                const rpcResult = await state.client.rpc('reorder_rules', { rule_ids: ids });
+                if (!rpcResult.error) return rpcResult;
+                return persistRuleOrderViaUpdates();
             }
 
             async function saveRuleOrder() {
                 if (!state.client || !state.isEditor || !state.editMode) return;
-                if (!state.sortDirty) {
-                    showToast('Order already saved.');
-                    return;
-                }
-                saveOrderBtn.disabled = true;
                 const { error } = await persistRuleOrder();
                 if (error) {
-                    setAuthState('Save order failed.');
-                    showToast('Save order failed.', 'error');
+                    showToast('Order save failed.', 'error');
                     console.error(error);
                     await loadRules();
-                    state.sortDirty = false;
-                    applyUiState();
                     return;
                 }
-                state.sortDirty = false;
                 await loadRules();
-                applyUiState();
                 showToast('Order saved.');
             }
 
@@ -464,13 +474,11 @@
                     return rule.id !== ruleId;
                 });
                 resequenceLocalRules();
-                state.sortDirty = true;
                 render();
 
                 const { error } = await state.client.from('rules').delete().eq('id', ruleId);
                 if (error) {
                     state.rules = snapshot;
-                    state.sortDirty = false;
                     render();
                     setAuthState('Delete failed.');
                     showToast('Delete failed.', 'error');
@@ -479,15 +487,11 @@
                 }
                 const saveError = await persistRuleOrder();
                 if (saveError.error) {
-                    state.rules = snapshot;
-                    state.sortDirty = false;
                     await loadRules();
-                    setAuthState('Delete failed.');
-                    showToast('Delete failed.', 'error');
+                    showToast('Rule deleted, reorder sync failed.', 'error');
                     console.error(saveError.error);
                     return;
                 }
-                state.sortDirty = false;
                 await loadRules();
                 showToast('Rule deleted.');
             }
@@ -513,7 +517,6 @@
                 });
 
                 addBtn.addEventListener('click', addRule);
-                saveOrderBtn.addEventListener('click', saveRuleOrder);
                 newInput.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') addRule();
                 });
