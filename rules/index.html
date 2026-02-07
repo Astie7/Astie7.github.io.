@@ -30,93 +30,54 @@
         </nav>
     </header>
 
-    <main class="shell forum-home forum-rules-page">
-        <section class="forum-banner forum-panel">
-            <div>
-                <p class="eyebrow">Policy Board</p>
-                <h1>Rules & Moderation Forum</h1>
-                <p>This board keeps all community rules synced and publicly readable. Approved editors can update the list live.</p>
+    <main class="shell rules-layout">
+        <section class="rules-hero-card">
+            <div class="section-head rules-head">
+                <p class="eyebrow">Rules</p>
+                <h1>Divine Laws of Pantheverse <span aria-hidden="true">∞</span></h1>
+                <p class="rules-lead">These keep the energy high and the space safe. Know them before you dive in.</p>
             </div>
-            <div class="forum-banner-actions">
-                <a class="btn btn-primary" href="../">Back to forum</a>
-                <a class="btn btn-ghost" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Open Discord</a>
-            </div>
-        </section>
 
-        <section class="forum-grid forum-rules-grid">
-            <aside class="forum-panel forum-sidebar">
-                <h3>Policy Boards</h3>
-                <ul class="forum-list">
-                    <li><a class="active" href="./">Rules feed</a></li>
-                    <li><a href="../">General forum</a></li>
-                    <li><a href="../about/">Meta board</a></li>
-                </ul>
-                <div class="forum-small-stats">
-                    <span>Board: Public</span>
-                    <span>Sync: Realtime</span>
-                    <span>Role: Editor-gated</span>
-                </div>
-            </aside>
-
-            <section class="forum-panel forum-feed forum-rules-feed">
-                <section class="rules-hero-card">
-                    <div class="section-head rules-head">
-                        <p class="eyebrow">Rules</p>
-                        <h2>Divine Laws of Pantheverse <span aria-hidden="true">∞</span></h2>
-                        <p class="rules-lead">These keep the energy high and the space safe. Know them before you dive in.</p>
+            <aside class="rules-admin-card">
+                <div class="rules-auth">
+                    <div class="auth-state-wrap">
+                        <div id="auth-state" class="auth-state">Public mode</div>
+                        <p id="auth-user" class="auth-user">Sign in to edit rules.</p>
+                        <p class="auth-hint">Everyone can view. Approved editors can change rules.</p>
                     </div>
-
-                    <aside class="rules-admin-card">
-                        <div class="rules-auth">
-                            <div class="auth-state-wrap">
-                                <div id="auth-state" class="auth-state">Public mode</div>
-                                <p id="auth-user" class="auth-user">Sign in to edit rules.</p>
-                                <p class="auth-hint">Everyone can view. Approved editors can change rules.</p>
-                            </div>
-                        </div>
-
-                        <div id="rules-controls" class="rules-controls">
-                            <button id="enter-edit-btn" class="edit-btn" type="button">Enter edit mode</button>
-                            <button id="exit-edit-btn" class="btn btn-ghost" type="button">Exit edit mode</button>
-                        </div>
-                    </aside>
-                </section>
-
-                <div id="edit-panel" class="rules-edit-panel">
-                    <div class="edit-row">
-                        <input id="new-rule" class="edit-input" type="text" placeholder="Add a new rule..." />
-                        <button id="add-rule-btn" class="edit-btn" type="button">+ Add rule</button>
-                    </div>
-                    <div class="bulk-row">
-                        <button id="select-all-btn" class="btn btn-ghost" type="button">Select all</button>
-                        <button id="clear-selection-btn" class="btn btn-ghost" type="button">Clear</button>
-                        <button id="delete-selected-btn" class="btn btn-ghost danger" type="button">Delete selected</button>
-                        <span id="selected-count" class="bulk-count">0 selected</span>
-                    </div>
-                    <p class="edit-note">Editor mode is on. Changes are saved to Supabase and shown live to everyone.</p>
                 </div>
 
-                <ul id="rules-list" class="rules-list"></ul>
-
-                <div class="forum-callout">
-                    <strong>Future decrees</strong>
-                    <p>More rules can be added as Pantheverse grows. Keep updates concise and post one policy per line.</p>
-                </div>
-            </section>
-
-            <aside class="forum-panel forum-sidecards">
-                <h3>Moderation Queue</h3>
-                <ul class="forum-mini-list">
-                    <li>Pending: tag cleanup policy</li>
-                    <li>Pending: appeal format update</li>
-                    <li>Resolved: alt-account wording</li>
-                </ul>
-                <div class="forum-callout">
-                    <strong>Editing note</strong>
-                    <p>When edit mode is enabled, changes sync live for everyone viewing this board.</p>
+                <div id="rules-controls" class="rules-controls">
+                    <button id="enter-edit-btn" class="edit-btn" type="button">Enter edit mode</button>
+                    <button id="exit-edit-btn" class="btn btn-ghost" type="button">Exit edit mode</button>
                 </div>
             </aside>
         </section>
+
+        <div id="edit-panel" class="rules-edit-panel">
+            <div class="edit-row">
+                <input id="new-rule" class="edit-input" type="text" placeholder="Add a new rule..." />
+                <button id="add-rule-btn" class="edit-btn" type="button">+ Add rule</button>
+            </div>
+            <div class="bulk-row">
+                <button id="select-all-btn" class="btn btn-ghost" type="button">Select all</button>
+                <button id="clear-selection-btn" class="btn btn-ghost" type="button">Clear</button>
+                <button id="delete-selected-btn" class="btn btn-ghost danger" type="button">Delete selected</button>
+                <span id="selected-count" class="bulk-count">0 selected</span>
+            </div>
+            <p class="edit-note">Editor mode is on. Changes are saved to Supabase and shown live to everyone.</p>
+        </div>
+
+        <ul id="rules-list" class="rules-list"></ul>
+
+        <div class="section-card stack">
+            <h3>Future decrees</h3>
+            <p>That is all for now. More Pantheverse rules may be written as the universe expands. Stay tuned for updates and cosmic tweaks.</p>
+            <div class="hero-actions">
+                <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Acknowledge & join</a>
+                <a class="btn btn-ghost" href="../">Back home</a>
+            </div>
+        </div>
     </main>
 
     <div id="auth-modal" class="auth-modal" aria-hidden="true">
@@ -193,30 +154,6 @@
             const authUserEl = document.getElementById('auth-user');
             const topAuthBtn = document.getElementById('top-auth-btn');
             const topSignoutBtn = document.getElementById('top-signout-btn');
-            const brandEl = document.querySelector('.topbar .brand');
-            const brandNameEl = brandEl ? brandEl.querySelector('span[data-setting-key="brand_name"], span:last-child') : null;
-
-            const accountMarkup = [
-                '<div id="brand-account-menu" class="brand-account-menu" hidden>',
-                '  <div id="brand-account-label" class="brand-account-label"></div>',
-                '  <button id="brand-account-settings" class="brand-account-item" type="button">Settings</button>',
-                '  <button id="brand-account-signout" class="brand-account-item danger" type="button">Sign out</button>',
-                '</div>',
-                '<div id="account-settings-modal" class="account-settings-modal" aria-hidden="true">',
-                '  <div class="account-settings-card">',
-                '    <h3>Account settings</h3>',
-                '    <label for="account-display-name">Username</label>',
-                '    <input id="account-display-name" class="edit-input" type="text" placeholder="Choose a username" autocomplete="nickname">',
-                '    <p id="account-settings-msg" class="account-settings-msg"></p>',
-                '    <div class="account-settings-actions">',
-                '      <button id="account-settings-save" class="edit-btn" type="button">Save</button>',
-                '      <button id="account-settings-cancel" class="btn btn-ghost" type="button">Close</button>',
-                '    </div>',
-                '  </div>',
-                '</div>'
-            ].join('');
-            document.body.insertAdjacentHTML('beforeend', accountMarkup);
-
             const authModal = document.getElementById('auth-modal');
             const authModeSigninBtn = document.getElementById('auth-mode-signin');
             const authModeRegisterBtn = document.getElementById('auth-mode-register');
@@ -239,15 +176,6 @@
             const confirmOk = document.getElementById('confirm-ok');
             const confirmCancel = document.getElementById('confirm-cancel');
             const toastEl = document.getElementById('rules-toast');
-            const brandAccountMenu = document.getElementById('brand-account-menu');
-            const brandAccountLabel = document.getElementById('brand-account-label');
-            const brandAccountSettingsBtn = document.getElementById('brand-account-settings');
-            const brandAccountSignoutBtn = document.getElementById('brand-account-signout');
-            const accountSettingsModal = document.getElementById('account-settings-modal');
-            const accountDisplayNameInput = document.getElementById('account-display-name');
-            const accountSettingsMsg = document.getElementById('account-settings-msg');
-            const accountSettingsSaveBtn = document.getElementById('account-settings-save');
-            const accountSettingsCancelBtn = document.getElementById('account-settings-cancel');
 
             const defaultRules = [
                 'NSFW is eternally forbidden and is never allowed in any form.',
@@ -275,88 +203,12 @@
                 dragRuleId: null,
                 pending: false,
                 selectedRuleIds: new Set(),
-                authMode: 'signin',
-                defaultBrandName: brandNameEl ? (brandNameEl.textContent || '').trim() : 'Pantheverse'
+                authMode: 'signin'
             };
 
             function setAuthMessage(message, isError) {
                 authMessage.textContent = message;
                 authMessage.className = isError ? 'auth-message error' : 'auth-message';
-            }
-
-            function setAccountSettingsMessage(message, isError) {
-                if (!accountSettingsMsg) return;
-                accountSettingsMsg.textContent = message || '';
-                accountSettingsMsg.className = isError ? 'account-settings-msg error' : 'account-settings-msg';
-            }
-
-            function getDisplayName(user) {
-                if (!user) return state.defaultBrandName;
-                const meta = user.user_metadata || {};
-                const fromMeta = meta.username || meta.display_name || meta.full_name || meta.name;
-                if (fromMeta && String(fromMeta).trim()) return String(fromMeta).trim();
-                const email = user.email || '';
-                if (email.includes('@')) return email.split('@')[0];
-                return state.defaultBrandName;
-            }
-
-            function closeBrandMenu() {
-                if (!brandAccountMenu) return;
-                brandAccountMenu.hidden = true;
-                brandAccountMenu.classList.remove('open');
-            }
-
-            function openBrandMenu() {
-                if (!brandAccountMenu || !state.session) return;
-                brandAccountMenu.hidden = false;
-                brandAccountMenu.classList.add('open');
-            }
-
-            function toggleBrandMenu() {
-                if (!brandAccountMenu || !state.session) return;
-                if (brandAccountMenu.hidden) {
-                    openBrandMenu();
-                    return;
-                }
-                closeBrandMenu();
-            }
-
-            function openAccountSettingsModal() {
-                if (!accountSettingsModal || !state.session) return;
-                accountSettingsModal.classList.add('open');
-                accountSettingsModal.setAttribute('aria-hidden', 'false');
-                accountDisplayNameInput.value = getDisplayName(state.session.user);
-                setAccountSettingsMessage('', false);
-                accountDisplayNameInput.focus();
-            }
-
-            function closeAccountSettingsModal() {
-                if (!accountSettingsModal) return;
-                accountSettingsModal.classList.remove('open');
-                accountSettingsModal.setAttribute('aria-hidden', 'true');
-                setAccountSettingsMessage('', false);
-            }
-
-            function syncBrandAccount() {
-                if (!brandEl || !brandNameEl) return;
-                if (!state.session) {
-                    brandNameEl.textContent = state.defaultBrandName;
-                    brandEl.classList.remove('brand-account-enabled');
-                    brandEl.removeAttribute('role');
-                    brandEl.removeAttribute('tabindex');
-                    closeBrandMenu();
-                    closeAccountSettingsModal();
-                    return;
-                }
-
-                const displayName = getDisplayName(state.session.user);
-                brandNameEl.textContent = displayName;
-                brandEl.classList.add('brand-account-enabled');
-                brandEl.setAttribute('role', 'button');
-                brandEl.setAttribute('tabindex', '0');
-                if (brandAccountLabel) {
-                    brandAccountLabel.textContent = displayName;
-                }
             }
 
             function setAuthActionBusy(isBusy) {
@@ -606,13 +458,12 @@
 
             function applyUiState() {
                 if (hasSupabaseConfig) {
-                    topSignoutBtn.style.display = 'none';
+                    topSignoutBtn.style.display = state.session ? 'inline-flex' : 'none';
                     topAuthBtn.style.display = state.session ? 'none' : 'inline-flex';
                 } else {
                     topSignoutBtn.style.display = 'none';
                     topAuthBtn.style.display = 'none';
                 }
-                syncBrandAccount();
                 controls.style.display = state.isEditor ? 'flex' : 'none';
                 enterEditBtn.style.display = state.editMode ? 'none' : 'inline-flex';
                 exitEditBtn.style.display = state.editMode ? 'inline-flex' : 'none';
@@ -844,63 +695,6 @@
                 authModal.addEventListener('click', (e) => {
                     if (e.target === authModal) closeAuthModal();
                 });
-                if (brandEl) {
-                    brandEl.addEventListener('click', function() {
-                        if (!state.session) return;
-                        toggleBrandMenu();
-                    });
-                    brandEl.addEventListener('keydown', function(event) {
-                        if (!state.session) return;
-                        if (event.key === 'Enter' || event.key === ' ') {
-                            event.preventDefault();
-                            toggleBrandMenu();
-                        }
-                    });
-                }
-                if (brandAccountSettingsBtn) {
-                    brandAccountSettingsBtn.addEventListener('click', function() {
-                        closeBrandMenu();
-                        openAccountSettingsModal();
-                    });
-                }
-                if (brandAccountSignoutBtn) {
-                    brandAccountSignoutBtn.addEventListener('click', async function() {
-                        closeBrandMenu();
-                        if (!state.client) return;
-                        await state.client.auth.signOut();
-                    });
-                }
-                if (accountSettingsSaveBtn) {
-                    accountSettingsSaveBtn.addEventListener('click', async function() {
-                        if (!state.client || !state.session) return;
-                        const username = (accountDisplayNameInput.value || '').trim();
-                        if (!username) {
-                            setAccountSettingsMessage('Username is required.', true);
-                            return;
-                        }
-                        accountSettingsSaveBtn.disabled = true;
-                        const { error } = await state.client.auth.updateUser({
-                            data: { username: username }
-                        });
-                        accountSettingsSaveBtn.disabled = false;
-                        if (error) {
-                            setAccountSettingsMessage(error.message || 'Failed to save username.', true);
-                            return;
-                        }
-                        setAccountSettingsMessage('Saved.', false);
-                        const sessionResult = await state.client.auth.getSession();
-                        state.session = sessionResult && sessionResult.data ? sessionResult.data.session : state.session;
-                        syncBrandAccount();
-                    });
-                }
-                if (accountSettingsCancelBtn) {
-                    accountSettingsCancelBtn.addEventListener('click', closeAccountSettingsModal);
-                }
-                if (accountSettingsModal) {
-                    accountSettingsModal.addEventListener('click', function(event) {
-                        if (event.target === accountSettingsModal) closeAccountSettingsModal();
-                    });
-                }
                 authModeSigninBtn.addEventListener('click', function() {
                     setAuthMode('signin');
                     authPassword.focus();
@@ -1019,19 +813,10 @@
                     await state.client.auth.signOut();
                 });
 
-                document.addEventListener('click', function(event) {
-                    if (!brandEl || !brandAccountMenu || brandAccountMenu.hidden) return;
-                    if (!brandEl.contains(event.target) && !brandAccountMenu.contains(event.target)) {
-                        closeBrandMenu();
-                    }
-                });
-
                 window.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape') {
                         closeAuthModal();
                         resolveConfirm(false);
-                        closeBrandMenu();
-                        closeAccountSettingsModal();
                     }
                     if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'e' && state.isEditor) {
                         state.editMode = !state.editMode;
@@ -1052,10 +837,10 @@
                     setAuthUser('Sign in to edit rules.');
                 } else if (state.isEditor) {
                     setAuthState('Editor mode');
-                    setAuthUser(getDisplayName(state.session.user));
+                    setAuthUser(state.session.user.email || '');
                 } else {
                     setAuthState('Signed in');
-                    setAuthUser(getDisplayName(state.session.user) + ' (no editor access)');
+                    setAuthUser((state.session.user.email || '') + ' (no editor access)');
                     state.editMode = false;
                 }
                 applyUiState();
@@ -1085,10 +870,10 @@
                         setAuthUser('Sign in to edit rules.');
                     } else if (state.isEditor) {
                         setAuthState('Editor mode');
-                        setAuthUser(getDisplayName(state.session.user));
+                        setAuthUser(state.session.user.email || '');
                     } else {
                         setAuthState('Signed in');
-                        setAuthUser(getDisplayName(state.session.user) + ' (no editor access)');
+                        setAuthUser((state.session.user.email || '') + ' (no editor access)');
                         state.editMode = false;
                     }
                     applyUiState();

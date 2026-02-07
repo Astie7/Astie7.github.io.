@@ -99,7 +99,6 @@ a {
 }
 
 .brand {
-    position: relative;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -111,10 +110,6 @@ a {
     background: linear-gradient(145deg, rgba(11, 23, 47, 0.94), rgba(7, 17, 34, 0.9));
     border: 1px solid rgba(127, 166, 211, 0.3);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-.brand.brand-account-enabled {
-    cursor: pointer;
 }
 
 .brand .dot {
@@ -136,106 +131,6 @@ a {
     color: #9defff;
     letter-spacing: 0.01em;
     text-shadow: none;
-}
-
-.brand-account-menu {
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 0;
-    min-width: 210px;
-    padding: 8px;
-    border-radius: 10px;
-    border: 1px solid rgba(127, 166, 211, 0.32);
-    background: linear-gradient(180deg, rgba(8, 16, 34, 0.98), rgba(7, 13, 28, 0.96));
-    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.34);
-    z-index: 26;
-}
-
-.brand-account-menu.open {
-    display: grid;
-}
-
-.brand-account-label {
-    padding: 6px 8px;
-    font-size: 13px;
-    color: #bcd0ef;
-}
-
-.brand-account-item {
-    text-align: left;
-    border: 1px solid rgba(127, 166, 211, 0.24);
-    background: rgba(11, 24, 48, 0.82);
-    color: #e3edff;
-    border-radius: 8px;
-    padding: 8px 10px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.brand-account-item + .brand-account-item {
-    margin-top: 6px;
-}
-
-.brand-account-item:hover {
-    background: rgba(124, 242, 255, 0.15);
-}
-
-.brand-account-item.danger {
-    border-color: rgba(255, 122, 158, 0.38);
-    color: #ffd9e3;
-}
-
-.account-settings-modal {
-    position: fixed;
-    inset: 0;
-    display: none;
-    place-items: center;
-    background: rgba(2, 6, 16, 0.68);
-    backdrop-filter: blur(4px);
-    z-index: 29;
-}
-
-.account-settings-modal.open {
-    display: grid;
-}
-
-.account-settings-card {
-    width: min(380px, 92vw);
-    padding: 14px;
-    border-radius: 10px;
-    border: 1px solid rgba(127, 166, 211, 0.3);
-    background: linear-gradient(180deg, rgba(8, 15, 33, 0.98), rgba(7, 12, 25, 0.95));
-    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.4);
-}
-
-.account-settings-card h3 {
-    margin: 0 0 10px;
-    font-size: 18px;
-}
-
-.account-settings-card label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 12px;
-    color: #c8d8f3;
-    font-weight: 700;
-}
-
-.account-settings-msg {
-    min-height: 18px;
-    margin: 8px 0;
-    color: #9fb1d6;
-    font-size: 12px;
-}
-
-.account-settings-msg.error {
-    color: #ff9aa9;
-}
-
-.account-settings-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
 }
 
 .nav {
@@ -343,193 +238,6 @@ a {
 .btn-ghost {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
     border: 1px solid rgba(255, 255, 255, 0.16);
-}
-
-.forum-home {
-    display: grid;
-    gap: 14px;
-}
-
-.forum-panel {
-    border-radius: 12px;
-    border: 1px solid rgba(127, 166, 211, 0.24);
-    background: linear-gradient(170deg, rgba(9, 16, 36, 0.94), rgba(7, 13, 30, 0.9));
-    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.24);
-}
-
-.forum-banner {
-    padding: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 14px;
-}
-
-.forum-banner h1 {
-    margin-bottom: 6px;
-    font-size: clamp(30px, 3.8vw, 48px);
-}
-
-.forum-banner p {
-    margin: 0;
-    max-width: 720px;
-}
-
-.forum-banner-actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-}
-
-.forum-grid {
-    display: grid;
-    grid-template-columns: 240px minmax(0, 1fr) 260px;
-    gap: 12px;
-}
-
-.forum-sidebar,
-.forum-feed,
-.forum-sidecards {
-    padding: 14px;
-}
-
-.forum-sidebar h3,
-.forum-feed h3,
-.forum-sidecards h3 {
-    margin: 0 0 10px;
-    font-size: 18px;
-}
-
-.forum-list {
-    list-style: none;
-    margin: 0 0 12px;
-    padding: 0;
-    display: grid;
-    gap: 6px;
-}
-
-.forum-list a {
-    display: block;
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: 1px solid rgba(127, 166, 211, 0.22);
-    background: rgba(10, 21, 43, 0.78);
-    color: #d6e6ff;
-}
-
-.forum-list a.active,
-.forum-list a:hover {
-    border-color: rgba(124, 242, 255, 0.38);
-    background: rgba(124, 242, 255, 0.14);
-    color: #ecfbff;
-}
-
-.forum-small-stats {
-    display: grid;
-    gap: 6px;
-    font-size: 12px;
-    color: #a9badb;
-}
-
-.forum-feed-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
-}
-
-.forum-feed-head .btn {
-    min-height: 34px;
-    padding: 7px 10px;
-}
-
-.forum-thread-card {
-    border: 1px solid rgba(127, 166, 211, 0.2);
-    background: rgba(9, 18, 38, 0.86);
-    border-radius: 10px;
-    padding: 12px;
-}
-
-.forum-thread-card + .forum-thread-card {
-    margin-top: 9px;
-}
-
-.forum-thread-tag {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 8px;
-    border-radius: 999px;
-    border: 1px solid rgba(124, 242, 255, 0.32);
-    background: rgba(124, 242, 255, 0.12);
-    color: #c9f7ff;
-    font-size: 11px;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-.forum-thread-card h4 {
-    margin: 0 0 6px;
-    font-size: 20px;
-}
-
-.forum-thread-card p {
-    margin: 0;
-}
-
-.forum-thread-meta {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 10px;
-    font-size: 12px;
-    color: #9ab0d4;
-}
-
-.forum-mini-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 12px;
-    display: grid;
-    gap: 7px;
-    color: #d4e3ff;
-    font-size: 14px;
-}
-
-.forum-chip {
-    font-size: 12px;
-    color: #a6b8dc;
-}
-
-.forum-callout {
-    border: 1px solid rgba(127, 166, 211, 0.24);
-    border-radius: 10px;
-    padding: 10px;
-    background: rgba(10, 20, 40, 0.82);
-}
-
-.forum-callout strong {
-    display: block;
-    margin-bottom: 6px;
-}
-
-.forum-callout p {
-    margin: 0;
-}
-
-.forum-rules-page .forum-rules-grid {
-    grid-template-columns: 220px minmax(0, 1fr) 240px;
-}
-
-.forum-rules-feed {
-    display: grid;
-    gap: 10px;
-}
-
-.forum-rules-feed .rules-hero-card {
-    margin: 0;
-    padding: 10px;
 }
 
 .eyebrow {
@@ -1616,10 +1324,6 @@ p {
         font-size: 15px;
         padding: 6px 8px;
     }
-    .brand-account-menu {
-        left: -2px;
-        min-width: 188px;
-    }
     .nav {
         padding: 4px;
         overflow-x: auto;
@@ -1631,34 +1335,6 @@ p {
     .auth-top-btn {
         min-height: 32px;
         padding: 6px 9px;
-    }
-    .forum-banner {
-        padding: 12px;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .forum-banner h1 {
-        font-size: clamp(24px, 8vw, 32px);
-    }
-    .forum-banner-actions {
-        width: 100%;
-        justify-content: flex-start;
-    }
-    .forum-grid,
-    .forum-rules-page .forum-rules-grid {
-        grid-template-columns: 1fr;
-    }
-    .forum-sidebar,
-    .forum-feed,
-    .forum-sidecards {
-        padding: 12px;
-    }
-    .forum-feed-head {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .forum-thread-card h4 {
-        font-size: 17px;
     }
     .auth-card {
         width: min(500px, 95vw);
@@ -1693,14 +1369,6 @@ p {
     }
     .auth-message {
         padding: 0 12px 12px;
-    }
-    .account-settings-card {
-        width: min(360px, 94vw);
-        border-radius: 9px;
-        padding: 12px;
-    }
-    .account-settings-actions {
-        grid-template-columns: 1fr;
     }
     .page-rules .rules-hero-card {
         grid-template-columns: 1fr;
