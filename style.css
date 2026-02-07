@@ -800,6 +800,13 @@ p {
     color: #d9e5ff;
 }
 
+/* Requested hidden UI blocks in rules header/admin panel */
+.rules-meta,
+.admin-top,
+.edit-state {
+    display: none !important;
+}
+
 .rules-list {
     list-style: none;
     counter-reset: rule;
