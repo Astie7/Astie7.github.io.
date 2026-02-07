@@ -776,6 +776,10 @@ p {
     z-index: 24;
 }
 
+.confirm-modal[hidden] {
+    display: none !important;
+}
+
 .confirm-modal.open {
     display: grid;
 }

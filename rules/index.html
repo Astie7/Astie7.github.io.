@@ -86,7 +86,7 @@
         </div>
     </div>
 
-    <div id="confirm-modal" class="confirm-modal" aria-hidden="true">
+    <div id="confirm-modal" class="confirm-modal" aria-hidden="true" hidden>
         <div class="confirm-card">
             <h3 id="confirm-title">Confirm action</h3>
             <p id="confirm-text">Are you sure?</p>
@@ -118,6 +118,7 @@
             const authCancelBtn = document.getElementById('auth-cancel-btn');
             const authMessage = document.getElementById('auth-message');
             const confirmModal = document.getElementById('confirm-modal');
+            const confirmTitle = document.getElementById('confirm-title');
             const confirmText = document.getElementById('confirm-text');
             const confirmOk = document.getElementById('confirm-ok');
             const confirmCancel = document.getElementById('confirm-cancel');
@@ -169,22 +170,34 @@
                 setAuthMessage('', false);
             }
 
-            function askConfirm(message) {
+            function openConfirmModal(title, message) {
+                confirmTitle.textContent = title;
                 confirmText.textContent = message;
+                confirmModal.hidden = false;
                 confirmModal.classList.add('open');
                 confirmModal.setAttribute('aria-hidden', 'false');
+            }
+
+            function closeConfirmModal() {
+                confirmModal.classList.remove('open');
+                confirmModal.setAttribute('aria-hidden', 'true');
+                confirmModal.hidden = true;
+            }
+
+            function askConfirm(title, message) {
+                openConfirmModal(title, message);
                 return new Promise((resolve) => {
                     state.confirmResolver = resolve;
                 });
             }
 
             function resolveConfirm(value) {
-                if (typeof state.confirmResolver === 'function') {
-                    state.confirmResolver(value);
-                }
+                const resolver = state.confirmResolver;
                 state.confirmResolver = null;
-                confirmModal.classList.remove('open');
-                confirmModal.setAttribute('aria-hidden', 'true');
+                closeConfirmModal();
+                if (typeof resolver === 'function') {
+                    resolver(value);
+                }
             }
 
             function getSortedRules() {
@@ -311,7 +324,7 @@
 
             async function deleteRule(ruleId) {
                 if (!state.isEditor) return;
-                const allowed = await askConfirm('Delete this rule?');
+                const allowed = await askConfirm('Delete rule', 'Delete this rule?');
                 if (!allowed) return;
                 const { error } = await state.client.from('rules').delete().eq('id', ruleId);
                 if (error) {
@@ -329,7 +342,7 @@
                     if (!state.isEditor) {
                         return;
                     }
-                    askConfirm('Enter edit mode?').then((allowed) => {
+                    askConfirm('Edit mode', 'Enter edit mode?').then((allowed) => {
                         if (!allowed) return;
                         state.editMode = true;
                         applyUiState();
@@ -337,8 +350,11 @@
                 });
 
                 exitEditBtn.addEventListener('click', () => {
-                    state.editMode = false;
-                    applyUiState();
+                    askConfirm('Edit mode', 'Exit edit mode?').then((allowed) => {
+                        if (!allowed) return;
+                        state.editMode = false;
+                        applyUiState();
+                    });
                 });
 
                 addBtn.addEventListener('click', addRule);
