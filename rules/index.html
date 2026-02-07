@@ -24,6 +24,8 @@
             <a href="../">Home</a>
             <a class="active" href="./">Rules</a>
             <a href="../about/">About</a>
+            <button id="top-auth-btn" class="btn btn-ghost auth-top-btn" type="button">Login / Register</button>
+            <button id="top-signout-btn" class="btn btn-ghost auth-top-btn" type="button">Sign out</button>
             <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join Discord</a>
         </nav>
     </header>
@@ -42,10 +44,6 @@
                         <div id="auth-state" class="auth-state">Public mode</div>
                         <p id="auth-user" class="auth-user">Sign in to edit rules.</p>
                         <p class="auth-hint">Everyone can view. Approved editors can change rules.</p>
-                    </div>
-                    <div class="auth-actions">
-                        <button id="auth-open-btn" class="btn btn-ghost" type="button">Editor sign in</button>
-                        <button id="auth-signout-btn" class="btn btn-ghost" type="button">Sign out</button>
                     </div>
                 </div>
 
@@ -86,13 +84,27 @@
         <div class="auth-card">
             <h3>Editor Access</h3>
             <p>Sign in or register. Only accounts in the editors list can modify rules.</p>
+            <div class="auth-mode-tabs">
+                <button id="auth-mode-signin" class="auth-mode-btn active" type="button">Sign in</button>
+                <button id="auth-mode-register" class="auth-mode-btn" type="button">Register</button>
+                <button id="auth-mode-code" class="auth-mode-btn" type="button">Code</button>
+            </div>
             <label for="auth-email">Email</label>
             <input id="auth-email" class="edit-input" type="email" placeholder="you@example.com" autocomplete="email">
-            <label for="auth-password">Password</label>
-            <input id="auth-password" class="edit-input" type="password" placeholder="Password" autocomplete="current-password">
+            <div id="auth-password-wrap">
+                <label for="auth-password">Password</label>
+                <input id="auth-password" class="edit-input" type="password" placeholder="Password" autocomplete="current-password">
+            </div>
+            <div id="auth-code-wrap" style="display:none;">
+                <label for="auth-code">Verification code</label>
+                <input id="auth-code" class="edit-input" type="text" placeholder="Enter code from email" autocomplete="one-time-code">
+            </div>
             <div class="auth-card-actions">
                 <button id="auth-login-btn" class="edit-btn" type="button">Sign in</button>
-                <button id="auth-register-btn" class="btn btn-ghost" type="button">Register</button>
+                <button id="auth-register-btn" class="edit-btn" type="button">Create account</button>
+                <button id="auth-send-code-btn" class="btn btn-ghost" type="button">Send code</button>
+                <button id="auth-verify-code-btn" class="edit-btn" type="button">Verify code</button>
+                <button id="auth-resend-code-btn" class="btn btn-ghost" type="button">Resend</button>
                 <button id="auth-cancel-btn" class="btn btn-ghost" type="button">Cancel</button>
             </div>
             <p id="auth-message" class="auth-message"></p>
@@ -130,13 +142,22 @@
             const selectedCountEl = document.getElementById('selected-count');
             const authStateEl = document.getElementById('auth-state');
             const authUserEl = document.getElementById('auth-user');
-            const authOpenBtn = document.getElementById('auth-open-btn');
-            const authSignoutBtn = document.getElementById('auth-signout-btn');
+            const topAuthBtn = document.getElementById('top-auth-btn');
+            const topSignoutBtn = document.getElementById('top-signout-btn');
             const authModal = document.getElementById('auth-modal');
+            const authModeSigninBtn = document.getElementById('auth-mode-signin');
+            const authModeRegisterBtn = document.getElementById('auth-mode-register');
+            const authModeCodeBtn = document.getElementById('auth-mode-code');
             const authEmail = document.getElementById('auth-email');
+            const authPasswordWrap = document.getElementById('auth-password-wrap');
             const authPassword = document.getElementById('auth-password');
+            const authCodeWrap = document.getElementById('auth-code-wrap');
+            const authCode = document.getElementById('auth-code');
             const authLoginBtn = document.getElementById('auth-login-btn');
             const authRegisterBtn = document.getElementById('auth-register-btn');
+            const authSendCodeBtn = document.getElementById('auth-send-code-btn');
+            const authVerifyCodeBtn = document.getElementById('auth-verify-code-btn');
+            const authResendCodeBtn = document.getElementById('auth-resend-code-btn');
             const authCancelBtn = document.getElementById('auth-cancel-btn');
             const authMessage = document.getElementById('auth-message');
             const confirmModal = document.getElementById('confirm-modal');
@@ -171,7 +192,8 @@
                 toastTimer: null,
                 dragRuleId: null,
                 pending: false,
-                selectedRuleIds: new Set()
+                selectedRuleIds: new Set(),
+                authMode: 'signin'
             };
 
             function setAuthMessage(message, isError) {
@@ -180,8 +202,17 @@
             }
 
             function setAuthActionBusy(isBusy) {
+                authModeSigninBtn.disabled = isBusy;
+                authModeRegisterBtn.disabled = isBusy;
+                authModeCodeBtn.disabled = isBusy;
+                authEmail.disabled = isBusy;
+                authPassword.disabled = isBusy;
+                authCode.disabled = isBusy;
                 authLoginBtn.disabled = isBusy;
                 authRegisterBtn.disabled = isBusy;
+                authSendCodeBtn.disabled = isBusy;
+                authVerifyCodeBtn.disabled = isBusy;
+                authResendCodeBtn.disabled = isBusy;
                 authCancelBtn.disabled = isBusy;
             }
 
@@ -193,9 +224,31 @@
                 authUserEl.textContent = text;
             }
 
+            function setAuthMode(mode) {
+                state.authMode = mode;
+                const isSignin = mode === 'signin';
+                const isRegister = mode === 'register';
+                const isCode = mode === 'code';
+
+                authModeSigninBtn.classList.toggle('active', isSignin);
+                authModeRegisterBtn.classList.toggle('active', isRegister);
+                authModeCodeBtn.classList.toggle('active', isCode);
+
+                authPasswordWrap.style.display = isCode ? 'none' : 'block';
+                authCodeWrap.style.display = isCode ? 'block' : 'none';
+
+                authLoginBtn.style.display = isSignin ? 'inline-flex' : 'none';
+                authRegisterBtn.style.display = isRegister ? 'inline-flex' : 'none';
+                authSendCodeBtn.style.display = isCode ? 'inline-flex' : 'none';
+                authVerifyCodeBtn.style.display = isCode ? 'inline-flex' : 'none';
+                authResendCodeBtn.style.display = isCode ? 'inline-flex' : 'none';
+                setAuthMessage('', false);
+            }
+
             function openAuthModal() {
                 authModal.classList.add('open');
                 authModal.setAttribute('aria-hidden', 'false');
+                setAuthMode('signin');
                 setAuthActionBusy(false);
                 setAuthMessage('', false);
                 authEmail.focus();
@@ -206,6 +259,7 @@
                 authModal.setAttribute('aria-hidden', 'true');
                 setAuthActionBusy(false);
                 authPassword.value = '';
+                authCode.value = '';
                 setAuthMessage('', false);
             }
 
@@ -395,8 +449,13 @@
             }
 
             function applyUiState() {
-                authSignoutBtn.style.display = state.session ? 'inline-flex' : 'none';
-                authOpenBtn.style.display = state.session ? 'none' : 'inline-flex';
+                if (hasSupabaseConfig) {
+                    topSignoutBtn.style.display = state.session ? 'inline-flex' : 'none';
+                    topAuthBtn.style.display = state.session ? 'none' : 'inline-flex';
+                } else {
+                    topSignoutBtn.style.display = 'none';
+                    topAuthBtn.style.display = 'none';
+                }
                 controls.style.display = state.isEditor ? 'flex' : 'none';
                 enterEditBtn.style.display = state.editMode ? 'none' : 'inline-flex';
                 exitEditBtn.style.display = state.editMode ? 'inline-flex' : 'none';
@@ -623,10 +682,22 @@
                 });
                 deleteSelectedBtn.addEventListener('click', deleteSelectedRules);
 
-                authOpenBtn.addEventListener('click', openAuthModal);
+                topAuthBtn.addEventListener('click', openAuthModal);
                 authCancelBtn.addEventListener('click', closeAuthModal);
                 authModal.addEventListener('click', (e) => {
                     if (e.target === authModal) closeAuthModal();
+                });
+                authModeSigninBtn.addEventListener('click', function() {
+                    setAuthMode('signin');
+                    authPassword.focus();
+                });
+                authModeRegisterBtn.addEventListener('click', function() {
+                    setAuthMode('register');
+                    authPassword.focus();
+                });
+                authModeCodeBtn.addEventListener('click', function() {
+                    setAuthMode('code');
+                    authCode.focus();
                 });
                 confirmModal.addEventListener('click', (e) => {
                     if (e.target === confirmModal) resolveConfirm(false);
@@ -688,7 +759,63 @@
                     setAuthMessage('Account created. Check your email to confirm, then sign in.', false);
                 });
 
-                authSignoutBtn.addEventListener('click', async () => {
+                async function sendCodeMessage(isResend) {
+                    if (!state.client) return;
+                    const email = authEmail.value.trim();
+                    if (!email) {
+                        setAuthMessage('Email is required.', true);
+                        return;
+                    }
+                    setAuthActionBusy(true);
+                    const redirectUrl = config.authRedirectTo || window.location.href.split('#')[0].split('?')[0];
+                    const { error } = await state.client.auth.signInWithOtp({
+                        email: email,
+                        options: {
+                            shouldCreateUser: false,
+                            emailRedirectTo: redirectUrl
+                        }
+                    });
+                    if (error) {
+                        setAuthMessage(error.message || 'Failed to send code.', true);
+                        setAuthActionBusy(false);
+                        return;
+                    }
+                    setAuthActionBusy(false);
+                    setAuthMessage(isResend ? 'Code resent. Check your inbox.' : 'Code sent. Check your inbox.', false);
+                }
+
+                authSendCodeBtn.addEventListener('click', function() {
+                    sendCodeMessage(false);
+                });
+
+                authResendCodeBtn.addEventListener('click', function() {
+                    sendCodeMessage(true);
+                });
+
+                authVerifyCodeBtn.addEventListener('click', async function() {
+                    if (!state.client) return;
+                    const email = authEmail.value.trim();
+                    const code = authCode.value.trim().replace(/\s+/g, '');
+                    if (!email || !code) {
+                        setAuthMessage('Email and verification code are required.', true);
+                        return;
+                    }
+                    setAuthActionBusy(true);
+                    const { error } = await state.client.auth.verifyOtp({
+                        email: email,
+                        token: code,
+                        type: 'email'
+                    });
+                    if (error) {
+                        setAuthMessage(error.message || 'Code verification failed.', true);
+                        setAuthActionBusy(false);
+                        return;
+                    }
+                    setAuthActionBusy(false);
+                    closeAuthModal();
+                });
+
+                topSignoutBtn.addEventListener('click', async () => {
                     if (!state.client) return;
                     await state.client.auth.signOut();
                 });
@@ -731,8 +858,8 @@
                 if (!hasSupabaseConfig) {
                     setAuthState('Public mode (Supabase not configured)');
                     setAuthUser('Configure Supabase to enable editor auth.');
-                    authOpenBtn.style.display = 'none';
                     state.rules = defaultRules.map((text, i) => ({ id: null, position: i + 1, text: text }));
+                    applyUiState();
                     render();
                     return;
                 }

@@ -186,6 +186,18 @@ a {
     opacity: 1;
 }
 
+.auth-top-btn {
+    min-height: 36px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+#top-signout-btn {
+    display: none;
+}
+
 .btn {
     display: inline-flex;
     align-items: center;
@@ -738,16 +750,6 @@ p {
     color: #afbddf;
 }
 
-.auth-actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-#auth-signout-btn {
-    display: none;
-}
-
 .rules-controls {
     display: none;
     align-items: center;
@@ -1074,10 +1076,38 @@ p {
     color: #dbe7ff;
 }
 
+.auth-mode-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.auth-mode-btn {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    color: #dce6ff;
+    border-radius: 10px;
+    min-height: 36px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.auth-mode-btn.active {
+    border-color: rgba(124, 242, 255, 0.58);
+    background: linear-gradient(135deg, rgba(124, 242, 255, 0.22), rgba(196, 139, 255, 0.17));
+    color: #f4fbff;
+}
+
 .auth-card-actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin-top: 12px;
+}
+
+.auth-card-actions > button {
+    flex: 1 1 calc(50% - 4px);
 }
 
 .auth-message {
@@ -1188,6 +1218,10 @@ p {
     }
     .topbar {
         position: static;
+    }
+    .auth-top-btn {
+        min-height: 34px;
+        padding: 7px 10px;
     }
     .page-rules .rules-hero-card {
         grid-template-columns: 1fr;
