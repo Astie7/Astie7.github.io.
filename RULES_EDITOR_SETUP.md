@@ -17,6 +17,8 @@ window.PV_SUPABASE = {
 
 Run `supabase-rules-setup.sql` in Supabase SQL Editor.
 
+This script is idempotent. You can re-run it to apply new constraints/indexes to existing tables.
+
 ## 3) Create editor account(s)
 
 In Supabase Auth, create users for the people allowed to edit rules.
@@ -37,3 +39,10 @@ values ('USER_UUID_HERE');
 ## 5) Note
 
 Do not use service role keys in frontend files. Only use the anon key with RLS enabled.
+
+## 6) Optimization details now included
+
+- `rules.position` is constrained to positive values.
+- `rules.text` is constrained to trimmed length between 4 and 500.
+- `rules.text` is unique case-insensitively after trim.
+- Added indexes for `position` and `updated_at`.

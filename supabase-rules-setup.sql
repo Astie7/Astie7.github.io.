@@ -6,8 +6,8 @@ create extension if not exists pgcrypto;
 
 create table if not exists public.rules (
     id uuid primary key default gen_random_uuid(),
-    position integer not null unique,
-    text text not null,
+    position integer not null unique check (position > 0),
+    text text not null check (char_length(btrim(text)) between 4 and 500),
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now()
 );
@@ -16,6 +16,32 @@ create table if not exists public.editors (
     user_id uuid primary key references auth.users(id) on delete cascade,
     created_at timestamptz not null default now()
 );
+
+do $$
+begin
+    if not exists (
+        select 1 from pg_constraint
+        where conname = 'rules_position_positive'
+          and conrelid = 'public.rules'::regclass
+    ) then
+        alter table public.rules
+            add constraint rules_position_positive check (position > 0);
+    end if;
+
+    if not exists (
+        select 1 from pg_constraint
+        where conname = 'rules_text_length_guard'
+          and conrelid = 'public.rules'::regclass
+    ) then
+        alter table public.rules
+            add constraint rules_text_length_guard check (char_length(btrim(text)) between 4 and 500);
+    end if;
+end;
+$$;
+
+create index if not exists rules_position_idx on public.rules(position);
+create index if not exists rules_updated_at_idx on public.rules(updated_at desc);
+create unique index if not exists rules_text_unique_idx on public.rules ((lower(btrim(text))));
 
 create or replace function public.set_updated_at()
 returns trigger

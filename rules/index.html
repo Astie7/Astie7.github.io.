@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rules · Pantheverse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap">
     <link rel="icon" type="image/webp" href="../Pantheverse.webp">
     <link rel="stylesheet" href="../style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./supabase-config.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script defer src="./supabase-config.js"></script>
 </head>
 <body class="page page-rules">
     <header class="shell topbar">
@@ -361,7 +364,9 @@
                     console.error(error);
                     return;
                 }
-                await loadRules();
+                state.rules = state.rules.filter(function(rule) {
+                    return rule.id !== ruleId;
+                });
                 await normalizeRulePositions();
                 await loadRules();
                 showToast('Rule deleted.');
