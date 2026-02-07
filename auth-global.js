@@ -58,12 +58,14 @@ window.addEventListener('DOMContentLoaded', function() {
         ].join('');
         document.body.insertAdjacentHTML('beforeend', authMarkup);
 
-        const accountMarkup = [
+        const accountMenuMarkup = [
             '<div id="brand-account-menu" class="brand-account-menu" hidden>',
             '  <div id="brand-account-label" class="brand-account-label"></div>',
             '  <button id="brand-account-settings" class="brand-account-item" type="button">Settings</button>',
             '  <button id="brand-account-signout" class="brand-account-item danger" type="button">Sign out</button>',
-            '</div>',
+            '</div>'
+        ].join('');
+        const accountModalMarkup = [
             '<div id="account-settings-modal" class="account-settings-modal" aria-hidden="true">',
             '  <div class="account-settings-card">',
             '    <h3>Account settings</h3>',
@@ -77,7 +79,12 @@ window.addEventListener('DOMContentLoaded', function() {
             '  </div>',
             '</div>'
         ].join('');
-        document.body.insertAdjacentHTML('beforeend', accountMarkup);
+        if (brandEl) {
+            brandEl.insertAdjacentHTML('beforeend', accountMenuMarkup);
+        } else {
+            document.body.insertAdjacentHTML('beforeend', accountMenuMarkup);
+        }
+        document.body.insertAdjacentHTML('beforeend', accountModalMarkup);
 
         const modal = document.getElementById('global-auth-modal');
         const modeSigninBtn = document.getElementById('global-auth-mode-signin');
