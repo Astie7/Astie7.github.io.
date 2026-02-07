@@ -61,19 +61,85 @@ window.addEventListener('DOMContentLoaded', function() {
         const accountMenuMarkup = [
             '<div id="brand-account-menu" class="brand-account-menu" hidden>',
             '  <div id="brand-account-label" class="brand-account-label"></div>',
-            '  <button id="brand-account-settings" class="brand-account-item" type="button">Settings</button>',
+            '  <button id="brand-account-settings" class="brand-account-item" type="button">Control Center</button>',
             '  <button id="brand-account-signout" class="brand-account-item danger" type="button">Sign out</button>',
             '</div>'
         ].join('');
         const accountModalMarkup = [
             '<div id="account-settings-modal" class="account-settings-modal" aria-hidden="true">',
             '  <div class="account-settings-card">',
-            '    <h3>Account settings</h3>',
-            '    <label for="account-display-name">Username</label>',
-            '    <input id="account-display-name" class="edit-input" type="text" placeholder="Choose a username" autocomplete="nickname">',
+            '    <div class="account-settings-head">',
+            '      <div>',
+            '        <p class="account-settings-eyebrow">Site settings</p>',
+            '        <h3>Pantheverse Control Center</h3>',
+            '        <p>Recommended defaults are tuned for stability, readability, and safe moderation flow.</p>',
+            '      </div>',
+            '      <button id="account-settings-close-x" class="account-settings-close" type="button" aria-label="Close settings">x</button>',
+            '    </div>',
+            '    <div class="account-settings-layout">',
+            '      <section class="account-settings-panel">',
+            '        <h4>Profile</h4>',
+            '        <div class="account-setting-row">',
+            '          <label for="account-display-name">Username</label>',
+            '          <input id="account-display-name" class="edit-input" type="text" placeholder="Choose a username" autocomplete="nickname">',
+            '        </div>',
+            '        <div class="account-setting-row">',
+            '          <label for="account-preferred-start">Preferred start page</label>',
+            '          <select id="account-preferred-start" class="edit-input">',
+            '            <option value="home">Home</option>',
+            '            <option value="rules">Rules</option>',
+            '            <option value="about">About</option>',
+            '          </select>',
+            '        </div>',
+            '        <div class="account-setting-row">',
+            '          <label for="account-preferred-space">Preferred community space</label>',
+            '          <select id="account-preferred-space" class="edit-input">',
+            '            <option value="discord">Discord</option>',
+            '            <option value="rules">Rules board</option>',
+            '            <option value="meta">About board</option>',
+            '            <option value="home">Home feed</option>',
+            '          </select>',
+            '        </div>',
+            '      </section>',
+            '      <section class="account-settings-panel">',
+            '        <h4>Experience</h4>',
+            '        <label class="account-toggle">',
+            '          <input id="pref-open-discord" type="checkbox">',
+            '          <span>Open Discord links in new tab <em>Recommended</em></span>',
+            '        </label>',
+            '        <label class="account-toggle">',
+            '          <input id="pref-compact-topbar" type="checkbox">',
+            '          <span>Compact top bar for tighter layout</span>',
+            '        </label>',
+            '        <label class="account-toggle">',
+            '          <input id="pref-smooth-transitions" type="checkbox">',
+            '          <span>Smooth page transitions <em>Recommended</em></span>',
+            '        </label>',
+            '        <label class="account-toggle">',
+            '          <input id="pref-confirm-actions" type="checkbox">',
+            '          <span>Confirm destructive actions <em>Recommended</em></span>',
+            '        </label>',
+            '        <label class="account-toggle">',
+            '          <input id="pref-editor-focus" type="checkbox">',
+            '          <span>Highlight editor-heavy areas</span>',
+            '        </label>',
+            '      </section>',
+            '      <section class="account-settings-panel account-settings-panel-wide">',
+            '        <h4>Recommended setup</h4>',
+            '        <ul class="account-reco-list">',
+            '          <li>Keep confirmations on if you edit rules frequently.</li>',
+            '          <li>Use smooth transitions for a connected premium feel.</li>',
+            '          <li>Keep Discord links in a new tab so your session stays active.</li>',
+            '        </ul>',
+            '        <div class="account-settings-inline-actions">',
+            '          <button id="account-settings-recommended" class="btn btn-ghost" type="button">Apply recommended</button>',
+            '          <button id="account-settings-open-preferred" class="btn btn-ghost" type="button">Open preferred page</button>',
+            '        </div>',
+            '      </section>',
+            '    </div>',
             '    <p id="account-settings-msg" class="account-settings-msg"></p>',
             '    <div class="account-settings-actions">',
-            '      <button id="account-settings-save" class="edit-btn" type="button">Save</button>',
+            '      <button id="account-settings-save" class="edit-btn" type="button">Save settings</button>',
             '      <button id="account-settings-cancel" class="btn btn-ghost" type="button">Close</button>',
             '    </div>',
             '  </div>',
@@ -107,7 +173,17 @@ window.addEventListener('DOMContentLoaded', function() {
         const brandAccountSettingsBtn = document.getElementById('brand-account-settings');
         const brandAccountSignoutBtn = document.getElementById('brand-account-signout');
         const accountSettingsModal = document.getElementById('account-settings-modal');
+        const accountSettingsCloseXBtn = document.getElementById('account-settings-close-x');
         const accountDisplayNameInput = document.getElementById('account-display-name');
+        const accountPreferredStartSelect = document.getElementById('account-preferred-start');
+        const accountPreferredSpaceSelect = document.getElementById('account-preferred-space');
+        const prefOpenDiscordInput = document.getElementById('pref-open-discord');
+        const prefCompactTopbarInput = document.getElementById('pref-compact-topbar');
+        const prefSmoothTransitionsInput = document.getElementById('pref-smooth-transitions');
+        const prefConfirmActionsInput = document.getElementById('pref-confirm-actions');
+        const prefEditorFocusInput = document.getElementById('pref-editor-focus');
+        const accountSettingsRecommendedBtn = document.getElementById('account-settings-recommended');
+        const accountSettingsOpenPreferredBtn = document.getElementById('account-settings-open-preferred');
         const accountSettingsMsg = document.getElementById('account-settings-msg');
         const accountSettingsSaveBtn = document.getElementById('account-settings-save');
         const accountSettingsCancelBtn = document.getElementById('account-settings-cancel');
@@ -116,7 +192,19 @@ window.addEventListener('DOMContentLoaded', function() {
             client: window.supabase.createClient(config.url, config.anonKey),
             mode: 'signin',
             session: null,
-            defaultBrandName: brandNameEl ? (brandNameEl.textContent || '').trim() : 'Pantheverse'
+            defaultBrandName: brandNameEl ? (brandNameEl.textContent || '').trim() : 'Pantheverse',
+            userSettings: null
+        };
+
+        const SETTINGS_KEY = 'pv_site_settings_v2';
+        const DEFAULT_SETTINGS = {
+            preferredStart: 'home',
+            preferredSpace: 'discord',
+            openDiscordInNewTab: true,
+            compactTopbar: false,
+            smoothTransitions: true,
+            confirmActions: true,
+            emphasizeEditorTools: true
         };
 
         function setMessage(message, isError) {
@@ -128,6 +216,107 @@ window.addEventListener('DOMContentLoaded', function() {
             if (!accountSettingsMsg) return;
             accountSettingsMsg.textContent = message || '';
             accountSettingsMsg.className = isError ? 'account-settings-msg error' : 'account-settings-msg';
+        }
+
+        function normalizeSettings(raw) {
+            const candidate = raw || {};
+            return {
+                preferredStart: ['home', 'rules', 'about'].includes(candidate.preferredStart) ? candidate.preferredStart : DEFAULT_SETTINGS.preferredStart,
+                preferredSpace: ['discord', 'rules', 'meta', 'home'].includes(candidate.preferredSpace) ? candidate.preferredSpace : DEFAULT_SETTINGS.preferredSpace,
+                openDiscordInNewTab: typeof candidate.openDiscordInNewTab === 'boolean' ? candidate.openDiscordInNewTab : DEFAULT_SETTINGS.openDiscordInNewTab,
+                compactTopbar: typeof candidate.compactTopbar === 'boolean' ? candidate.compactTopbar : DEFAULT_SETTINGS.compactTopbar,
+                smoothTransitions: typeof candidate.smoothTransitions === 'boolean' ? candidate.smoothTransitions : DEFAULT_SETTINGS.smoothTransitions,
+                confirmActions: typeof candidate.confirmActions === 'boolean' ? candidate.confirmActions : DEFAULT_SETTINGS.confirmActions,
+                emphasizeEditorTools: typeof candidate.emphasizeEditorTools === 'boolean' ? candidate.emphasizeEditorTools : DEFAULT_SETTINGS.emphasizeEditorTools
+            };
+        }
+
+        function loadSettings() {
+            try {
+                const raw = localStorage.getItem(SETTINGS_KEY);
+                if (!raw) return normalizeSettings(DEFAULT_SETTINGS);
+                return normalizeSettings(JSON.parse(raw));
+            } catch (_error) {
+                return normalizeSettings(DEFAULT_SETTINGS);
+            }
+        }
+
+        function persistSettings(settings) {
+            try {
+                localStorage.setItem(SETTINGS_KEY, JSON.stringify(normalizeSettings(settings)));
+            } catch (_error) {
+                // Ignore storage errors and keep runtime state only.
+            }
+        }
+
+        function getRecommendedSettings() {
+            return {
+                preferredStart: 'home',
+                preferredSpace: 'discord',
+                openDiscordInNewTab: true,
+                compactTopbar: false,
+                smoothTransitions: true,
+                confirmActions: true,
+                emphasizeEditorTools: true
+            };
+        }
+
+        function applyUserSettings(settings) {
+            state.userSettings = normalizeSettings(settings);
+            document.body.classList.toggle('pref-compact-topbar', !!state.userSettings.compactTopbar);
+            document.body.classList.toggle('pref-no-transitions', !state.userSettings.smoothTransitions);
+            document.body.classList.toggle('pref-editor-focus', !!state.userSettings.emphasizeEditorTools);
+            document.body.dataset.preferredStart = state.userSettings.preferredStart;
+            document.body.dataset.preferredSpace = state.userSettings.preferredSpace;
+
+            const openInNewTab = !!state.userSettings.openDiscordInNewTab;
+            document.querySelectorAll('a[data-setting-key="discord_invite_url"]').forEach(function(link) {
+                link.target = openInNewTab ? '_blank' : '_self';
+                if (openInNewTab) {
+                    link.setAttribute('rel', 'noopener');
+                } else {
+                    link.removeAttribute('rel');
+                }
+            });
+        }
+
+        function setSettingsForm(settings) {
+            const normalized = normalizeSettings(settings);
+            if (accountPreferredStartSelect) accountPreferredStartSelect.value = normalized.preferredStart;
+            if (accountPreferredSpaceSelect) accountPreferredSpaceSelect.value = normalized.preferredSpace;
+            if (prefOpenDiscordInput) prefOpenDiscordInput.checked = normalized.openDiscordInNewTab;
+            if (prefCompactTopbarInput) prefCompactTopbarInput.checked = normalized.compactTopbar;
+            if (prefSmoothTransitionsInput) prefSmoothTransitionsInput.checked = normalized.smoothTransitions;
+            if (prefConfirmActionsInput) prefConfirmActionsInput.checked = normalized.confirmActions;
+            if (prefEditorFocusInput) prefEditorFocusInput.checked = normalized.emphasizeEditorTools;
+        }
+
+        function readSettingsForm() {
+            return normalizeSettings({
+                preferredStart: accountPreferredStartSelect ? accountPreferredStartSelect.value : DEFAULT_SETTINGS.preferredStart,
+                preferredSpace: accountPreferredSpaceSelect ? accountPreferredSpaceSelect.value : DEFAULT_SETTINGS.preferredSpace,
+                openDiscordInNewTab: prefOpenDiscordInput ? !!prefOpenDiscordInput.checked : DEFAULT_SETTINGS.openDiscordInNewTab,
+                compactTopbar: prefCompactTopbarInput ? !!prefCompactTopbarInput.checked : DEFAULT_SETTINGS.compactTopbar,
+                smoothTransitions: prefSmoothTransitionsInput ? !!prefSmoothTransitionsInput.checked : DEFAULT_SETTINGS.smoothTransitions,
+                confirmActions: prefConfirmActionsInput ? !!prefConfirmActionsInput.checked : DEFAULT_SETTINGS.confirmActions,
+                emphasizeEditorTools: prefEditorFocusInput ? !!prefEditorFocusInput.checked : DEFAULT_SETTINGS.emphasizeEditorTools
+            });
+        }
+
+        function resolvePreferredPath(page) {
+            const path = window.location.pathname;
+            const onRules = /\/rules\/?$/.test(path);
+            const onAbout = /\/about\/?$/.test(path);
+
+            if (page === 'rules') {
+                if (onRules) return './';
+                return onAbout ? '../rules/' : 'rules/';
+            }
+            if (page === 'about') {
+                if (onAbout) return './';
+                return onRules ? '../about/' : 'about/';
+            }
+            return (onRules || onAbout) ? '../' : './';
         }
 
         function getDisplayName(user) {
@@ -166,6 +355,7 @@ window.addEventListener('DOMContentLoaded', function() {
             accountSettingsModal.classList.add('open');
             accountSettingsModal.setAttribute('aria-hidden', 'false');
             accountDisplayNameInput.value = getDisplayName(state.session.user);
+            setSettingsForm(state.userSettings || DEFAULT_SETTINGS);
             setAccountSettingsMessage('', false);
             accountDisplayNameInput.focus();
         }
@@ -345,29 +535,59 @@ window.addEventListener('DOMContentLoaded', function() {
                 await state.client.auth.signOut();
             });
         }
+        if (accountSettingsRecommendedBtn) {
+            accountSettingsRecommendedBtn.addEventListener('click', function() {
+                const recommended = getRecommendedSettings();
+                setSettingsForm(recommended);
+                applyUserSettings(recommended);
+                persistSettings(recommended);
+                setAccountSettingsMessage('Recommended settings applied.', false);
+            });
+        }
+        if (accountSettingsOpenPreferredBtn) {
+            accountSettingsOpenPreferredBtn.addEventListener('click', function() {
+                const target = resolvePreferredPath(accountPreferredStartSelect ? accountPreferredStartSelect.value : 'home');
+                window.location.href = target;
+            });
+        }
         if (accountSettingsSaveBtn) {
             accountSettingsSaveBtn.addEventListener('click', async function() {
+                if (!state.session) return;
                 const username = (accountDisplayNameInput.value || '').trim();
                 if (!username) {
                     setAccountSettingsMessage('Username is required.', true);
                     return;
                 }
+
+                const nextSettings = readSettingsForm();
+                persistSettings(nextSettings);
+                applyUserSettings(nextSettings);
+
                 accountSettingsSaveBtn.disabled = true;
-                const { error } = await state.client.auth.updateUser({
-                    data: { username: username }
-                });
-                accountSettingsSaveBtn.disabled = false;
-                if (error) {
-                    setAccountSettingsMessage(error.message || 'Failed to save username.', true);
-                    return;
+                let hadError = false;
+                if (username !== getDisplayName(state.session.user)) {
+                    const { error } = await state.client.auth.updateUser({
+                        data: { username: username }
+                    });
+                    if (error) {
+                        hadError = true;
+                        setAccountSettingsMessage('Preferences saved, but username failed: ' + (error.message || 'Unknown error'), true);
+                    }
                 }
-                setAccountSettingsMessage('Saved.', false);
-                const sessionResult = await state.client.auth.getSession();
-                syncTopbar(sessionResult && sessionResult.data ? sessionResult.data.session : null);
+
+                if (!hadError) {
+                    const sessionResult = await state.client.auth.getSession();
+                    syncTopbar(sessionResult && sessionResult.data ? sessionResult.data.session : null);
+                    setAccountSettingsMessage('Settings saved.', false);
+                }
+                accountSettingsSaveBtn.disabled = false;
             });
         }
         if (accountSettingsCancelBtn) {
             accountSettingsCancelBtn.addEventListener('click', closeAccountSettingsModal);
+        }
+        if (accountSettingsCloseXBtn) {
+            accountSettingsCloseXBtn.addEventListener('click', closeAccountSettingsModal);
         }
         if (accountSettingsModal) {
             accountSettingsModal.addEventListener('click', function(event) {
@@ -456,6 +676,9 @@ window.addEventListener('DOMContentLoaded', function() {
                 closeAccountSettingsModal();
             }
         });
+
+        state.userSettings = loadSettings();
+        applyUserSettings(state.userSettings);
 
         state.client.auth.getSession().then(function(result) {
             syncTopbar(result && result.data ? result.data.session : null);
