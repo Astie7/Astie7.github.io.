@@ -1114,6 +1114,16 @@ p {
     color: #eaf2ff;
 }
 
+.auth-field-group .edit-input[type="password"]::-ms-reveal,
+.auth-field-group .edit-input[type="password"]::-ms-clear {
+    display: none;
+}
+
+.auth-field-group .edit-input[type="password"]::-webkit-credentials-auto-fill-button,
+.auth-field-group .edit-input[type="password"]::-webkit-textfield-decoration-container {
+    display: none !important;
+}
+
 .auth-code-group {
     margin-bottom: 14px;
 }
