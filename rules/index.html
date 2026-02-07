@@ -105,13 +105,15 @@
                 </div>
                 <div id="auth-code-wrap" class="auth-field-group auth-code-group" style="display:none;">
                     <label for="auth-code">Verification code</label>
-                    <input id="auth-code" class="edit-input" type="text" placeholder="Enter code from email" autocomplete="one-time-code">
-                    <button id="auth-send-code-btn" class="btn btn-ghost auth-inline-btn" type="button">Send code</button>
+                    <div class="auth-code-row">
+                        <input id="auth-code" class="edit-input" type="text" placeholder="Enter code from email" autocomplete="one-time-code">
+                        <button id="auth-send-code-btn" class="btn btn-ghost auth-inline-btn" type="button">Send code</button>
+                        <button id="auth-resend-code-btn" class="btn btn-ghost auth-inline-btn auth-inline-secondary" type="button">Resend</button>
+                    </div>
                 </div>
                 <div class="auth-card-actions">
                     <button id="auth-login-btn" class="edit-btn" type="button">Sign in</button>
                     <button id="auth-register-btn" class="edit-btn" type="button">Verify & create</button>
-                    <button id="auth-resend-code-btn" class="btn btn-ghost" type="button">Resend code</button>
                     <button id="auth-cancel-btn" class="btn btn-ghost" type="button">Cancel</button>
                 </div>
             </div>
