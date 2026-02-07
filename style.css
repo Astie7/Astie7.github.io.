@@ -485,46 +485,121 @@ p {
 
 .page-rules .rules-layout {
     display: grid;
-    gap: 14px;
+    gap: 18px;
 }
 
 .page-rules .rules-hero-card {
+    position: relative;
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
-    gap: 14px;
+    grid-template-columns: minmax(0, 1.32fr) minmax(280px, 0.68fr);
+    gap: 16px;
     align-items: stretch;
+    padding: 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background:
+        radial-gradient(160% 140% at 0% 0%, rgba(90, 228, 255, 0.14), transparent 48%),
+        radial-gradient(120% 120% at 100% 0%, rgba(153, 124, 255, 0.16), transparent 44%),
+        linear-gradient(128deg, rgba(7, 14, 36, 0.9), rgba(9, 16, 40, 0.95));
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.38);
+    overflow: hidden;
+}
+
+.page-rules .rules-hero-card::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(124, 242, 255, 0.55), transparent);
 }
 
 .page-rules .rules-head {
     margin: 0;
-    padding: 20px;
+    padding: 24px;
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.14);
     background:
-        radial-gradient(160% 120% at 10% 10%, rgba(124, 242, 255, 0.10), transparent 45%),
-        linear-gradient(140deg, rgba(10, 18, 43, 0.9), rgba(17, 24, 54, 0.86));
-    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.32);
+        radial-gradient(130% 120% at 0% 0%, rgba(124, 242, 255, 0.18), transparent 50%),
+        linear-gradient(140deg, rgba(10, 19, 47, 0.82), rgba(13, 19, 48, 0.8));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.rules-head h1 {
+    margin-bottom: 12px;
+    line-height: 1.02;
+}
+
+.rules-head h1 span {
+    color: #95e7ff;
+}
+
+.rules-lead {
+    margin: 0;
+    max-width: 64ch;
 }
 
 .page-rules .rules-admin-card {
-    padding: 14px;
+    padding: 16px;
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: linear-gradient(140deg, rgba(10, 16, 39, 0.88), rgba(20, 20, 49, 0.86));
-    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.30);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background:
+        radial-gradient(130% 100% at 100% 0%, rgba(124, 242, 255, 0.1), transparent 52%),
+        linear-gradient(140deg, rgba(10, 16, 39, 0.9), rgba(20, 20, 49, 0.9));
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
     display: grid;
     gap: 12px;
+    align-content: start;
+}
+
+.rules-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+}
+
+.rules-meta span {
+    padding: 6px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.07);
+    color: #e4ecff;
+    font-size: 12px;
+    letter-spacing: 0.01em;
+}
+
+.admin-top {
+    display: grid;
+    gap: 3px;
+}
+
+.admin-top .eyebrow {
+    margin: 0;
+}
+
+.admin-top h3 {
+    margin: 0;
+    font-size: 24px;
+    line-height: 1.08;
+}
+
+.admin-sub {
+    margin: 0;
+    color: #b7c4e4;
+    font-size: 13px;
 }
 
 .page-rules .rules-auth {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     margin: 0;
     padding: 12px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    background:
+        radial-gradient(120% 90% at 0% 0%, rgba(124, 242, 255, 0.13), transparent 48%),
+        rgba(255, 255, 255, 0.04);
 }
 
 .auth-state-wrap {
@@ -536,11 +611,13 @@ p {
 .auth-state {
     padding: 7px 10px;
     border-radius: 10px;
-    background: linear-gradient(135deg, rgba(124, 242, 255, 0.13), rgba(196, 139, 255, 0.10));
+    background: linear-gradient(135deg, rgba(124, 242, 255, 0.2), rgba(196, 139, 255, 0.17));
     border: 1px solid rgba(255, 255, 255, 0.20);
     font-size: 13px;
-    color: #ecf4ff;
+    color: #f3f7ff;
     width: fit-content;
+    max-width: 100%;
+    overflow-wrap: anywhere;
 }
 
 .auth-hint {
@@ -564,6 +641,24 @@ p {
     align-items: center;
     gap: 10px;
     margin: 0;
+    flex-wrap: wrap;
+}
+
+.rules-controls .edit-btn,
+.rules-controls .btn {
+    flex: 1 1 140px;
+    justify-content: center;
+}
+
+.edit-state {
+    margin: 0;
+    font-size: 12px;
+    color: #c0d0ef;
+    padding: 7px 10px;
+    width: fit-content;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .rules-list {
@@ -584,7 +679,7 @@ p {
     padding: 14px 14px 14px 56px;
     border-radius: 14px;
     background:
-        radial-gradient(140% 120% at 20% 10%, rgba(124, 242, 255, 0.07), transparent 55%),
+        radial-gradient(140% 120% at 20% 10%, rgba(124, 242, 255, 0.10), transparent 55%),
         linear-gradient(130deg, rgba(11, 19, 45, 0.9), rgba(17, 22, 48, 0.88));
     border: 1px solid rgba(255, 255, 255, 0.15);
     color: #dfe6ff;
@@ -595,7 +690,7 @@ p {
 
 .rules-list li:hover {
     transform: translateY(-1px);
-    border-color: rgba(124, 242, 255, 0.35);
+    border-color: rgba(124, 242, 255, 0.48);
     box-shadow: 0 16px 30px rgba(0, 0, 0, 0.30);
 }
 
@@ -635,6 +730,7 @@ p {
     background:
         radial-gradient(130% 110% at 10% 0%, rgba(124, 242, 255, 0.09), transparent 55%),
         linear-gradient(140deg, rgba(10, 17, 40, 0.88), rgba(18, 19, 47, 0.84));
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
 }
 
 .edit-row {
@@ -700,6 +796,14 @@ p {
 
 .rule-actions button:hover {
     background: rgba(255, 122, 158, 0.22);
+}
+
+.is-edit-mode .rules-list li {
+    border-color: rgba(124, 242, 255, 0.35);
+}
+
+.is-edit-mode .rules-list li:hover {
+    border-color: rgba(124, 242, 255, 0.58);
 }
 
 .delete-rule-btn {
@@ -797,11 +901,13 @@ p {
 
 .confirm-card h3 {
     margin: 0 0 8px;
+    font-size: 24px;
 }
 
 .confirm-card p {
     margin: 0;
     color: #d5e4ff;
+    font-size: 16px;
 }
 
 .confirm-actions {
@@ -829,12 +935,16 @@ p {
     }
     .page-rules .rules-hero-card {
         grid-template-columns: 1fr;
+        padding: 12px;
+        border-radius: 16px;
     }
     .page-rules .rules-head {
         padding: 16px;
+        border-radius: 12px;
     }
     .page-rules .rules-admin-card {
         padding: 12px;
+        border-radius: 12px;
     }
     .rules-auth {
         flex-direction: column;
@@ -853,6 +963,9 @@ p {
     }
     .rule-actions {
         margin-left: 8px;
+    }
+    .rules-meta {
+        margin-top: 8px;
     }
     .auth-card-actions {
         flex-wrap: wrap;

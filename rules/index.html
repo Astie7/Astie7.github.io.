@@ -27,11 +27,21 @@
         <section class="rules-hero-card">
             <div class="section-head rules-head">
                 <p class="eyebrow">Rules</p>
-                <h1>Divine Laws of Pantheverse ∞</h1>
-                <p>These keep the energy high and the space safe. Know them before you dive in.</p>
+                <h1>Divine Laws of Pantheverse <span aria-hidden="true">∞</span></h1>
+                <p class="rules-lead">These keep the energy high and the space safe. Know them before you dive in.</p>
+                <div class="rules-meta">
+                    <span>Live synced</span>
+                    <span>Editor-gated</span>
+                    <span>Public readable</span>
+                </div>
             </div>
 
             <aside class="rules-admin-card">
+                <div class="admin-top">
+                    <p class="eyebrow">Editor deck</p>
+                    <h3>Live control panel</h3>
+                    <p class="admin-sub">Changes sync instantly for everyone.</p>
+                </div>
                 <div class="rules-auth">
                     <div class="auth-state-wrap">
                         <div id="auth-state" class="auth-state">Public mode</div>
@@ -47,6 +57,7 @@
                     <button id="enter-edit-btn" class="edit-btn" type="button">Enter edit mode</button>
                     <button id="exit-edit-btn" class="btn btn-ghost" type="button">Exit edit mode</button>
                 </div>
+                <p id="edit-state" class="edit-state">Read-only</p>
             </aside>
         </section>
 
@@ -106,6 +117,7 @@
             const controls = document.getElementById('rules-controls');
             const panel = document.getElementById('edit-panel');
             const listEl = document.getElementById('rules-list');
+            const editState = document.getElementById('edit-state');
             const addBtn = document.getElementById('add-rule-btn');
             const newInput = document.getElementById('new-rule');
             const authStateEl = document.getElementById('auth-state');
@@ -251,6 +263,9 @@
                 exitEditBtn.style.display = state.editMode ? 'inline-flex' : 'none';
                 panel.style.display = state.isEditor && state.editMode ? 'flex' : 'none';
                 document.body.classList.toggle('is-edit-mode', !!state.editMode);
+                editState.textContent = state.isEditor
+                    ? (state.editMode ? 'Edit mode on' : 'Edit mode off')
+                    : 'Read-only';
                 render();
             }
 
