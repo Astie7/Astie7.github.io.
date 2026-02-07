@@ -85,19 +85,20 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 14px;
     position: static;
     top: auto;
     z-index: 1;
-    padding: 9px 14px;
+    padding: 10px 16px;
     margin: 0 0 8px 0;
     border-radius: 0;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(14px);
     background:
-        linear-gradient(90deg, rgba(124, 242, 255, 0.05), rgba(196, 139, 255, 0.035)),
-        rgba(5, 8, 20, 0.76);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+        radial-gradient(130% 120% at 0% 0%, rgba(124, 242, 255, 0.12), transparent 50%),
+        linear-gradient(90deg, rgba(124, 242, 255, 0.03), rgba(196, 139, 255, 0.04)),
+        rgba(5, 8, 20, 0.86);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.24);
 }
 
 .brand {
@@ -136,21 +137,25 @@ a {
 
 .nav {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
-    padding: 0;
-    border-radius: 0;
-    background: transparent;
-    border: none;
-    box-shadow: none;
+    padding: 6px;
+    border-radius: 13px;
+    background: linear-gradient(140deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
     margin-left: auto;
 }
 
 .nav a {
-    padding: 7px 11px;
-    border-radius: 9px;
+    padding: 8px 12px;
+    border-radius: 10px;
     color: #dfeaff;
     font-weight: 600;
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     letter-spacing: 0.01em;
     transition: 160ms ease;
     position: relative;
@@ -174,7 +179,7 @@ a {
     position: absolute;
     left: 12px;
     right: 12px;
-    bottom: 6px;
+    bottom: 5px;
     height: 2px;
     background: linear-gradient(90deg, rgba(124, 242, 255, 0.6), rgba(196, 139, 255, 0.5));
     opacity: 0;
@@ -187,7 +192,7 @@ a {
 }
 
 .auth-top-btn {
-    min-height: 36px;
+    min-height: 38px;
     padding: 8px 12px;
     border-radius: 10px;
     font-size: 13px;
@@ -196,6 +201,16 @@ a {
 
 #top-signout-btn {
     display: none;
+}
+
+.nav .btn {
+    min-height: 38px;
+    padding: 8px 14px;
+    border-radius: 10px;
+}
+
+.nav .btn-primary {
+    padding-inline: 16px;
 }
 
 .btn {
@@ -1052,12 +1067,12 @@ p {
 }
 
 .auth-card {
-    width: min(420px, 92vw);
+    width: min(460px, 92vw);
     padding: 18px;
-    border-radius: 14px;
+    border-radius: 16px;
     background: linear-gradient(145deg, rgba(8, 12, 30, 0.97), rgba(13, 20, 50, 0.95));
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.48);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.5);
 }
 
 .auth-card h3 {
@@ -1108,6 +1123,11 @@ p {
 
 .auth-card-actions > button {
     flex: 1 1 calc(50% - 4px);
+}
+
+.auth-card-actions #auth-cancel-btn,
+.auth-card-actions #global-auth-cancel-btn {
+    flex-basis: 100%;
 }
 
 .auth-message {
@@ -1213,12 +1233,30 @@ p {
 }
 
 @media (max-width: 820px) {
+    .topbar.shell {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    .topbar {
+        padding: 9px 10px;
+        gap: 8px;
+    }
     .hero {
         grid-template-columns: 1fr;
     }
     .topbar {
         position: static;
     }
+    .brand {
+        min-width: max-content;
+    }
+    .nav {
+        padding: 5px;
+        overflow-x: auto;
+        scrollbar-width: thin;
+    }
+    .nav a,
+    .nav .btn,
     .auth-top-btn {
         min-height: 34px;
         padding: 7px 10px;
