@@ -117,3 +117,4 @@ on conflict (position) do nothing;
 
 -- Add yourself as editor (replace with your auth.users id)
 -- insert into public.editors (user_id) values ('00000000-0000-0000-0000-000000000000');
+
