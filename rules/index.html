@@ -302,9 +302,9 @@
                 if (!brandEl || !brandNameEl) return;
                 if (!state.session) {
                     brandNameEl.textContent = state.defaultBrandName;
-                    brandEl.classList.remove('brand-account-enabled');
-                    brandEl.removeAttribute('role');
-                    brandEl.removeAttribute('tabindex');
+                    brandEl.classList.add('brand-account-enabled');
+                    brandEl.setAttribute('role', 'button');
+                    brandEl.setAttribute('tabindex', '0');
                     closeBrandMenu();
                     closeAccountSettingsModal();
                     return;
@@ -808,13 +808,19 @@
                 });
                 if (brandEl) {
                     brandEl.addEventListener('click', function() {
-                        if (!state.session) return;
+                        if (!state.session) {
+                            openAuthModal();
+                            return;
+                        }
                         toggleBrandMenu();
                     });
                     brandEl.addEventListener('keydown', function(event) {
-                        if (!state.session) return;
                         if (event.key === 'Enter' || event.key === ' ') {
                             event.preventDefault();
+                            if (!state.session) {
+                                openAuthModal();
+                                return;
+                            }
                             toggleBrandMenu();
                         }
                     });

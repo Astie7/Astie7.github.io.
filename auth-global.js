@@ -174,9 +174,9 @@ window.addEventListener('DOMContentLoaded', function() {
             if (!brandEl || !brandNameEl) return;
             if (!session) {
                 brandNameEl.textContent = state.defaultBrandName;
-                brandEl.classList.remove('brand-account-enabled');
-                brandEl.removeAttribute('role');
-                brandEl.removeAttribute('tabindex');
+                brandEl.classList.add('brand-account-enabled');
+                brandEl.setAttribute('role', 'button');
+                brandEl.setAttribute('tabindex', '0');
                 closeBrandMenu();
                 closeAccountSettingsModal();
                 return;
@@ -309,13 +309,19 @@ window.addEventListener('DOMContentLoaded', function() {
         });
         if (brandEl) {
             brandEl.addEventListener('click', function() {
-                if (!state.session) return;
+                if (!state.session) {
+                    openModal();
+                    return;
+                }
                 toggleBrandMenu();
             });
             brandEl.addEventListener('keydown', function(event) {
-                if (!state.session) return;
                 if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault();
+                    if (!state.session) {
+                        openModal();
+                        return;
+                    }
                     toggleBrandMenu();
                 }
             });
