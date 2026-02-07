@@ -16,11 +16,10 @@ window.addEventListener('DOMContentLoaded', function() {
             '<div id="global-auth-modal" class="auth-modal" aria-hidden="true">',
             '  <div class="auth-card global-auth-card">',
             '    <h3>Pantheverse account</h3>',
-            '    <p>Sign in, register, or use email code verification.</p>',
+            '    <p>Sign in or register with email verification.</p>',
             '    <div class="auth-mode-tabs">',
             '      <button id="global-auth-mode-signin" class="auth-mode-btn active" type="button">Sign in</button>',
             '      <button id="global-auth-mode-register" class="auth-mode-btn" type="button">Register</button>',
-            '      <button id="global-auth-mode-code" class="auth-mode-btn" type="button">Code</button>',
             '    </div>',
             '    <label for="global-auth-email">Email</label>',
             '    <input id="global-auth-email" class="edit-input" type="email" placeholder="you@example.com" autocomplete="email">',
@@ -28,16 +27,19 @@ window.addEventListener('DOMContentLoaded', function() {
             '      <label for="global-auth-password">Password</label>',
             '      <input id="global-auth-password" class="edit-input" type="password" placeholder="Password" autocomplete="current-password">',
             '    </div>',
+            '    <div id="global-auth-confirm-wrap" style="display:none;">',
+            '      <label for="global-auth-confirm-password">Confirm password</label>',
+            '      <input id="global-auth-confirm-password" class="edit-input" type="password" placeholder="Confirm password" autocomplete="new-password">',
+            '    </div>',
             '    <div id="global-auth-code-wrap" style="display:none;">',
             '      <label for="global-auth-code">Verification code</label>',
             '      <input id="global-auth-code" class="edit-input" type="text" placeholder="Enter code from email" autocomplete="one-time-code">',
             '    </div>',
             '    <div class="auth-card-actions">',
             '      <button id="global-auth-login-btn" class="edit-btn" type="button">Sign in</button>',
-            '      <button id="global-auth-register-btn" class="edit-btn" type="button">Create account</button>',
             '      <button id="global-auth-send-code-btn" class="btn btn-ghost" type="button">Send code</button>',
-            '      <button id="global-auth-verify-code-btn" class="edit-btn" type="button">Verify code</button>',
-            '      <button id="global-auth-resend-code-btn" class="btn btn-ghost" type="button">Resend</button>',
+            '      <button id="global-auth-register-btn" class="edit-btn" type="button">Verify & create</button>',
+            '      <button id="global-auth-resend-code-btn" class="btn btn-ghost" type="button">Resend code</button>',
             '      <button id="global-auth-cancel-btn" class="btn btn-ghost" type="button">Cancel</button>',
             '    </div>',
             '    <p id="global-auth-message" class="auth-message"></p>',
@@ -49,16 +51,16 @@ window.addEventListener('DOMContentLoaded', function() {
         const modal = document.getElementById('global-auth-modal');
         const modeSigninBtn = document.getElementById('global-auth-mode-signin');
         const modeRegisterBtn = document.getElementById('global-auth-mode-register');
-        const modeCodeBtn = document.getElementById('global-auth-mode-code');
         const emailInput = document.getElementById('global-auth-email');
         const passwordWrap = document.getElementById('global-auth-password-wrap');
         const passwordInput = document.getElementById('global-auth-password');
+        const confirmWrap = document.getElementById('global-auth-confirm-wrap');
+        const confirmInput = document.getElementById('global-auth-confirm-password');
         const codeWrap = document.getElementById('global-auth-code-wrap');
         const codeInput = document.getElementById('global-auth-code');
         const loginBtn = document.getElementById('global-auth-login-btn');
         const registerBtn = document.getElementById('global-auth-register-btn');
         const sendCodeBtn = document.getElementById('global-auth-send-code-btn');
-        const verifyCodeBtn = document.getElementById('global-auth-verify-code-btn');
         const resendCodeBtn = document.getElementById('global-auth-resend-code-btn');
         const cancelBtn = document.getElementById('global-auth-cancel-btn');
         const messageEl = document.getElementById('global-auth-message');
@@ -77,34 +79,31 @@ window.addEventListener('DOMContentLoaded', function() {
             state.mode = mode;
             const isSignin = mode === 'signin';
             const isRegister = mode === 'register';
-            const isCode = mode === 'code';
 
             modeSigninBtn.classList.toggle('active', isSignin);
             modeRegisterBtn.classList.toggle('active', isRegister);
-            modeCodeBtn.classList.toggle('active', isCode);
 
-            passwordWrap.style.display = isCode ? 'none' : 'block';
-            codeWrap.style.display = isCode ? 'block' : 'none';
+            passwordWrap.style.display = 'block';
+            confirmWrap.style.display = isRegister ? 'block' : 'none';
+            codeWrap.style.display = isRegister ? 'block' : 'none';
 
             loginBtn.style.display = isSignin ? 'inline-flex' : 'none';
+            sendCodeBtn.style.display = isRegister ? 'inline-flex' : 'none';
             registerBtn.style.display = isRegister ? 'inline-flex' : 'none';
-            sendCodeBtn.style.display = isCode ? 'inline-flex' : 'none';
-            verifyCodeBtn.style.display = isCode ? 'inline-flex' : 'none';
-            resendCodeBtn.style.display = isCode ? 'inline-flex' : 'none';
+            resendCodeBtn.style.display = isRegister ? 'inline-flex' : 'none';
             setMessage('', false);
         }
 
         function setBusy(isBusy) {
             modeSigninBtn.disabled = isBusy;
             modeRegisterBtn.disabled = isBusy;
-            modeCodeBtn.disabled = isBusy;
             emailInput.disabled = isBusy;
             passwordInput.disabled = isBusy;
+            confirmInput.disabled = isBusy;
             codeInput.disabled = isBusy;
             loginBtn.disabled = isBusy;
             registerBtn.disabled = isBusy;
             sendCodeBtn.disabled = isBusy;
-            verifyCodeBtn.disabled = isBusy;
             resendCodeBtn.disabled = isBusy;
             cancelBtn.disabled = isBusy;
         }
@@ -123,6 +122,7 @@ window.addEventListener('DOMContentLoaded', function() {
             modal.setAttribute('aria-hidden', 'true');
             setBusy(false);
             passwordInput.value = '';
+            confirmInput.value = '';
             codeInput.value = '';
             setMessage('', false);
         }
@@ -141,18 +141,40 @@ window.addEventListener('DOMContentLoaded', function() {
             topSignoutBtn.style.display = 'none';
         }
 
-        async function sendCode(isResend) {
+        function validateRegisterFields(requireCode) {
             const email = emailInput.value.trim();
-            if (!email) {
-                setMessage('Email is required.', true);
-                return;
+            const password = passwordInput.value;
+            const confirmPassword = confirmInput.value;
+            const code = codeInput.value.trim().replace(/\s+/g, '');
+
+            if (!email || !password) {
+                setMessage('Email and password are required.', true);
+                return null;
             }
+            if (password.length < 6) {
+                setMessage('Use at least 6 characters for password.', true);
+                return null;
+            }
+            if (password !== confirmPassword) {
+                setMessage('Passwords do not match.', true);
+                return null;
+            }
+            if (requireCode && !code) {
+                setMessage('Verification code is required.', true);
+                return null;
+            }
+            return { email: email, password: password, code: code };
+        }
+
+        async function sendCode(isResend) {
+            const form = validateRegisterFields(false);
+            if (!form) return;
 
             setBusy(true);
             const { error } = await state.client.auth.signInWithOtp({
-                email: email,
+                email: form.email,
                 options: {
-                    shouldCreateUser: false,
+                    shouldCreateUser: true,
                     emailRedirectTo: sessionRedirectUrl()
                 }
             });
@@ -173,13 +195,10 @@ window.addEventListener('DOMContentLoaded', function() {
             setMode('signin');
             passwordInput.focus();
         });
+
         modeRegisterBtn.addEventListener('click', function() {
             setMode('register');
             passwordInput.focus();
-        });
-        modeCodeBtn.addEventListener('click', function() {
-            setMode('code');
-            codeInput.focus();
         });
 
         loginBtn.addEventListener('click', async function() {
@@ -201,38 +220,30 @@ window.addEventListener('DOMContentLoaded', function() {
         });
 
         registerBtn.addEventListener('click', async function() {
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
-            if (!email || !password) {
-                setMessage('Email and password are required.', true);
-                return;
-            }
-            if (password.length < 6) {
-                setMessage('Use at least 6 characters for password.', true);
-                return;
-            }
+            const form = validateRegisterFields(true);
+            if (!form) return;
 
             setBusy(true);
-            const { data, error } = await state.client.auth.signUp({
-                email: email,
-                password: password,
-                options: {
-                    emailRedirectTo: sessionRedirectUrl()
-                }
+            const verifyResult = await state.client.auth.verifyOtp({
+                email: form.email,
+                token: form.code,
+                type: 'email'
             });
+            if (verifyResult.error) {
+                setMessage(verifyResult.error.message || 'Code verification failed.', true);
+                setBusy(false);
+                return;
+            }
+
+            const updateResult = await state.client.auth.updateUser({ password: form.password });
+            if (updateResult.error) {
+                setMessage(updateResult.error.message || 'Password setup failed.', true);
+                setBusy(false);
+                return;
+            }
+
             setBusy(false);
-
-            if (error) {
-                setMessage(error.message || 'Registration failed.', true);
-                return;
-            }
-
-            if (data && data.session) {
-                closeModal();
-                return;
-            }
-
-            setMessage('Account created. Check email to confirm, then sign in.', false);
+            closeModal();
         });
 
         sendCodeBtn.addEventListener('click', function() {
@@ -241,29 +252,6 @@ window.addEventListener('DOMContentLoaded', function() {
 
         resendCodeBtn.addEventListener('click', function() {
             sendCode(true);
-        });
-
-        verifyCodeBtn.addEventListener('click', async function() {
-            const email = emailInput.value.trim();
-            const code = codeInput.value.trim().replace(/\s+/g, '');
-            if (!email || !code) {
-                setMessage('Email and verification code are required.', true);
-                return;
-            }
-
-            setBusy(true);
-            const { error } = await state.client.auth.verifyOtp({
-                email: email,
-                token: code,
-                type: 'email'
-            });
-            setBusy(false);
-
-            if (error) {
-                setMessage(error.message || 'Code verification failed.', true);
-                return;
-            }
-            closeModal();
         });
 
         cancelBtn.addEventListener('click', closeModal);

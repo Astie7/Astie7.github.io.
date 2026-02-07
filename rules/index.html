@@ -83,11 +83,10 @@
     <div id="auth-modal" class="auth-modal" aria-hidden="true">
         <div class="auth-card">
             <h3>Editor Access</h3>
-            <p>Sign in or register. Only accounts in the editors list can modify rules.</p>
+            <p>Sign in or register with email verification. Only accounts in the editors list can modify rules.</p>
             <div class="auth-mode-tabs">
                 <button id="auth-mode-signin" class="auth-mode-btn active" type="button">Sign in</button>
                 <button id="auth-mode-register" class="auth-mode-btn" type="button">Register</button>
-                <button id="auth-mode-code" class="auth-mode-btn" type="button">Code</button>
             </div>
             <label for="auth-email">Email</label>
             <input id="auth-email" class="edit-input" type="email" placeholder="you@example.com" autocomplete="email">
@@ -95,16 +94,19 @@
                 <label for="auth-password">Password</label>
                 <input id="auth-password" class="edit-input" type="password" placeholder="Password" autocomplete="current-password">
             </div>
+            <div id="auth-confirm-wrap" style="display:none;">
+                <label for="auth-confirm-password">Confirm password</label>
+                <input id="auth-confirm-password" class="edit-input" type="password" placeholder="Confirm password" autocomplete="new-password">
+            </div>
             <div id="auth-code-wrap" style="display:none;">
                 <label for="auth-code">Verification code</label>
                 <input id="auth-code" class="edit-input" type="text" placeholder="Enter code from email" autocomplete="one-time-code">
             </div>
             <div class="auth-card-actions">
                 <button id="auth-login-btn" class="edit-btn" type="button">Sign in</button>
-                <button id="auth-register-btn" class="edit-btn" type="button">Create account</button>
                 <button id="auth-send-code-btn" class="btn btn-ghost" type="button">Send code</button>
-                <button id="auth-verify-code-btn" class="edit-btn" type="button">Verify code</button>
-                <button id="auth-resend-code-btn" class="btn btn-ghost" type="button">Resend</button>
+                <button id="auth-register-btn" class="edit-btn" type="button">Verify & create</button>
+                <button id="auth-resend-code-btn" class="btn btn-ghost" type="button">Resend code</button>
                 <button id="auth-cancel-btn" class="btn btn-ghost" type="button">Cancel</button>
             </div>
             <p id="auth-message" class="auth-message"></p>
@@ -147,16 +149,16 @@
             const authModal = document.getElementById('auth-modal');
             const authModeSigninBtn = document.getElementById('auth-mode-signin');
             const authModeRegisterBtn = document.getElementById('auth-mode-register');
-            const authModeCodeBtn = document.getElementById('auth-mode-code');
             const authEmail = document.getElementById('auth-email');
             const authPasswordWrap = document.getElementById('auth-password-wrap');
             const authPassword = document.getElementById('auth-password');
+            const authConfirmWrap = document.getElementById('auth-confirm-wrap');
+            const authConfirmPassword = document.getElementById('auth-confirm-password');
             const authCodeWrap = document.getElementById('auth-code-wrap');
             const authCode = document.getElementById('auth-code');
             const authLoginBtn = document.getElementById('auth-login-btn');
             const authRegisterBtn = document.getElementById('auth-register-btn');
             const authSendCodeBtn = document.getElementById('auth-send-code-btn');
-            const authVerifyCodeBtn = document.getElementById('auth-verify-code-btn');
             const authResendCodeBtn = document.getElementById('auth-resend-code-btn');
             const authCancelBtn = document.getElementById('auth-cancel-btn');
             const authMessage = document.getElementById('auth-message');
@@ -204,14 +206,13 @@
             function setAuthActionBusy(isBusy) {
                 authModeSigninBtn.disabled = isBusy;
                 authModeRegisterBtn.disabled = isBusy;
-                authModeCodeBtn.disabled = isBusy;
                 authEmail.disabled = isBusy;
                 authPassword.disabled = isBusy;
+                authConfirmPassword.disabled = isBusy;
                 authCode.disabled = isBusy;
                 authLoginBtn.disabled = isBusy;
                 authRegisterBtn.disabled = isBusy;
                 authSendCodeBtn.disabled = isBusy;
-                authVerifyCodeBtn.disabled = isBusy;
                 authResendCodeBtn.disabled = isBusy;
                 authCancelBtn.disabled = isBusy;
             }
@@ -228,20 +229,18 @@
                 state.authMode = mode;
                 const isSignin = mode === 'signin';
                 const isRegister = mode === 'register';
-                const isCode = mode === 'code';
 
                 authModeSigninBtn.classList.toggle('active', isSignin);
                 authModeRegisterBtn.classList.toggle('active', isRegister);
-                authModeCodeBtn.classList.toggle('active', isCode);
 
-                authPasswordWrap.style.display = isCode ? 'none' : 'block';
-                authCodeWrap.style.display = isCode ? 'block' : 'none';
+                authPasswordWrap.style.display = 'block';
+                authConfirmWrap.style.display = isRegister ? 'block' : 'none';
+                authCodeWrap.style.display = isRegister ? 'block' : 'none';
 
                 authLoginBtn.style.display = isSignin ? 'inline-flex' : 'none';
                 authRegisterBtn.style.display = isRegister ? 'inline-flex' : 'none';
-                authSendCodeBtn.style.display = isCode ? 'inline-flex' : 'none';
-                authVerifyCodeBtn.style.display = isCode ? 'inline-flex' : 'none';
-                authResendCodeBtn.style.display = isCode ? 'inline-flex' : 'none';
+                authSendCodeBtn.style.display = isRegister ? 'inline-flex' : 'none';
+                authResendCodeBtn.style.display = isRegister ? 'inline-flex' : 'none';
                 setAuthMessage('', false);
             }
 
@@ -259,6 +258,7 @@
                 authModal.setAttribute('aria-hidden', 'true');
                 setAuthActionBusy(false);
                 authPassword.value = '';
+                authConfirmPassword.value = '';
                 authCode.value = '';
                 setAuthMessage('', false);
             }
@@ -695,10 +695,6 @@
                     setAuthMode('register');
                     authPassword.focus();
                 });
-                authModeCodeBtn.addEventListener('click', function() {
-                    setAuthMode('code');
-                    authCode.focus();
-                });
                 confirmModal.addEventListener('click', (e) => {
                     if (e.target === confirmModal) resolveConfirm(false);
                 });
@@ -724,54 +720,66 @@
                     closeAuthModal();
                 });
 
-                authRegisterBtn.addEventListener('click', async () => {
+                function validateRegisterFields(requireCode) {
                     if (!state.client) return;
                     const email = authEmail.value.trim();
                     const password = authPassword.value;
+                    const confirmPassword = authConfirmPassword.value;
+                    const code = authCode.value.trim().replace(/\s+/g, '');
                     if (!email || !password) {
                         setAuthMessage('Email and password are required.', true);
-                        return;
+                        return null;
                     }
                     if (password.length < 6) {
                         setAuthMessage('Use at least 6 characters for password.', true);
-                        return;
+                        return null;
                     }
+                    if (password !== confirmPassword) {
+                        setAuthMessage('Passwords do not match.', true);
+                        return null;
+                    }
+                    if (requireCode && !code) {
+                        setAuthMessage('Verification code is required.', true);
+                        return null;
+                    }
+                    return { email: email, password: password, code: code };
+                }
+
+                authRegisterBtn.addEventListener('click', async () => {
+                    if (!state.client) return;
+                    const form = validateRegisterFields(true);
+                    if (!form) return;
                     setAuthActionBusy(true);
-                    const redirectUrl = config.authRedirectTo || window.location.href.split('#')[0].split('?')[0];
-                    const { data, error } = await state.client.auth.signUp({
-                        email: email,
-                        password: password,
-                        options: {
-                            emailRedirectTo: redirectUrl
-                        }
+                    const { error } = await state.client.auth.verifyOtp({
+                        email: form.email,
+                        token: form.code,
+                        type: 'email'
                     });
                     if (error) {
-                        setAuthMessage(error.message || 'Registration failed.', true);
+                        setAuthMessage(error.message || 'Code verification failed.', true);
+                        setAuthActionBusy(false);
+                        return;
+                    }
+                    const updateResult = await state.client.auth.updateUser({ password: form.password });
+                    if (updateResult.error) {
+                        setAuthMessage(updateResult.error.message || 'Password setup failed.', true);
                         setAuthActionBusy(false);
                         return;
                     }
                     setAuthActionBusy(false);
-                    if (data && data.session) {
-                        setAuthMessage('Account created and signed in.', false);
-                        closeAuthModal();
-                        return;
-                    }
-                    setAuthMessage('Account created. Check your email to confirm, then sign in.', false);
+                    closeAuthModal();
                 });
 
                 async function sendCodeMessage(isResend) {
                     if (!state.client) return;
-                    const email = authEmail.value.trim();
-                    if (!email) {
-                        setAuthMessage('Email is required.', true);
-                        return;
-                    }
+                    const form = validateRegisterFields(false);
+                    if (!form) return;
                     setAuthActionBusy(true);
                     const redirectUrl = config.authRedirectTo || window.location.href.split('#')[0].split('?')[0];
                     const { error } = await state.client.auth.signInWithOtp({
-                        email: email,
+                        email: form.email,
                         options: {
-                            shouldCreateUser: false,
+                            shouldCreateUser: true,
                             emailRedirectTo: redirectUrl
                         }
                     });
@@ -790,29 +798,6 @@
 
                 authResendCodeBtn.addEventListener('click', function() {
                     sendCodeMessage(true);
-                });
-
-                authVerifyCodeBtn.addEventListener('click', async function() {
-                    if (!state.client) return;
-                    const email = authEmail.value.trim();
-                    const code = authCode.value.trim().replace(/\s+/g, '');
-                    if (!email || !code) {
-                        setAuthMessage('Email and verification code are required.', true);
-                        return;
-                    }
-                    setAuthActionBusy(true);
-                    const { error } = await state.client.auth.verifyOtp({
-                        email: email,
-                        token: code,
-                        type: 'email'
-                    });
-                    if (error) {
-                        setAuthMessage(error.message || 'Code verification failed.', true);
-                        setAuthActionBusy(false);
-                        return;
-                    }
-                    setAuthActionBusy(false);
-                    closeAuthModal();
                 });
 
                 topSignoutBtn.addEventListener('click', async () => {
