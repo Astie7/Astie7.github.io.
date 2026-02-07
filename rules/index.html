@@ -84,14 +84,15 @@
 
     <div id="auth-modal" class="auth-modal" aria-hidden="true">
         <div class="auth-card">
-            <h3>Editor Sign In</h3>
-            <p>Only approved editor accounts can modify rules.</p>
+            <h3>Editor Access</h3>
+            <p>Sign in or register. Only accounts in the editors list can modify rules.</p>
             <label for="auth-email">Email</label>
             <input id="auth-email" class="edit-input" type="email" placeholder="you@example.com" autocomplete="email">
             <label for="auth-password">Password</label>
             <input id="auth-password" class="edit-input" type="password" placeholder="Password" autocomplete="current-password">
             <div class="auth-card-actions">
                 <button id="auth-login-btn" class="edit-btn" type="button">Sign in</button>
+                <button id="auth-register-btn" class="btn btn-ghost" type="button">Register</button>
                 <button id="auth-cancel-btn" class="btn btn-ghost" type="button">Cancel</button>
             </div>
             <p id="auth-message" class="auth-message"></p>
@@ -135,6 +136,7 @@
             const authEmail = document.getElementById('auth-email');
             const authPassword = document.getElementById('auth-password');
             const authLoginBtn = document.getElementById('auth-login-btn');
+            const authRegisterBtn = document.getElementById('auth-register-btn');
             const authCancelBtn = document.getElementById('auth-cancel-btn');
             const authMessage = document.getElementById('auth-message');
             const confirmModal = document.getElementById('confirm-modal');
@@ -177,6 +179,12 @@
                 authMessage.className = isError ? 'auth-message error' : 'auth-message';
             }
 
+            function setAuthActionBusy(isBusy) {
+                authLoginBtn.disabled = isBusy;
+                authRegisterBtn.disabled = isBusy;
+                authCancelBtn.disabled = isBusy;
+            }
+
             function setAuthState(text) {
                 authStateEl.textContent = text;
             }
@@ -188,6 +196,7 @@
             function openAuthModal() {
                 authModal.classList.add('open');
                 authModal.setAttribute('aria-hidden', 'false');
+                setAuthActionBusy(false);
                 setAuthMessage('', false);
                 authEmail.focus();
             }
@@ -195,6 +204,7 @@
             function closeAuthModal() {
                 authModal.classList.remove('open');
                 authModal.setAttribute('aria-hidden', 'true');
+                setAuthActionBusy(false);
                 authPassword.value = '';
                 setAuthMessage('', false);
             }
@@ -632,12 +642,43 @@
                         setAuthMessage('Email and password are required.', true);
                         return;
                     }
+                    setAuthActionBusy(true);
                     const { error } = await state.client.auth.signInWithPassword({ email: email, password: password });
                     if (error) {
                         setAuthMessage(error.message || 'Sign in failed.', true);
+                        setAuthActionBusy(false);
                         return;
                     }
+                    setAuthActionBusy(false);
                     closeAuthModal();
+                });
+
+                authRegisterBtn.addEventListener('click', async () => {
+                    if (!state.client) return;
+                    const email = authEmail.value.trim();
+                    const password = authPassword.value;
+                    if (!email || !password) {
+                        setAuthMessage('Email and password are required.', true);
+                        return;
+                    }
+                    if (password.length < 6) {
+                        setAuthMessage('Use at least 6 characters for password.', true);
+                        return;
+                    }
+                    setAuthActionBusy(true);
+                    const { data, error } = await state.client.auth.signUp({ email: email, password: password });
+                    if (error) {
+                        setAuthMessage(error.message || 'Registration failed.', true);
+                        setAuthActionBusy(false);
+                        return;
+                    }
+                    setAuthActionBusy(false);
+                    if (data && data.session) {
+                        setAuthMessage('Account created and signed in.', false);
+                        closeAuthModal();
+                        return;
+                    }
+                    setAuthMessage('Account created. Check your email to confirm, then sign in.', false);
                 });
 
                 authSignoutBtn.addEventListener('click', async () => {
