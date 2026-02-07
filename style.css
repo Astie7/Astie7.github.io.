@@ -1047,8 +1047,10 @@ p {
     inset: 0;
     display: none;
     place-items: center;
-    background: rgba(2, 6, 16, 0.78);
-    backdrop-filter: blur(4px);
+    background:
+        radial-gradient(120% 120% at 20% 0%, rgba(124, 242, 255, 0.08), transparent 44%),
+        rgba(2, 5, 14, 0.82);
+    backdrop-filter: blur(6px);
     z-index: 28;
 }
 
@@ -1057,40 +1059,41 @@ p {
 }
 
 .auth-card {
-    width: min(520px, 94vw);
-    border-radius: 12px;
+    width: min(500px, 94vw);
+    border-radius: 14px;
     overflow: hidden;
-    background: linear-gradient(180deg, rgba(8, 14, 30, 0.98), rgba(7, 12, 26, 0.96));
-    border: 1px solid rgba(127, 166, 211, 0.28);
+    background:
+        linear-gradient(180deg, rgba(8, 14, 32, 0.98), rgba(7, 12, 26, 0.97));
+    border: 1px solid rgba(127, 166, 211, 0.34);
     box-shadow:
-        0 22px 40px rgba(0, 0, 0, 0.42),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        0 28px 54px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .auth-head {
-    padding: 14px 16px 12px;
-    border-bottom: 1px solid rgba(127, 166, 211, 0.2);
-    background: linear-gradient(180deg, rgba(15, 27, 50, 0.94), rgba(10, 20, 40, 0.86));
+    padding: 16px 18px 12px;
+    border-bottom: 1px solid rgba(127, 166, 211, 0.24);
+    background: linear-gradient(180deg, rgba(13, 26, 52, 0.96), rgba(9, 18, 38, 0.88));
 }
 
 .auth-head h3 {
     margin: 0;
-    font-size: 20px;
-    letter-spacing: 0.01em;
+    font-size: 24px;
+    letter-spacing: -0.01em;
 }
 
 .auth-head p {
     margin: 6px 0 0;
-    color: #aebfdf;
+    color: #b8c8e6;
     font-size: 13px;
 }
 
 .auth-body {
-    padding: 14px 16px 10px;
+    padding: 14px 18px 10px;
 }
 
 .auth-field-group {
-    margin-bottom: 11px;
+    margin-bottom: 12px;
 }
 
 .auth-field-group label {
@@ -1099,60 +1102,75 @@ p {
     font-size: 12px;
     letter-spacing: 0.03em;
     font-weight: 700;
-    color: #c6d4ee;
+    color: #d4e1f8;
 }
 
 .auth-field-group .edit-input {
     width: 100%;
-    border-radius: 8px;
-    border-color: rgba(127, 166, 211, 0.26);
-    background: rgba(7, 16, 33, 0.82);
+    min-height: 42px;
+    border-radius: 9px;
+    border-color: rgba(127, 166, 211, 0.32);
+    background: rgba(8, 18, 36, 0.9);
     color: #eaf2ff;
 }
 
 .auth-code-group {
-    margin-bottom: 13px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: end;
+    margin-bottom: 14px;
+}
+
+.auth-code-group label {
+    grid-column: 1 / -1;
+}
+
+.auth-code-group .edit-input {
+    margin: 0;
 }
 
 .auth-inline-btn {
-    width: 100%;
-    margin-top: 7px;
-    min-height: 36px;
+    width: auto;
+    margin-top: 0;
+    min-height: 42px;
+    padding-inline: 14px;
 }
 
 .auth-mode-tabs {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 6px;
-    margin-bottom: 11px;
+    gap: 8px;
+    margin-bottom: 12px;
 }
 
 .auth-mode-btn {
-    border: 1px solid rgba(127, 166, 211, 0.25);
-    background: rgba(10, 22, 44, 0.82);
+    border: 1px solid rgba(127, 166, 211, 0.28);
+    background: rgba(9, 20, 40, 0.86);
     color: #c9d7f3;
-    border-radius: 8px;
-    min-height: 36px;
+    border-radius: 9px;
+    min-height: 40px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+    transition: background 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
 }
 
 .auth-mode-btn.active {
-    border-color: rgba(124, 242, 255, 0.5);
-    background: linear-gradient(140deg, rgba(124, 242, 255, 0.2), rgba(63, 106, 191, 0.24));
+    border-color: rgba(124, 242, 255, 0.6);
+    background: linear-gradient(140deg, rgba(124, 242, 255, 0.26), rgba(63, 106, 191, 0.3));
     color: #ebfbff;
 }
 
 .auth-mode-btn:not(.active):hover {
-    background: rgba(124, 242, 255, 0.1);
+    background: rgba(124, 242, 255, 0.12);
+    transform: translateY(-1px);
 }
 
 .auth-card-actions {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 7px;
-    margin-top: 2px;
+    gap: 8px;
+    margin-top: 0;
 }
 
 .auth-card-actions #auth-cancel-btn,
@@ -1162,14 +1180,14 @@ p {
 
 .auth-card-actions .edit-btn,
 .auth-card-actions .btn {
-    min-height: 36px;
-    border-radius: 8px;
+    min-height: 40px;
+    border-radius: 9px;
 }
 
 .auth-message {
-    min-height: 20px;
+    min-height: 22px;
     margin: 0;
-    padding: 0 16px 14px;
+    padding: 2px 18px 14px;
     font-size: 12px;
     color: #9fb1d6;
 }
@@ -1300,19 +1318,26 @@ p {
     }
     .auth-card {
         width: min(500px, 95vw);
-        border-radius: 10px;
+        border-radius: 12px;
     }
     .auth-head {
         padding: 12px 12px 10px;
     }
     .auth-head h3 {
-        font-size: 18px;
+        font-size: 20px;
     }
     .auth-head p {
         font-size: 12px;
     }
     .auth-body {
         padding: 10px 12px 8px;
+    }
+    .auth-code-group {
+        grid-template-columns: 1fr;
+    }
+    .auth-inline-btn {
+        width: 100%;
+        min-height: 38px;
     }
     .auth-card-actions {
         grid-template-columns: 1fr;
