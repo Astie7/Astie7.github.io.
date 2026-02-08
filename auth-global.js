@@ -112,18 +112,7 @@ window.addEventListener('DOMContentLoaded', function() {
             '        </label>',
             '      </section>',
             '      <section class="account-settings-panel">',
-            '        <h4>Rules editor</h4>',
-            '        <label class="account-toggle">',
-            '          <input id="pref-confirm-actions" type="checkbox">',
-            '          <span><strong>Confirm destructive actions</strong><small>Prompt before delete operations in edit mode.</small></span>',
-            '        </label>',
-            '        <label class="account-toggle">',
-            '          <input id="pref-editor-focus" type="checkbox">',
-            '          <span><strong>Highlight editor tools</strong><small>Emphasize rule editor surfaces on the Rules page.</small></span>',
-            '        </label>',
-            '      </section>',
-            '      <section class="account-settings-panel">',
-            '        <h4>Navigation shortcuts</h4>',
+            '        <h4>Navigation and links</h4>',
             '        <div class="account-settings-inline-actions">',
             '          <button id="account-settings-open-home" class="btn btn-ghost" type="button">Open Home</button>',
             '          <button id="account-settings-open-rules" class="btn btn-ghost" type="button">Open Rules</button>',
@@ -333,8 +322,8 @@ window.addEventListener('DOMContentLoaded', function() {
                 liteMode: prefLiteModeInput ? (!AUTO_LOW_END_MODE && !!prefLiteModeInput.checked) : DEFAULT_SETTINGS.liteMode,
                 minEffects: prefMinEffectsInput ? !!prefMinEffectsInput.checked : DEFAULT_SETTINGS.minEffects,
                 smoothTransitions: prefSmoothTransitionsInput ? !!prefSmoothTransitionsInput.checked : DEFAULT_SETTINGS.smoothTransitions,
-                confirmActions: prefConfirmActionsInput ? !!prefConfirmActionsInput.checked : DEFAULT_SETTINGS.confirmActions,
-                emphasizeEditorTools: prefEditorFocusInput ? !!prefEditorFocusInput.checked : DEFAULT_SETTINGS.emphasizeEditorTools
+                confirmActions: prefConfirmActionsInput ? !!prefConfirmActionsInput.checked : ((state.userSettings && typeof state.userSettings.confirmActions === 'boolean') ? state.userSettings.confirmActions : DEFAULT_SETTINGS.confirmActions),
+                emphasizeEditorTools: prefEditorFocusInput ? !!prefEditorFocusInput.checked : ((state.userSettings && typeof state.userSettings.emphasizeEditorTools === 'boolean') ? state.userSettings.emphasizeEditorTools : DEFAULT_SETTINGS.emphasizeEditorTools)
             });
         }
 

@@ -1920,3 +1920,449 @@ html[data-theme="dark"] .topbar {
         filter: none !important;
     }
 }
+
+/* Full UI refresh v4 */
+body.page {
+    color: #142744;
+    background:
+        radial-gradient(90% 62% at 8% 0%, rgba(113, 214, 255, 0.32), transparent 55%),
+        radial-gradient(80% 58% at 100% 4%, rgba(141, 170, 255, 0.26), transparent 54%),
+        linear-gradient(180deg, #eaf4ff 0%, #dcecff 42%, #edf5ff 100%);
+}
+
+html[data-theme="dark"] body.page {
+    color: #d9e7ff;
+    background:
+        radial-gradient(90% 60% at 8% 0%, rgba(82, 138, 255, 0.24), transparent 55%),
+        radial-gradient(80% 60% at 100% 0%, rgba(91, 117, 255, 0.2), transparent 58%),
+        linear-gradient(180deg, #09152b 0%, #112144 40%, #0b1a35 100%);
+}
+
+html[data-theme="bright"] body.page {
+    color: #102744;
+    background:
+        radial-gradient(95% 65% at 10% 0%, rgba(115, 229, 255, 0.32), transparent 56%),
+        radial-gradient(82% 62% at 100% 0%, rgba(140, 171, 255, 0.3), transparent 56%),
+        linear-gradient(180deg, #f0f7ff 0%, #e1eeff 44%, #f2f8ff 100%);
+}
+
+.shell {
+    width: min(1180px, 94vw);
+}
+
+.topbar.shell {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    padding-top: 14px;
+}
+
+.topbar {
+    border-radius: 18px;
+    padding: 10px 12px;
+    border: 1px solid rgba(88, 132, 186, 0.24);
+    background: rgba(255, 255, 255, 0.76);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 12px 34px rgba(27, 67, 124, 0.14);
+}
+
+html[data-theme="dark"] .topbar {
+    border-color: rgba(129, 170, 255, 0.24);
+    background: rgba(7, 20, 43, 0.8);
+    box-shadow: 0 14px 32px rgba(2, 7, 19, 0.4);
+}
+
+.brand {
+    gap: 10px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(110, 163, 230, 0.28);
+    background: linear-gradient(135deg, rgba(244, 250, 255, 0.88), rgba(213, 235, 255, 0.84));
+    color: #123a69;
+    font-size: 1.08rem;
+}
+
+html[data-theme="dark"] .brand {
+    border-color: rgba(122, 173, 246, 0.28);
+    background: linear-gradient(135deg, rgba(16, 40, 75, 0.9), rgba(14, 32, 65, 0.84));
+    color: #bfe4ff;
+}
+
+.brand .dot {
+    width: 16px;
+    height: 16px;
+    box-shadow: 0 0 0 4px rgba(88, 219, 255, 0.2);
+}
+
+.nav {
+    border-radius: 13px;
+    padding: 5px;
+    gap: 6px;
+    border: 1px solid rgba(99, 147, 204, 0.24);
+    background: rgba(242, 249, 255, 0.82);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+html[data-theme="dark"] .nav {
+    border-color: rgba(118, 164, 231, 0.24);
+    background: rgba(12, 30, 59, 0.86);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.nav a {
+    color: #264870;
+    border-radius: 9px;
+}
+
+html[data-theme="dark"] .nav a {
+    color: #cae3ff;
+}
+
+.nav a.active {
+    color: #072746;
+    background: linear-gradient(135deg, #76dbff, #8ab7ff);
+    box-shadow: 0 8px 20px rgba(69, 151, 255, 0.25);
+}
+
+html[data-theme="dark"] .nav a.active {
+    color: #e6f4ff;
+    background: linear-gradient(135deg, #2f6bf0, #53cbff);
+}
+
+.btn.btn-primary {
+    border: 1px solid rgba(67, 131, 207, 0.3);
+    background: linear-gradient(135deg, #4f7dff, #40d2ff);
+    color: #f7fcff;
+    box-shadow: 0 9px 20px rgba(63, 133, 231, 0.28);
+}
+
+.btn.btn-ghost,
+.edit-btn,
+.delete-rule-btn {
+    border: 1px solid rgba(103, 148, 206, 0.28);
+    background: rgba(249, 252, 255, 0.74);
+    color: #1f436b;
+}
+
+html[data-theme="dark"] .btn.btn-ghost,
+html[data-theme="dark"] .edit-btn,
+html[data-theme="dark"] .delete-rule-btn {
+    border-color: rgba(106, 150, 216, 0.32);
+    background: rgba(17, 35, 66, 0.88);
+    color: #cde6ff;
+}
+
+.hero,
+.rules-layout,
+.page-about main {
+    gap: 28px;
+}
+
+.hero-copy,
+.section-card,
+.tile,
+.feature-card,
+.page-rules .rules-hero-card,
+.page-rules .rules-edit-panel,
+.page-rules .rules-admin-card,
+.page-rules .rules-list li,
+.auth-card,
+.confirm-card,
+.cta-card {
+    border: 1px solid rgba(108, 155, 212, 0.28);
+    border-radius: 18px;
+    background: linear-gradient(155deg, rgba(255, 255, 255, 0.86), rgba(228, 240, 255, 0.86));
+    box-shadow: 0 14px 32px rgba(31, 82, 149, 0.12);
+}
+
+html[data-theme="dark"] .hero-copy,
+html[data-theme="dark"] .section-card,
+html[data-theme="dark"] .tile,
+html[data-theme="dark"] .feature-card,
+html[data-theme="dark"] .page-rules .rules-hero-card,
+html[data-theme="dark"] .page-rules .rules-edit-panel,
+html[data-theme="dark"] .page-rules .rules-admin-card,
+html[data-theme="dark"] .page-rules .rules-list li,
+html[data-theme="dark"] .auth-card,
+html[data-theme="dark"] .confirm-card,
+html[data-theme="dark"] .cta-card {
+    border-color: rgba(102, 148, 210, 0.28);
+    background: linear-gradient(155deg, rgba(14, 33, 66, 0.92), rgba(17, 39, 77, 0.9));
+    box-shadow: 0 14px 34px rgba(0, 5, 15, 0.32);
+}
+
+.hero-copy {
+    padding: 34px;
+}
+
+.hero-copy h1,
+.section-head h1,
+.section-head h2,
+.page-rules .rules-head h1 {
+    color: #102948;
+    letter-spacing: -0.02em;
+}
+
+html[data-theme="dark"] .hero-copy h1,
+html[data-theme="dark"] .section-head h1,
+html[data-theme="dark"] .section-head h2,
+html[data-theme="dark"] .page-rules .rules-head h1 {
+    color: #e7f1ff;
+}
+
+.hero-copy p,
+.section-head p,
+.tile p,
+.feature-card p,
+.page-rules .rules-lead,
+.page-rules .rules-admin-card p,
+.rules-list .rule-text {
+    color: #345578;
+}
+
+html[data-theme="dark"] .hero-copy p,
+html[data-theme="dark"] .section-head p,
+html[data-theme="dark"] .tile p,
+html[data-theme="dark"] .feature-card p,
+html[data-theme="dark"] .page-rules .rules-lead,
+html[data-theme="dark"] .page-rules .rules-admin-card p,
+html[data-theme="dark"] .rules-list .rule-text {
+    color: #b2c9e8;
+}
+
+.tile-grid {
+    gap: 16px;
+}
+
+.tile {
+    padding: 18px;
+}
+
+.tile-icon {
+    background: linear-gradient(135deg, #67dcff, #9b9cff);
+    color: #0d2948;
+    box-shadow: none;
+}
+
+.feature-grid {
+    gap: 14px;
+}
+
+.feature-card strong {
+    color: #0f7bae;
+}
+
+html[data-theme="dark"] .feature-card strong {
+    color: #78e1ff;
+}
+
+.cta-card {
+    padding: 28px 32px;
+    background: linear-gradient(130deg, rgba(126, 229, 255, 0.22), rgba(150, 179, 255, 0.24), rgba(255, 255, 255, 0.72));
+}
+
+html[data-theme="dark"] .cta-card {
+    background: linear-gradient(130deg, rgba(79, 128, 237, 0.28), rgba(73, 165, 255, 0.2), rgba(11, 27, 54, 0.86));
+}
+
+.page-rules .rules-hero-card {
+    padding: 14px;
+    gap: 14px;
+}
+
+.page-rules .rules-head,
+.page-rules .rules-admin-card {
+    border-radius: 14px;
+}
+
+.page-rules .rules-list {
+    gap: 10px;
+}
+
+.page-rules .rules-list li {
+    min-height: 58px;
+    padding: 10px 14px;
+    border-radius: 14px;
+}
+
+.page-rules .rules-list li::before {
+    border-radius: 10px;
+    min-width: 36px;
+    height: 30px;
+    background: linear-gradient(135deg, rgba(124, 230, 255, 0.84), rgba(165, 175, 255, 0.82));
+    color: #113356;
+}
+
+.page-rules .rules-list .drag-handle {
+    border-radius: 8px;
+    background: rgba(125, 184, 247, 0.2);
+    color: #285077;
+}
+
+html[data-theme="dark"] .page-rules .rules-list .drag-handle {
+    background: rgba(82, 138, 214, 0.26);
+    color: #c7e4ff;
+}
+
+.page-rules .rules-list .rule-select {
+    width: 18px;
+    height: 18px;
+}
+
+.page-rules .rules-edit-panel .edit-note {
+    color: #4f6f93;
+}
+
+html[data-theme="dark"] .page-rules .rules-edit-panel .edit-note {
+    color: #9fb9de;
+}
+
+.auth-card {
+    background: linear-gradient(160deg, rgba(244, 250, 255, 0.95), rgba(223, 238, 255, 0.93));
+}
+
+html[data-theme="dark"] .auth-card {
+    background: linear-gradient(160deg, rgba(15, 34, 67, 0.96), rgba(14, 31, 60, 0.94));
+}
+
+.auth-head h3,
+.auth-field-group label,
+.auth-message {
+    color: #1e4168;
+}
+
+html[data-theme="dark"] .auth-head h3,
+html[data-theme="dark"] .auth-field-group label,
+html[data-theme="dark"] .auth-message {
+    color: #d8eaff;
+}
+
+.account-settings-modal {
+    background: linear-gradient(180deg, rgba(18, 35, 66, 0.48), rgba(8, 17, 34, 0.56));
+    backdrop-filter: blur(6px);
+}
+
+.account-settings-card {
+    width: min(1140px, 95vw);
+    border-radius: 20px;
+    border: 1px solid rgba(126, 170, 224, 0.28);
+    background: linear-gradient(162deg, rgba(244, 250, 255, 0.98), rgba(223, 238, 255, 0.96));
+    box-shadow: 0 22px 48px rgba(19, 53, 99, 0.2);
+}
+
+html[data-theme="dark"] .account-settings-card {
+    border-color: rgba(106, 152, 219, 0.3);
+    background: linear-gradient(162deg, rgba(11, 30, 58, 0.98), rgba(14, 34, 67, 0.96));
+    box-shadow: 0 24px 54px rgba(1, 6, 16, 0.42);
+}
+
+.account-settings-head {
+    padding: 26px 26px 18px;
+}
+
+.account-settings-head h3 {
+    color: #13375f;
+    font-size: clamp(30px, 3.6vw, 40px);
+}
+
+html[data-theme="dark"] .account-settings-head h3 {
+    color: #e0edff;
+}
+
+.account-settings-head p,
+.account-settings-msg,
+.account-toggle span small {
+    color: #4d6f94;
+}
+
+html[data-theme="dark"] .account-settings-head p,
+html[data-theme="dark"] .account-settings-msg,
+html[data-theme="dark"] .account-toggle span small {
+    color: #9eb8dc;
+}
+
+.account-settings-layout {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 0 26px 20px;
+}
+
+.account-settings-panel {
+    min-height: 196px;
+    border-radius: 14px;
+    border: 1px solid rgba(127, 168, 218, 0.24);
+    background: linear-gradient(145deg, rgba(248, 252, 255, 0.88), rgba(229, 241, 255, 0.88));
+}
+
+html[data-theme="dark"] .account-settings-panel {
+    border-color: rgba(105, 146, 204, 0.3);
+    background: linear-gradient(145deg, rgba(16, 40, 79, 0.86), rgba(15, 34, 68, 0.88));
+}
+
+.account-settings-panel h4 {
+    color: #174a79;
+}
+
+html[data-theme="dark"] .account-settings-panel h4 {
+    color: #d6e8ff;
+}
+
+.account-toggle {
+    background: rgba(255, 255, 255, 0.74);
+    border-color: rgba(111, 160, 220, 0.28);
+}
+
+html[data-theme="dark"] .account-toggle {
+    background: rgba(9, 26, 53, 0.82);
+    border-color: rgba(106, 150, 214, 0.3);
+}
+
+.account-toggle span strong {
+    color: #1d4b79;
+}
+
+html[data-theme="dark"] .account-toggle span strong {
+    color: #d8e9ff;
+}
+
+.account-settings-inline-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.account-settings-footer {
+    padding: 16px 26px 24px;
+}
+
+.account-settings-actions {
+    min-width: 340px;
+}
+
+@media (max-width: 980px) {
+    .account-settings-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    .topbar {
+        border-radius: 13px;
+    }
+    .brand {
+        font-size: 1rem;
+        padding: 7px 10px;
+    }
+    .hero-copy {
+        padding: 22px;
+    }
+    .account-settings-card {
+        width: min(1140px, 97vw);
+    }
+    .account-settings-head {
+        padding: 16px 14px 12px;
+    }
+    .account-settings-layout {
+        padding: 0 14px 12px;
+    }
+    .account-settings-footer {
+        padding: 12px 14px 14px;
+    }
+}
