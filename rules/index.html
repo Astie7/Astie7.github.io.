@@ -12,24 +12,29 @@
     <link rel="stylesheet" href="../critical.css">
     <link rel="preload" href="../style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../style.css"></noscript>
-    <script src="../supabase-config.js"></script>
+    <script src="../supabase-config.js?v=20260209c"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="page page-rules">
-    <header class="shell topbar">
-        <div class="brand">
-            <span class="dot"></span>
-            <span data-setting-key="brand_name">Pantheverse</span>
+    <header class="shell topbar pantheverse-main-bar" role="banner" aria-label="Pantheverse Main Bar">
+        <div class="pmain-bar">
+            <div class="topbar-left">
+                <div class="brand" aria-label="Account menu">
+                    <span class="dot"></span>
+                    <span data-setting-key="brand_name">Pantheverse</span>
+                </div>
+            </div>
+            <nav class="nav pmain-nav" aria-label="Primary">
+                <a href="../">Home</a>
+                <a class="active" href="./">Rules</a>
+                <a href="../about/">About</a>
+            </nav>
         </div>
-        <nav class="nav">
-            <a href="../">Home</a>
-            <a class="active" href="./">Rules</a>
-            <a href="../about/">About</a>
-            <button id="top-auth-btn" class="btn btn-ghost auth-top-btn" type="button">Login / Register</button>
-            <button id="top-signout-btn" class="btn btn-ghost auth-top-btn" type="button">Sign out</button>
-            <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join Discord</a>
-        </nav>
     </header>
+    <div class="auth-bridge" hidden aria-hidden="true">
+        <button id="top-auth-btn" class="btn btn-ghost auth-top-btn" type="button">Login</button>
+        <button id="top-signout-btn" class="btn btn-ghost auth-top-btn" type="button">Sign out</button>
+    </div>
 
     <main class="shell rules-layout">
         <section class="rules-hero-card">
@@ -71,6 +76,24 @@
 
         <ul id="rules-list" class="rules-list"></ul>
 
+        <section class="section-card rules-checklist">
+            <h3>Before you send a message</h3>
+            <div class="check-grid">
+                <article class="check-item">
+                    <strong>Read context first</strong>
+                    <p>Skim the channel so your post matches the ongoing conversation.</p>
+                </article>
+                <article class="check-item">
+                    <strong>Use the right space</strong>
+                    <p>Drop content in the right channel to keep threads clean and searchable.</p>
+                </article>
+                <article class="check-item">
+                    <strong>Disagree without disrespect</strong>
+                    <p>Debate ideas hard, but keep personal attacks and harassment out.</p>
+                </article>
+            </div>
+        </section>
+
         <div class="section-card stack">
             <h3>Future decrees</h3>
             <p>That is all for now. More Pantheverse rules may be written as the universe expands. Stay tuned for updates and cosmic tweaks.</p>
@@ -81,11 +104,11 @@
         </div>
     </main>
 
-    <div id="auth-modal" class="auth-modal" aria-hidden="true">
+    <div id="auth-modal" class="auth-modal" aria-hidden="true" hidden inert>
         <div class="auth-card">
             <div class="auth-head">
                 <h3>Pantheverse Login</h3>
-                <p>Sign in, or create an account with email verification.</p>
+                <p>Sign in, create an account, or reset your password.</p>
             </div>
             <div class="auth-body">
                 <div class="auth-mode-tabs">
@@ -104,17 +127,14 @@
                     <label for="auth-confirm-password">Confirm password</label>
                     <input id="auth-confirm-password" class="edit-input" type="password" placeholder="Confirm password" autocomplete="new-password">
                 </div>
-                <div id="auth-code-wrap" class="auth-field-group auth-code-group" style="display:none;">
-                    <label for="auth-code">Verification code</label>
-                    <div class="auth-code-row">
-                        <input id="auth-code" class="edit-input" type="text" placeholder="Enter code from email" autocomplete="one-time-code">
-                        <button id="auth-send-code-btn" class="btn btn-ghost auth-inline-btn" type="button">Send code</button>
-                        <button id="auth-resend-code-btn" class="btn btn-ghost auth-inline-btn auth-inline-secondary" type="button">Resend</button>
-                    </div>
+                <div id="auth-helper-row" class="auth-helper-row">
+                    <button id="auth-forgot-btn" class="auth-link-btn" type="button">Forgot password?</button>
+                    <button id="auth-back-btn" class="auth-link-btn" type="button" style="display:none;">Back to login</button>
                 </div>
                 <div class="auth-card-actions">
                     <button id="auth-login-btn" class="edit-btn" type="button">Login now</button>
                     <button id="auth-register-btn" class="edit-btn" type="button">Create account</button>
+                    <button id="auth-reset-btn" class="edit-btn" type="button" style="display:none;">Update password</button>
                     <button id="auth-cancel-btn" class="btn btn-ghost" type="button">Cancel</button>
                 </div>
             </div>
@@ -166,7 +186,7 @@
                 '</div>'
             ].join('');
             const accountModalMarkup = [
-                '<div id="account-settings-modal" class="account-settings-modal" aria-hidden="true">',
+                '<div id="account-settings-modal" class="account-settings-modal" aria-hidden="true" hidden inert>',
                 '  <div class="account-settings-card">',
                 '    <div class="account-settings-head">',
                 '      <div class="account-settings-title-wrap">',
@@ -246,12 +266,12 @@
             const authPassword = document.getElementById('auth-password');
             const authConfirmWrap = document.getElementById('auth-confirm-wrap');
             const authConfirmPassword = document.getElementById('auth-confirm-password');
-            const authCodeWrap = document.getElementById('auth-code-wrap');
-            const authCode = document.getElementById('auth-code');
+            const authHelperRow = document.getElementById('auth-helper-row');
+            const authForgotBtn = document.getElementById('auth-forgot-btn');
+            const authBackBtn = document.getElementById('auth-back-btn');
             const authLoginBtn = document.getElementById('auth-login-btn');
             const authRegisterBtn = document.getElementById('auth-register-btn');
-            const authSendCodeBtn = document.getElementById('auth-send-code-btn');
-            const authResendCodeBtn = document.getElementById('auth-resend-code-btn');
+            const authResetBtn = document.getElementById('auth-reset-btn');
             const authCancelBtn = document.getElementById('auth-cancel-btn');
             const authMessage = document.getElementById('auth-message');
             const confirmModal = document.getElementById('confirm-modal');
@@ -330,6 +350,33 @@
             function setAuthMessage(message, isError) {
                 authMessage.textContent = message;
                 authMessage.className = isError ? 'auth-message error' : 'auth-message';
+            }
+
+            function formatAuthError(error, fallbackMessage) {
+                const raw = error && error.message ? String(error.message) : '';
+                const code = error && error.code ? String(error.code).toLowerCase() : '';
+                const status = Number(error && (error.status || error.statusCode) ? (error.status || error.statusCode) : 0);
+                const lower = raw.toLowerCase();
+                if (
+                    lower.includes('email rate limit exceeded') ||
+                    code.includes('over_email_send_rate_limit') ||
+                    (status === 429 && (lower.includes('email') || lower.includes('rate')))
+                ) {
+                    return 'Email limit reached. Supabase default mailer is very low (about 2 emails/hour). Wait and retry, or configure custom SMTP.';
+                }
+                if (lower.includes('error sending recovery email')) {
+                    return 'Recovery email could not be sent. Check Supabase Auth Logs and SMTP settings (sender address/domain, host, port, username, password).';
+                }
+                if (lower.includes('rate limit')) {
+                    return 'Too many requests right now. Please wait and try again.';
+                }
+                if (raw) {
+                    const details = [];
+                    if (code) details.push('code: ' + code);
+                    if (status) details.push('status: ' + status);
+                    return details.length ? raw + ' (' + details.join(', ') + ')' : raw;
+                }
+                return fallbackMessage;
             }
 
             function setAccountSettingsMessage(message, isError) {
@@ -472,6 +519,25 @@
                 brandAccountMenu.classList.remove('open');
             }
 
+            function showDialog(dialog) {
+                if (!dialog) return;
+                dialog.hidden = false;
+                dialog.removeAttribute('inert');
+                dialog.setAttribute('aria-hidden', 'false');
+            }
+
+            function hideDialog(dialog) {
+                if (!dialog) return;
+                const active = document.activeElement;
+                if (active && dialog.contains(active) && typeof active.blur === 'function') {
+                    active.blur();
+                }
+                dialog.classList.remove('open');
+                dialog.setAttribute('aria-hidden', 'true');
+                dialog.setAttribute('inert', '');
+                dialog.hidden = true;
+            }
+
             function openBrandMenu() {
                 if (!brandAccountMenu || !state.session) return;
                 brandAccountMenu.hidden = false;
@@ -489,8 +555,8 @@
 
             function openAccountSettingsModal() {
                 if (!accountSettingsModal || !state.session) return;
+                showDialog(accountSettingsModal);
                 accountSettingsModal.classList.add('open');
-                accountSettingsModal.setAttribute('aria-hidden', 'false');
                 setSettingsForm(state.userSettings || DEFAULT_SETTINGS);
                 setAccountSettingsMessage('', false);
                 if (prefThemeModeSelect) prefThemeModeSelect.focus();
@@ -498,8 +564,7 @@
 
             function closeAccountSettingsModal() {
                 if (!accountSettingsModal) return;
-                accountSettingsModal.classList.remove('open');
-                accountSettingsModal.setAttribute('aria-hidden', 'true');
+                hideDialog(accountSettingsModal);
                 setAccountSettingsMessage('', false);
             }
 
@@ -531,11 +596,11 @@
                 authEmail.disabled = isBusy;
                 authPassword.disabled = isBusy;
                 authConfirmPassword.disabled = isBusy;
-                authCode.disabled = isBusy;
                 authLoginBtn.disabled = isBusy;
                 authRegisterBtn.disabled = isBusy;
-                authSendCodeBtn.disabled = isBusy;
-                authResendCodeBtn.disabled = isBusy;
+                authResetBtn.disabled = isBusy;
+                authForgotBtn.disabled = isBusy;
+                authBackBtn.disabled = isBusy;
                 authCancelBtn.disabled = isBusy;
             }
 
@@ -551,39 +616,114 @@
                 state.authMode = mode;
                 const isSignin = mode === 'signin';
                 const isRegister = mode === 'register';
+                const isReset = mode === 'reset';
 
                 authModeSigninBtn.classList.toggle('active', isSignin);
                 authModeRegisterBtn.classList.toggle('active', isRegister);
 
                 authPasswordWrap.style.display = 'block';
-                authConfirmWrap.style.display = isRegister ? 'block' : 'none';
-                authCodeWrap.style.display = isRegister ? 'block' : 'none';
+                authConfirmWrap.style.display = (isRegister || isReset) ? 'block' : 'none';
+                authHelperRow.style.display = 'flex';
+                authForgotBtn.style.display = isSignin ? 'inline-flex' : 'none';
+                authBackBtn.style.display = isReset ? 'inline-flex' : 'none';
 
                 authLoginBtn.style.display = isSignin ? 'inline-flex' : 'none';
                 authRegisterBtn.style.display = isRegister ? 'inline-flex' : 'none';
-                authSendCodeBtn.style.display = isRegister ? 'inline-flex' : 'none';
-                authResendCodeBtn.style.display = isRegister ? 'inline-flex' : 'none';
+                authResetBtn.style.display = isReset ? 'inline-flex' : 'none';
                 setAuthMessage('', false);
             }
 
-            function openAuthModal() {
+            function openAuthModal(initialMode) {
                 closeBrandMenu();
+                showDialog(authModal);
                 authModal.classList.add('open');
-                authModal.setAttribute('aria-hidden', 'false');
-                setAuthMode('signin');
+                setAuthMode(initialMode || 'signin');
                 setAuthActionBusy(false);
                 setAuthMessage('', false);
-                authEmail.focus();
+                if (state.authMode === 'reset') {
+                    setAuthMessage('Set a new password for your account.', false);
+                    authPassword.focus();
+                } else {
+                    authEmail.focus();
+                }
             }
 
             function closeAuthModal() {
-                authModal.classList.remove('open');
-                authModal.setAttribute('aria-hidden', 'true');
+                hideDialog(authModal);
                 setAuthActionBusy(false);
                 authPassword.value = '';
                 authConfirmPassword.value = '';
-                authCode.value = '';
                 setAuthMessage('', false);
+                if (topAuthBtn && topAuthBtn.offsetParent !== null) {
+                    topAuthBtn.focus({ preventScroll: true });
+                } else if (brandEl) {
+                    brandEl.focus({ preventScroll: true });
+                }
+            }
+
+            function sessionRedirectUrl(forReset) {
+                function toHttpUrl(value) {
+                    if (!value) return null;
+                    try {
+                        const url = new URL(value, window.location.origin);
+                        if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+                            return null;
+                        }
+                        url.hash = '';
+                        return url;
+                    } catch (_error) {
+                        return null;
+                    }
+                }
+
+                let url = toHttpUrl(window.location.href) || toHttpUrl(config.authRedirectTo) || toHttpUrl('http://localhost:3000/rules/');
+                if (!url) {
+                    return config.authRedirectTo || 'http://localhost:3000/rules/';
+                }
+                if (forReset) {
+                    url.searchParams.set('auth_flow', 'reset');
+                } else {
+                    url.searchParams.delete('auth_flow');
+                }
+                return url.toString();
+            }
+
+            function isRecoveryFlow() {
+                try {
+                    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+                    const queryParams = new URLSearchParams(window.location.search);
+                    return hashParams.get('type') === 'recovery' || queryParams.get('auth_flow') === 'reset';
+                } catch (_error) {
+                    return false;
+                }
+            }
+
+            function clearRecoveryFlowMarkers() {
+                try {
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('auth_flow');
+                    url.hash = '';
+                    window.history.replaceState({}, document.title, url.pathname + url.search);
+                } catch (_error) {
+                    // Ignore URL cleanup failures.
+                }
+            }
+
+            async function hydrateRecoverySessionFromHash() {
+                if (!state.client) return;
+                try {
+                    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+                    if (hashParams.get('type') !== 'recovery') return;
+                    const accessToken = hashParams.get('access_token');
+                    const refreshToken = hashParams.get('refresh_token');
+                    if (!accessToken || !refreshToken) return;
+                    await state.client.auth.setSession({
+                        access_token: accessToken,
+                        refresh_token: refreshToken
+                    });
+                } catch (_error) {
+                    // Ignore hash hydration failures; fallback checks still run.
+                }
             }
 
             function openConfirmModal(title, message) {
@@ -784,10 +924,14 @@
                     topAuthBtn.style.display = 'none';
                 }
                 syncBrandAccount();
-                controls.style.display = state.isEditor ? 'flex' : 'none';
-                enterEditBtn.style.display = state.editMode ? 'none' : 'inline-flex';
-                exitEditBtn.style.display = state.editMode ? 'inline-flex' : 'none';
-                panel.style.display = state.isEditor && state.editMode ? 'flex' : 'none';
+                const canShowEditorControls = !!(state.session && state.isEditor);
+                if (!canShowEditorControls) {
+                    state.editMode = false;
+                }
+                controls.style.display = canShowEditorControls ? 'flex' : 'none';
+                enterEditBtn.style.display = canShowEditorControls && !state.editMode ? 'inline-flex' : 'none';
+                exitEditBtn.style.display = canShowEditorControls && state.editMode ? 'inline-flex' : 'none';
+                panel.style.display = canShowEditorControls && state.editMode ? 'flex' : 'none';
                 document.body.classList.toggle('is-edit-mode', !!state.editMode);
                 if (!state.editMode) {
                     state.selectedRuleIds.clear();
@@ -1105,6 +1249,29 @@
                     setAuthMode('register');
                     authPassword.focus();
                 });
+                authForgotBtn.addEventListener('click', async function() {
+                    if (!state.client) return;
+                    const email = authEmail.value.trim();
+                    if (!email) {
+                        setAuthMessage('Enter your email first, then request a reset link.', true);
+                        return;
+                    }
+                    setAuthActionBusy(true);
+                    const { error } = await state.client.auth.resetPasswordForEmail(email, {
+                        redirectTo: sessionRedirectUrl(true)
+                    });
+                    setAuthActionBusy(false);
+                    if (error) {
+                        console.error('[auth] resetPasswordForEmail failed', error);
+                        setAuthMessage(formatAuthError(error, 'Failed to send reset email.'), true);
+                        return;
+                    }
+                    setAuthMessage('Reset link sent. Check your inbox and open it in this browser.', false);
+                });
+                authBackBtn.addEventListener('click', function() {
+                    setAuthMode('signin');
+                    authEmail.focus();
+                });
                 confirmModal.addEventListener('click', (e) => {
                     if (e.target === confirmModal) resolveConfirm(false);
                 });
@@ -1130,12 +1297,11 @@
                     closeAuthModal();
                 });
 
-                function validateRegisterFields(requireCode) {
+                function validateAuthFields(requireConfirm) {
                     if (!state.client) return;
                     const email = authEmail.value.trim();
                     const password = authPassword.value;
                     const confirmPassword = authConfirmPassword.value;
-                    const code = authCode.value.trim().replace(/\s+/g, '');
                     if (!email || !password) {
                         setAuthMessage('Email and password are required.', true);
                         return null;
@@ -1144,70 +1310,59 @@
                         setAuthMessage('Use at least 6 characters for password.', true);
                         return null;
                     }
-                    if (password !== confirmPassword) {
+                    if (requireConfirm && password !== confirmPassword) {
                         setAuthMessage('Passwords do not match.', true);
                         return null;
                     }
-                    if (requireCode && !code) {
-                        setAuthMessage('Verification code is required.', true);
-                        return null;
-                    }
-                    return { email: email, password: password, code: code };
+                    return { email: email, password: password };
                 }
 
                 authRegisterBtn.addEventListener('click', async () => {
                     if (!state.client) return;
-                    const form = validateRegisterFields(true);
+                    const form = validateAuthFields(true);
                     if (!form) return;
                     setAuthActionBusy(true);
-                    const { error } = await state.client.auth.verifyOtp({
+                    const { data, error } = await state.client.auth.signUp({
                         email: form.email,
-                        token: form.code,
-                        type: 'email'
-                    });
-                    if (error) {
-                        setAuthMessage(error.message || 'Code verification failed.', true);
-                        setAuthActionBusy(false);
-                        return;
-                    }
-                    const updateResult = await state.client.auth.updateUser({ password: form.password });
-                    if (updateResult.error) {
-                        setAuthMessage(updateResult.error.message || 'Password setup failed.', true);
-                        setAuthActionBusy(false);
-                        return;
-                    }
-                    setAuthActionBusy(false);
-                    closeAuthModal();
-                });
-
-                async function sendCodeMessage(isResend) {
-                    if (!state.client) return;
-                    const form = validateRegisterFields(false);
-                    if (!form) return;
-                    setAuthActionBusy(true);
-                    const redirectUrl = config.authRedirectTo || window.location.href.split('#')[0].split('?')[0];
-                    const { error } = await state.client.auth.signInWithOtp({
-                        email: form.email,
+                        password: form.password,
                         options: {
-                            shouldCreateUser: true,
-                            emailRedirectTo: redirectUrl
+                            emailRedirectTo: sessionRedirectUrl(false)
                         }
                     });
                     if (error) {
-                        setAuthMessage(error.message || 'Failed to send code.', true);
+                        setAuthMessage(formatAuthError(error, 'Registration failed.'), true);
                         setAuthActionBusy(false);
                         return;
                     }
                     setAuthActionBusy(false);
-                    setAuthMessage(isResend ? 'Code resent. Check your inbox.' : 'Code sent. Check your inbox.', false);
-                }
-
-                authSendCodeBtn.addEventListener('click', function() {
-                    sendCodeMessage(false);
+                    if (data && data.session) {
+                        closeAuthModal();
+                        return;
+                    }
+                    setAuthMessage('Account created. Confirm your email, then log in.', false);
                 });
 
-                authResendCodeBtn.addEventListener('click', function() {
-                    sendCodeMessage(true);
+                authResetBtn.addEventListener('click', async function() {
+                    if (!state.client) return;
+                    const form = validateAuthFields(true);
+                    if (!form) return;
+                    setAuthActionBusy(true);
+                    const recoverySession = await state.client.auth.getSession();
+                    if (!(recoverySession && recoverySession.data && recoverySession.data.session)) {
+                        setAuthMessage('Open the password reset link from your email, then try again.', true);
+                        setAuthActionBusy(false);
+                        return;
+                    }
+                    const { error } = await state.client.auth.updateUser({ password: form.password });
+                    if (error) {
+                        setAuthMessage(error.message || 'Password update failed.', true);
+                        setAuthActionBusy(false);
+                        return;
+                    }
+                    setAuthActionBusy(false);
+                    clearRecoveryFlowMarkers();
+                    setAuthMode('signin');
+                    closeAuthModal();
                 });
 
                 topSignoutBtn.addEventListener('click', async () => {
@@ -1271,10 +1426,17 @@
                 }
 
                 state.client = window.supabase.createClient(config.url, config.anonKey);
+                if (isRecoveryFlow()) {
+                    await hydrateRecoverySessionFromHash();
+                    openAuthModal('reset');
+                }
                 await refreshAuth();
                 await loadRules();
 
                 state.client.auth.onAuthStateChange(async function(_event, session) {
+                    if (_event === 'PASSWORD_RECOVERY') {
+                        openAuthModal('reset');
+                    }
                     state.session = session;
                     state.isEditor = await checkEditorAccess();
                     if (!state.session) {

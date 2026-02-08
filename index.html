@@ -15,20 +15,25 @@
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="page page-home">
-    <header class="shell topbar">
-        <div class="brand">
-            <span class="dot"></span>
-            <span data-setting-key="brand_name">Pantheverse</span>
+    <header class="shell topbar pantheverse-main-bar" role="banner" aria-label="Pantheverse Main Bar">
+        <div class="pmain-bar">
+            <div class="topbar-left">
+                <div class="brand" aria-label="Account menu">
+                    <span class="dot"></span>
+                    <span data-setting-key="brand_name">Pantheverse</span>
+                </div>
+            </div>
+            <nav class="nav pmain-nav" aria-label="Primary">
+                <a class="active" href="./">Home</a>
+                <a href="rules/">Rules</a>
+                <a href="about/">About</a>
+            </nav>
         </div>
-        <nav class="nav">
-            <a class="active" href="./">Home</a>
-            <a href="rules/">Rules</a>
-            <a href="about/">About</a>
-            <button id="top-auth-btn" class="btn btn-ghost auth-top-btn" type="button">Login / Register</button>
-            <button id="top-signout-btn" class="btn btn-ghost auth-top-btn" type="button">Sign out</button>
-            <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join Discord</a>
-        </nav>
     </header>
+    <div class="auth-bridge" hidden aria-hidden="true">
+        <button id="top-auth-btn" class="btn btn-ghost auth-top-btn" type="button">Login</button>
+        <button id="top-signout-btn" class="btn btn-ghost auth-top-btn" type="button">Sign out</button>
+    </div>
 
     <main class="shell hero">
         <div class="hero-copy">
@@ -114,8 +119,8 @@
     <footer class="shell footer">
         <span data-setting-key="footer_text">Pantheverse · Est. 2020 · Crafted by Astie & Andualem</span>
     </footer>
-    <script src="supabase-config.js"></script>
-    <script src="auth-global.js"></script>
+    <script src="supabase-config.js?v=20260209c"></script>
+    <script src="auth-global.js?v=20260209c"></script>
     <script src="site-settings.js"></script>
     <script src="analytics.js"></script>
     <script src="transitions.js"></script>
