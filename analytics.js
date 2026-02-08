@@ -1,4 +1,6 @@
 (function() {
+    if (document.documentElement.classList.contains('low-end-mode')) return;
+
     var config = window.PV_SUPABASE || {};
     if (!config.url || !config.anonKey) return;
 
@@ -22,40 +24,50 @@
         }).catch(function() {});
     }
 
-    sendEvent({
-        event_type: 'page_view',
-        page_path: pagePath,
-        href: window.location.href,
-        referrer: document.referrer || null
-    });
+    function startTracking() {
+        sendEvent({
+            event_type: 'page_view',
+            page_path: pagePath,
+            href: window.location.href,
+            referrer: document.referrer || null
+        });
 
-    document.addEventListener('click', function(event) {
-        var link = event.target.closest('a[href]');
-        if (!link) return;
+        document.addEventListener('click', function(event) {
+            var target = event.target;
+            if (!target || typeof target.closest !== 'function') return;
+            var link = target.closest('a[href]');
+            if (!link) return;
 
-        var nextUrl;
-        try {
-            nextUrl = new URL(link.href, window.location.href);
-        } catch (_err) {
-            return;
-        }
+            var nextUrl;
+            try {
+                nextUrl = new URL(link.href, window.location.href);
+            } catch (_err) {
+                return;
+            }
 
-        var targetPath = nextUrl.pathname.replace(/\/index\.html$/, '/');
-        if (nextUrl.origin === window.location.origin && targetPath !== pagePath) {
-            sendEvent({
-                event_type: 'nav_click',
-                page_path: pagePath,
-                target_path: targetPath,
-                href: nextUrl.href
-            });
-        }
+            var targetPath = nextUrl.pathname.replace(/\/index\.html$/, '/');
+            if (nextUrl.origin === window.location.origin && targetPath !== pagePath) {
+                sendEvent({
+                    event_type: 'nav_click',
+                    page_path: pagePath,
+                    target_path: targetPath,
+                    href: nextUrl.href
+                });
+            }
 
-        if (/discord\.gg|discord\.com\/invite/i.test(nextUrl.href)) {
-            sendEvent({
-                event_type: 'discord_click',
-                page_path: pagePath,
-                href: nextUrl.href
-            });
-        }
-    });
+            if (/discord\.gg|discord\.com\/invite/i.test(nextUrl.href)) {
+                sendEvent({
+                    event_type: 'discord_click',
+                    page_path: pagePath,
+                    href: nextUrl.href
+                });
+            }
+        }, { passive: true });
+    }
+
+    if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(startTracking, { timeout: 1500 });
+    } else {
+        setTimeout(startTracking, 500);
+    }
 })();

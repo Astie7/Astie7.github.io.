@@ -18,15 +18,15 @@ body {
     font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
     color: #eef2ff;
     background:
-        radial-gradient(160% 110% at 15% 10%, rgba(124, 242, 255, 0.10), transparent 40%),
-        radial-gradient(120% 90% at 85% 0%, rgba(196, 139, 255, 0.12), transparent 36%),
-        radial-gradient(120% 120% at 30% 90%, rgba(255, 122, 158, 0.08), transparent 45%),
-        linear-gradient(165deg, #040513 0%, #070b1c 40%, #0d1331 100%);
+        radial-gradient(140% 105% at 15% 10%, rgba(124, 242, 255, 0.14), transparent 44%),
+        radial-gradient(115% 88% at 82% 0%, rgba(196, 139, 255, 0.14), transparent 42%),
+        linear-gradient(162deg, #0c1538 0%, #121f4b 46%, #1d2d66 100%);
     letter-spacing: 0.01em;
+    line-height: 1.45;
 }
 
 html.low-end-mode body {
-    background: linear-gradient(165deg, #040513 0%, #070b1c 45%, #0c1230 100%);
+    background: linear-gradient(160deg, #101a3f 0%, #18275a 50%, #233875 100%);
 }
 
 a {
@@ -56,11 +56,11 @@ a {
     gap: 10px;
     padding: 9px 14px;
     margin: 0 0 8px 0;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(7px);
     background:
-        linear-gradient(90deg, rgba(124, 242, 255, 0.05), rgba(196, 139, 255, 0.035)),
-        rgba(5, 8, 20, 0.76);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        linear-gradient(90deg, rgba(124, 242, 255, 0.09), rgba(196, 139, 255, 0.07)),
+        rgba(18, 31, 66, 0.88);
+    border-bottom: 1px solid rgba(202, 220, 255, 0.22);
 }
 
 html.low-end-mode .topbar {
@@ -80,7 +80,7 @@ html.low-end-mode .topbar {
     height: 18px;
     border-radius: 50%;
     background:
-        linear-gradient(135deg, rgba(124, 242, 255, 0.7), rgba(196, 139, 255, 0.65));
+        linear-gradient(135deg, rgba(124, 242, 255, 0.82), rgba(196, 139, 255, 0.78));
 }
 
 .nav {
