@@ -33,56 +33,100 @@ a {
 }
 
 .topbar.shell {
-    width: 100%;
-    max-width: none;
-    margin-left: 0;
-    margin-right: 0;
-    padding-left: 24px;
-    padding-right: 24px;
+    width: min(1240px, 96vw);
+    padding: 14px 0 8px;
 }
 
 .topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    padding: 9px 14px;
-    margin: 0 0 8px 0;
+    gap: 16px;
+    padding: 10px 12px;
+    margin: 0;
+    border-radius: 18px;
     backdrop-filter: blur(10px);
-    background:
-        linear-gradient(90deg, rgba(124, 242, 255, 0.05), rgba(196, 139, 255, 0.035)),
-        rgba(5, 8, 20, 0.76);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    background: linear-gradient(115deg, rgba(6, 16, 34, 0.94), rgba(8, 20, 44, 0.9) 58%, rgba(17, 30, 46, 0.88));
+    border: 1px solid rgba(131, 166, 203, 0.3);
+    box-shadow:
+        0 20px 36px rgba(0, 0, 0, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .brand {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-weight: 700;
-    font-size: 18px;
+    min-width: 224px;
+    padding: 9px 12px;
+    border-radius: 13px;
+    background: linear-gradient(145deg, rgba(9, 22, 46, 0.95), rgba(7, 16, 34, 0.9));
+    border: 1px solid rgba(131, 166, 203, 0.35);
 }
 
 .brand .dot {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
     background:
-        linear-gradient(135deg, rgba(124, 242, 255, 0.7), rgba(196, 139, 255, 0.65));
+        linear-gradient(135deg, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.2)),
+        url("Pantheverse.webp");
+    background-position: center;
+    background-size: cover;
 }
 
 .nav {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     align-items: center;
     margin-left: auto;
+    padding: 5px;
+    border-radius: 13px;
+    border: 1px solid rgba(131, 166, 203, 0.24);
+    background: linear-gradient(145deg, rgba(7, 17, 37, 0.94), rgba(5, 13, 28, 0.9));
 }
 
-.nav a {
-    padding: 7px 11px;
-    border-radius: 9px;
-    color: #dfeaff;
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px;
+    border-radius: 10px;
+    border: 1px solid rgba(131, 166, 203, 0.24);
+    background: rgba(124, 242, 255, 0.06);
+}
+
+.nav-links a {
+    padding: 8px 13px;
+    border-radius: 8px;
+    color: #d4dff3;
     font-weight: 600;
+}
+
+.brand-meta {
+    display: grid;
+    gap: 2px;
+    line-height: 1;
+}
+
+.brand-meta [data-setting-key="brand_name"] {
+    font-size: 18px;
+    color: #9defff;
+    font-weight: 700;
+}
+
+.brand-tagline {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #8ea7cc;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-left: 8px;
 }
 
 .hero,

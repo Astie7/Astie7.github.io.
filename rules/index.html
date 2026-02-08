@@ -18,15 +18,22 @@
     <header class="shell topbar">
         <div class="brand">
             <span class="dot"></span>
-            <span data-setting-key="brand_name">Pantheverse</span>
+            <span class="brand-meta">
+                <span data-setting-key="brand_name">Pantheverse</span>
+                <span class="brand-tagline">Community nexus</span>
+            </span>
         </div>
-        <nav class="nav">
-            <a href="../">Home</a>
-            <a class="active" href="./">Rules</a>
-            <a href="../about/">About</a>
-            <button id="top-auth-btn" class="btn btn-ghost auth-top-btn" type="button">Login / Register</button>
-            <button id="top-signout-btn" class="btn btn-ghost auth-top-btn" type="button">Sign out</button>
-            <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join Discord</a>
+        <nav class="nav" aria-label="Primary navigation">
+            <div class="nav-links">
+                <a href="../">Home</a>
+                <a class="active" href="./">Rules</a>
+                <a href="../about/">About</a>
+            </div>
+            <div class="nav-actions">
+                <button id="top-auth-btn" class="btn btn-ghost auth-top-btn" type="button">Login / Register</button>
+                <button id="top-signout-btn" class="btn btn-ghost auth-top-btn" type="button">Sign out</button>
+                <a class="btn btn-primary" data-setting-key="discord_invite_url" data-setting-attr="href" href="https://discord.gg/9qpju32M2S" target="_blank" rel="noopener">Join Discord</a>
+            </div>
         </nav>
     </header>
 
