@@ -1,11 +1,15 @@
 (function() {
+    var root = document.documentElement;
+    if (root && root.classList.contains('low-end-mode')) return;
+
     var body = document.body;
     if (!body) return;
+    if (body.classList.contains('pref-no-transitions')) return;
 
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
 
-    var transitionMs = 220;
+    var transitionMs = 180;
     body.classList.add('page-anim-ready', 'page-enter');
     requestAnimationFrame(function() {
         body.classList.remove('page-enter');

@@ -36,20 +36,74 @@ body {
 }
 
 body.page-anim-ready {
-    transition: opacity 220ms ease, transform 220ms ease, filter 220ms ease;
-    will-change: opacity, transform, filter;
+    transition: opacity 180ms ease, transform 180ms ease;
+    will-change: opacity, transform;
 }
 
 body.page-enter {
     opacity: 0;
-    transform: translateY(8px) scale(0.998);
-    filter: saturate(0.96);
+    transform: translateY(6px);
 }
 
 body.page-leave {
     opacity: 0;
-    transform: translateY(-6px) scale(0.998);
-    filter: saturate(0.95);
+    transform: translateY(-4px);
+}
+
+html.low-end-mode {
+    scroll-behavior: auto;
+}
+
+html.low-end-mode body {
+    background: linear-gradient(165deg, #040513 0%, #070b1c 45%, #0c1230 100%);
+}
+
+html.low-end-mode *,
+html.low-end-mode *::before,
+html.low-end-mode *::after {
+    animation: none !important;
+    transition: none !important;
+}
+
+html.low-end-mode body.page-anim-ready,
+html.low-end-mode body.page-enter,
+html.low-end-mode body.page-leave {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+}
+
+html.low-end-mode .topbar,
+html.low-end-mode .cta-card,
+html.low-end-mode .auth-modal,
+html.low-end-mode .account-settings-modal {
+    backdrop-filter: none !important;
+}
+
+html.low-end-mode .topbar,
+html.low-end-mode .tile,
+html.low-end-mode .feature-card,
+html.low-end-mode .rules-list li,
+html.low-end-mode .rules-hero-card,
+html.low-end-mode .rules-admin-card,
+html.low-end-mode .auth-card,
+html.low-end-mode .account-settings-card,
+html.low-end-mode .confirm-card {
+    box-shadow: none !important;
+}
+
+html.low-end-mode .tile::after,
+html.low-end-mode .page-rules .rules-hero-card::after {
+    display: none !important;
+}
+
+html.low-end-mode .tile:hover,
+html.low-end-mode .rules-list li:hover,
+html.low-end-mode .btn:hover,
+html.low-end-mode .edit-btn:hover {
+    transform: none !important;
+    filter: none !important;
 }
 
 ::selection {
@@ -1454,6 +1508,25 @@ p {
 .auth-card-actions .btn {
     min-height: 40px;
     border-radius: 9px;
+}
+
+.auth-card-actions #auth-login-btn,
+.auth-card-actions #global-auth-login-btn {
+    background: linear-gradient(135deg, #59d6ff, #9cecff);
+    border-color: rgba(124, 242, 255, 0.68);
+    color: #041427;
+    box-shadow: 0 10px 22px rgba(89, 214, 255, 0.3);
+}
+
+.auth-card-actions #auth-login-btn:hover,
+.auth-card-actions #global-auth-login-btn:hover {
+    box-shadow: 0 12px 24px rgba(89, 214, 255, 0.34);
+}
+
+.auth-card-actions #auth-login-btn:disabled,
+.auth-card-actions #global-auth-login-btn:disabled {
+    opacity: 0.72;
+    box-shadow: none;
 }
 
 .auth-message {
