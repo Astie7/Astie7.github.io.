@@ -25,6 +25,20 @@ body {
     line-height: 1.45;
 }
 
+html[data-theme="dark"] body {
+    background:
+        radial-gradient(140% 105% at 15% 10%, rgba(124, 242, 255, 0.12), transparent 46%),
+        radial-gradient(115% 88% at 82% 0%, rgba(196, 139, 255, 0.1), transparent 44%),
+        linear-gradient(162deg, #081032 0%, #101f4a 46%, #1a2d66 100%);
+}
+
+html[data-theme="bright"] body {
+    background:
+        radial-gradient(140% 105% at 15% 10%, rgba(124, 242, 255, 0.15), transparent 44%),
+        radial-gradient(115% 88% at 82% 0%, rgba(196, 139, 255, 0.15), transparent 42%),
+        linear-gradient(162deg, #162c64 0%, #2b4d97 46%, #406ac0 100%);
+}
+
 html.low-end-mode body {
     background: linear-gradient(160deg, #101a3f 0%, #18275a 50%, #233875 100%);
 }

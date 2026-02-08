@@ -1,6 +1,30 @@
 (function() {
     var storageKey = 'pv_lite_mode';
+    var settingsKey = 'pv_site_settings_v3';
     var forcedLite = false;
+    var savedSettings = null;
+
+    try {
+        var savedRaw = window.localStorage.getItem(settingsKey);
+        if (savedRaw) {
+            savedSettings = JSON.parse(savedRaw);
+        }
+    } catch (_settingsErr) {
+        savedSettings = null;
+    }
+
+    try {
+        var themeMode = savedSettings && savedSettings.themeMode ? String(savedSettings.themeMode).toLowerCase() : '';
+        if (themeMode === 'auto') {
+            themeMode = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'bright';
+        }
+        if (themeMode === 'dark' || themeMode === 'bright') {
+            document.documentElement.setAttribute('data-theme', themeMode);
+        }
+    } catch (_themeErr) {
+        // Ignore theme detection failures.
+    }
+
     try {
         var params = new URLSearchParams(window.location.search || '');
         var liteParam = params.get('lite');
@@ -9,7 +33,7 @@
         } else if (liteParam === '0') {
             window.localStorage.removeItem(storageKey);
         }
-        forcedLite = window.localStorage.getItem(storageKey) === '1';
+        forcedLite = window.localStorage.getItem(storageKey) === '1' || !!(savedSettings && savedSettings.liteMode === true);
     } catch (_storageErr) {
         forcedLite = false;
     }

@@ -5,6 +5,7 @@
     var body = document.body;
     if (!body) return;
     if (body.classList.contains('pref-no-transitions')) return;
+    if (body.classList.contains('pref-min-effects')) return;
 
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;

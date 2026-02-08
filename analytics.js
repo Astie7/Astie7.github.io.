@@ -1,6 +1,16 @@
 (function() {
     if (document.documentElement.classList.contains('low-end-mode')) return;
 
+    try {
+        var settingsRaw = window.localStorage.getItem('pv_site_settings_v3');
+        if (settingsRaw) {
+            var settings = JSON.parse(settingsRaw);
+            if (settings && (settings.minEffects === true || settings.liteMode === true)) return;
+        }
+    } catch (_settingsErr) {
+        // Ignore settings parse failures.
+    }
+
     var config = window.PV_SUPABASE || {};
     if (!config.url || !config.anonKey) return;
 

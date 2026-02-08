@@ -1,6 +1,7 @@
 :root {
     --bg: #0c1538;
     --bg-2: #18275b;
+    --bg-3: #1d2d66;
     --panel: rgba(255, 255, 255, 0.09);
     --panel-strong: rgba(255, 255, 255, 0.13);
     --border: rgba(202, 220, 255, 0.28);
@@ -10,6 +11,28 @@
     --accent-2: #c48bff;
     --accent-hot: #ff7a9e;
     --shadow: 0 14px 30px rgba(8, 14, 34, 0.24);
+}
+
+html[data-theme="dark"] {
+    --bg: #081032;
+    --bg-2: #101f4a;
+    --bg-3: #1a2d66;
+    --panel: rgba(255, 255, 255, 0.07);
+    --panel-strong: rgba(255, 255, 255, 0.1);
+    --border: rgba(186, 207, 244, 0.24);
+    --muted: #b8c4e3;
+    --shadow: 0 12px 24px rgba(4, 9, 24, 0.3);
+}
+
+html[data-theme="bright"] {
+    --bg: #162c64;
+    --bg-2: #2b4d97;
+    --bg-3: #406ac0;
+    --panel: rgba(255, 255, 255, 0.14);
+    --panel-strong: rgba(255, 255, 255, 0.2);
+    --border: rgba(220, 233, 255, 0.42);
+    --muted: #d9e4ff;
+    --shadow: 0 10px 20px rgba(10, 18, 42, 0.2);
 }
 
 *,
@@ -30,7 +53,7 @@ body {
     background:
         radial-gradient(140% 105% at 15% 10%, rgba(124, 242, 255, 0.14), transparent 44%),
         radial-gradient(115% 88% at 82% 0%, rgba(196, 139, 255, 0.14), transparent 42%),
-        linear-gradient(162deg, #0c1538 0%, #121f4b 46%, #1d2d66 100%);
+        linear-gradient(162deg, var(--bg) 0%, var(--bg-2) 46%, var(--bg-3) 100%);
     letter-spacing: 0.01em;
     line-height: 1.45;
 }
@@ -103,6 +126,39 @@ html.low-end-mode .tile:hover,
 html.low-end-mode .rules-list li:hover,
 html.low-end-mode .btn:hover,
 html.low-end-mode .edit-btn:hover {
+    transform: none !important;
+    filter: none !important;
+}
+
+body.pref-min-effects .topbar,
+body.pref-min-effects .cta-card,
+body.pref-min-effects .auth-modal,
+body.pref-min-effects .account-settings-modal,
+body.pref-min-effects .brand-account-menu {
+    backdrop-filter: none !important;
+}
+
+body.pref-min-effects .topbar,
+body.pref-min-effects .tile,
+body.pref-min-effects .feature-card,
+body.pref-min-effects .rules-list li,
+body.pref-min-effects .rules-hero-card,
+body.pref-min-effects .rules-admin-card,
+body.pref-min-effects .auth-card,
+body.pref-min-effects .account-settings-card,
+body.pref-min-effects .confirm-card {
+    box-shadow: none !important;
+}
+
+body.pref-min-effects .tile::after,
+body.pref-min-effects .page-rules .rules-hero-card::after {
+    display: none !important;
+}
+
+body.pref-min-effects .tile:hover,
+body.pref-min-effects .rules-list li:hover,
+body.pref-min-effects .btn:hover,
+body.pref-min-effects .edit-btn:hover {
     transform: none !important;
     filter: none !important;
 }
@@ -1631,6 +1687,26 @@ p {
         radial-gradient(140% 120% at 10% 0%, rgba(255, 122, 158, 0.2), transparent 55%),
         linear-gradient(140deg, rgba(36, 12, 32, 0.97), rgba(46, 15, 35, 0.95));
     color: #ffe2eb;
+}
+
+html[data-theme="bright"] .topbar {
+    background: linear-gradient(165deg, rgba(33, 58, 114, 0.9), rgba(41, 72, 133, 0.88));
+    border-color: rgba(223, 236, 255, 0.45);
+}
+
+html[data-theme="bright"] .brand,
+html[data-theme="bright"] .nav,
+html[data-theme="bright"] .auth-card,
+html[data-theme="bright"] .page-rules .rules-hero-card,
+html[data-theme="bright"] .page-rules .rules-admin-card,
+html[data-theme="bright"] .rules-list li,
+html[data-theme="bright"] .section-card {
+    border-color: rgba(223, 236, 255, 0.4);
+}
+
+html[data-theme="dark"] .topbar {
+    background: linear-gradient(165deg, rgba(10, 19, 48, 0.95), rgba(13, 23, 54, 0.92));
+    border-color: rgba(165, 187, 232, 0.28);
 }
 
 .footer {
