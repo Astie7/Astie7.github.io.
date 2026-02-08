@@ -61,7 +61,7 @@ window.addEventListener('DOMContentLoaded', function() {
         const accountMenuMarkup = [
             '<div id="brand-account-menu" class="brand-account-menu" hidden>',
             '  <div id="brand-account-label" class="brand-account-label"></div>',
-            '  <button id="brand-account-settings" class="brand-account-item" type="button">Control Center</button>',
+            '  <button id="brand-account-settings" class="brand-account-item" type="button">Settings</button>',
             '  <button id="brand-account-signout" class="brand-account-item danger" type="button">Sign out</button>',
             '</div>'
         ].join('');
@@ -71,7 +71,7 @@ window.addEventListener('DOMContentLoaded', function() {
             '    <div class="account-settings-head">',
             '      <div>',
             '        <p class="account-settings-eyebrow">Server settings</p>',
-            '        <h3>Pantheverse Control Center</h3>',
+            '        <h3>Pantheverse Settings</h3>',
             '        <p>Tune appearance and performance for every page from one panel.</p>',
             '      </div>',
             '      <button id="account-settings-close-x" class="account-settings-close" type="button" aria-label="Close settings">x</button>',
