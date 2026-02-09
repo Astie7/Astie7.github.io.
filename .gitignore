@@ -22,3 +22,6 @@ yarn-error.log*
 
 # Optional local Supabase override (keep real keys out of git)
 rules/supabase-config.local.js
+
+# Local static server runtime
+.local-server.pid

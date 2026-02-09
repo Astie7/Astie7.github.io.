@@ -108,14 +108,13 @@ window.addEventListener('DOMContentLoaded', function() {
             '          <span><strong>Smooth page transitions</strong><small>Keep route changes visually connected.</small></span>',
             '        </label>',
             '      </section>',
-            '      <section class="account-settings-panel">',
-            '        <h4>Navigation and links</h4>',
-            '        <div class="account-settings-inline-actions">',
-            '          <button id="account-settings-open-home" class="btn btn-ghost" type="button">Open Home</button>',
-            '          <button id="account-settings-open-rules" class="btn btn-ghost" type="button">Open Rules</button>',
-            '          <button id="account-settings-open-about" class="btn btn-ghost" type="button">Open About</button>',
-            '          <button id="account-settings-toggle-lite" class="btn btn-ghost" type="button">Toggle Lite mode</button>',
-            '        </div>',
+            '      <section class="account-settings-panel account-settings-panel-links">',
+            '        <h4>Quick links</h4>',
+            '        <ul class="account-settings-link-list">',
+            '          <li><button id="account-settings-open-home" class="account-settings-link-btn" type="button">Home</button></li>',
+            '          <li><button id="account-settings-open-rules" class="account-settings-link-btn" type="button">Rules</button></li>',
+            '          <li><button id="account-settings-open-about" class="account-settings-link-btn" type="button">About</button></li>',
+            '        </ul>',
             '      </section>',
             '    </div>',
             '    <div class="account-settings-footer">',
@@ -168,7 +167,6 @@ window.addEventListener('DOMContentLoaded', function() {
         const accountSettingsOpenHomeBtn = document.getElementById('account-settings-open-home');
         const accountSettingsOpenRulesBtn = document.getElementById('account-settings-open-rules');
         const accountSettingsOpenAboutBtn = document.getElementById('account-settings-open-about');
-        const accountSettingsToggleLiteBtn = document.getElementById('account-settings-toggle-lite');
         const accountSettingsMsg = document.getElementById('account-settings-msg');
         const accountSettingsSaveBtn = document.getElementById('account-settings-save');
         const accountSettingsCancelBtn = document.getElementById('account-settings-cancel');
@@ -661,21 +659,6 @@ window.addEventListener('DOMContentLoaded', function() {
         if (accountSettingsOpenAboutBtn) {
             accountSettingsOpenAboutBtn.addEventListener('click', function() {
                 window.location.href = window.location.pathname.indexOf('/rules/') >= 0 ? '../about/' : (window.location.pathname.indexOf('/about/') >= 0 ? './' : 'about/');
-            });
-        }
-        if (accountSettingsToggleLiteBtn) {
-            accountSettingsToggleLiteBtn.addEventListener('click', function() {
-                if (AUTO_LOW_END_MODE) {
-                    setAccountSettingsMessage('Lite mode is auto enabled on this device.', false);
-                    return;
-                }
-                if (prefLiteModeInput) {
-                    prefLiteModeInput.checked = !prefLiteModeInput.checked;
-                }
-                const nextSettings = readSettingsForm();
-                persistSettings(nextSettings);
-                applyUserSettings(nextSettings);
-                setAccountSettingsMessage(nextSettings.liteMode ? 'Lite mode enabled.' : 'Lite mode disabled.', false);
             });
         }
         if (accountSettingsSaveBtn) {
